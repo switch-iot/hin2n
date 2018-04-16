@@ -50,7 +50,7 @@
                     android:id="@+id/tie_net_mask"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="NetMask"/>
+                    android:hint="Netmask"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -78,7 +78,7 @@
                     android:id="@+id/tie_encrypt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Encrypt"/>
+                    android:hint="Password"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -92,7 +92,7 @@
                     android:id="@+id/tie_super_node"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Super Node"/>
+                    android:hint="Supernode"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -106,7 +106,7 @@
                     android:id="@+id/tie_spare_super_node"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Spare Super Node"/>
+                    android:hint="Backup supernode"/>
 
             </android.support.design.widget.TextInputLayout>
 

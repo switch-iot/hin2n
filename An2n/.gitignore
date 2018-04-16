@@ -1,9 +1,14 @@
+.idea
 *.iml
-.gradle
-/local.properties
+*.ipr
+*.iws
 /.idea/workspace.xml
 /.idea/libraries
+.gradle
+/local.properties
+reports
+/captures
+jacoco.exec
 .DS_Store
 /build
-/captures
 .externalNativeBuild
