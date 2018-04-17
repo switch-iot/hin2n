@@ -2,10 +2,11 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
->
+    >
 
     <ScrollView
         android:layout_width="match_parent"
@@ -36,7 +37,7 @@
                     android:id="@+id/tie_ip_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="IP Address"/>
+                    android:hint="IP address"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -50,7 +51,8 @@
                     android:id="@+id/tie_net_mask"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Netmask"/>
+                    android:hint="Netmask"
+                    android:text="255.255.255.0"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -72,12 +74,14 @@
                 android:layout_below="@id/til_community"
                 android:id="@+id/til_encrypt"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:passwordToggleEnabled="true">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/tie_encrypt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="textPassword"
                     android:hint="Password"/>
 
             </android.support.design.widget.TextInputLayout>
@@ -96,22 +100,22 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_below="@id/til_super_node"
-                android:id="@+id/til_spare_super_node"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <!--<android.support.design.widget.TextInputLayout-->
+                <!--android:layout_below="@id/til_super_node"-->
+                <!--android:id="@+id/til_spare_super_node"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content">-->
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/tie_spare_super_node"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Backup supernode"/>
+                <!--<android.support.design.widget.TextInputEditText-->
+                    <!--android:id="@+id/tie_spare_super_node"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:hint="Backup supernode"/>-->
 
-            </android.support.design.widget.TextInputLayout>
+            <!--</android.support.design.widget.TextInputLayout>-->
 
             <Button
-                android:layout_below="@id/til_spare_super_node"
+                android:layout_below="@id/til_super_node"
                 android:id="@+id/btn_action"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -120,116 +124,4 @@
     </ScrollView>
 
 
-
-    <!--<LinearLayout-->
-    <!--android:layout_below="@id/tv_title"-->
-    <!--android:id="@+id/ll_ip_address"-->
-    <!--android:layout_marginTop="5dp"-->
-    <!--android:layout_marginLeft="10dp"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="horizontal">-->
-    <!--<TextView-->
-    <!--android:id="@+id/tv_ip_address"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="IP Address : "/>-->
-    <!--<EditText-->
-    <!--android:id="@+id/et_ip_address"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"/>-->
-    <!--</LinearLayout>-->
-
-    <!--<LinearLayout-->
-    <!--android:layout_below="@id/ll_ip_address"-->
-    <!--android:id="@+id/ll_net_mask"-->
-    <!--android:layout_marginTop="5dp"-->
-    <!--android:layout_marginLeft="10dp"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="horizontal">-->
-    <!--<TextView-->
-    <!--android:id="@+id/tv_net_mask"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="NetMask : "/>-->
-    <!--<EditText-->
-    <!--android:id="@+id/et_net_mask"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:hint="255.255.255.0"/>-->
-    <!--</LinearLayout>-->
-
-    <!--<LinearLayout-->
-    <!--android:layout_below="@id/ll_net_mask"-->
-    <!--android:id="@+id/ll_community"-->
-    <!--android:layout_marginTop="5dp"-->
-    <!--android:layout_marginLeft="10dp"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="horizontal">-->
-    <!--<TextView-->
-    <!--android:id="@+id/tv_community"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="Community : "/>-->
-    <!--<EditText-->
-    <!--android:id="@+id/et_community"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"/>-->
-    <!--</LinearLayout>-->
-    <!--<LinearLayout-->
-    <!--android:layout_below="@id/ll_community"-->
-    <!--android:id="@+id/ll_encrypt"-->
-    <!--android:layout_marginTop="5dp"-->
-    <!--android:layout_marginLeft="10dp"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="horizontal">-->
-    <!--<TextView-->
-    <!--android:id="@+id/tv_encrypt"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="Encrypt : "/>-->
-    <!--<EditText-->
-    <!--android:id="@+id/et_encrypt"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"/>-->
-    <!--</LinearLayout>-->
-    <!--<LinearLayout-->
-    <!--android:layout_below="@id/ll_encrypt"-->
-    <!--android:id="@+id/ll_super_node"-->
-    <!--android:layout_marginTop="5dp"-->
-    <!--android:layout_marginLeft="10dp"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="horizontal">-->
-    <!--<TextView-->
-    <!--android:id="@+id/tv_super_node"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="Super Node : "/>-->
-    <!--<EditText-->
-    <!--android:id="@+id/et_super_node"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"/>-->
-    <!--</LinearLayout>-->
-    <!--<LinearLayout-->
-    <!--android:layout_below="@id/ll_super_node"-->
-    <!--android:id="@+id/ll_spare_super_node"-->
-    <!--android:layout_marginTop="5dp"-->
-    <!--android:layout_marginLeft="10dp"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="horizontal">-->
-    <!--<TextView-->
-    <!--android:id="@+id/tv_super_node_spare"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="Spare Super Node : "/>-->
-    <!--<EditText-->
-    <!--android:id="@+id/et_spare_super_node"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"/>-->
-    <!--</LinearLayout>-->
 </RelativeLayout>

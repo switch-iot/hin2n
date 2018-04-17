@@ -14,20 +14,20 @@ import wang.switchy.an2n.template.MainTitleTemplate;
 
 public class MainActivity extends BaseActivity {
 
-    private TextInputLayout mIpAddressTIL;
+    private TextInputLayout mIpAddressTIL;// TODO: 2018/4/17 ip地址的输入内容要检查格式
     private TextInputLayout mNetMaskTIL;
     private TextInputLayout mCommunityTIL;
     private TextInputLayout mEncryptTIL;
     private TextInputLayout mSuperNodeTIL;
-    private TextInputLayout mSpareSuperNodeTIL;
+//    private TextInputLayout mSpareSuperNodeTIL;
     private Button mActionBtn;
 
     // TODO: 2018/4/16 暂时先放这，回头再看看放哪更合适
-//    static {
-//        System.loadLibrary("edge_v2s");
-//        System.loadLibrary("n2n_v2s");
-//        System.loadLibrary("uip");
-//    }
+    static {
+        System.loadLibrary("edge_v2s");
+        System.loadLibrary("n2n_v2s");
+        System.loadLibrary("uip");
+    }
 
     @Override
     protected BaseTemplate createTemplate() {
@@ -43,7 +43,7 @@ public class MainActivity extends BaseActivity {
         mCommunityTIL = (TextInputLayout) findViewById(R.id.til_community);
         mEncryptTIL = (TextInputLayout) findViewById(R.id.til_encrypt);
         mSuperNodeTIL = (TextInputLayout) findViewById(R.id.til_super_node);
-        mSpareSuperNodeTIL = (TextInputLayout) findViewById(R.id.til_spare_super_node);
+//        mSpareSuperNodeTIL = (TextInputLayout) findViewById(R.id.til_spare_super_node);
 
         mActionBtn = (Button) findViewById(R.id.btn_action);
         mActionBtn.setOnClickListener(new View.OnClickListener() {
@@ -54,15 +54,15 @@ public class MainActivity extends BaseActivity {
                         || TextUtils.isEmpty(mCommunityTIL.getEditText().getText())
                         || TextUtils.isEmpty(mEncryptTIL.getEditText().getText())
                         || TextUtils.isEmpty(mSuperNodeTIL.getEditText().getText())
-                        || TextUtils.isEmpty(mSpareSuperNodeTIL.getEditText().getText())
+//                        || TextUtils.isEmpty(mSpareSuperNodeTIL.getEditText().getText())
                         ) {
 
-                    if (TextUtils.isEmpty(mSpareSuperNodeTIL.getEditText().getText())) {
-                        mSpareSuperNodeTIL.setError("Required");
-                        mSpareSuperNodeTIL.getEditText().requestFocus();
-                    } else {
-                        mSpareSuperNodeTIL.setErrorEnabled(false);
-                    }
+//                    if (TextUtils.isEmpty(mSpareSuperNodeTIL.getEditText().getText())) {
+//                        mSpareSuperNodeTIL.setError("Required");
+//                        mSpareSuperNodeTIL.getEditText().requestFocus();
+//                    } else {
+//                        mSpareSuperNodeTIL.setErrorEnabled(false);
+//                    }
 
                     if (TextUtils.isEmpty(mSuperNodeTIL.getEditText().getText())) {
                         mSuperNodeTIL.setError("Required");
@@ -95,33 +95,42 @@ public class MainActivity extends BaseActivity {
                     return;
                 }
 
-                Intent intent = new Intent(MainActivity.this, N2NService.class);
+                Intent vpnPrepareIntent = VpnService.prepare(MainActivity.this);
+                if (vpnPrepareIntent != null) {
+                    Log.e("zhangbz", "doOnCreate vpnPrepareIntent != null");
+                    startActivityForResult(vpnPrepareIntent, 100);
+                } else {
+                    Log.e("zhangbz", "doOnCreate vpnPrepareIntent == null");
+                    onActivityResult(100, 0, null);
 
-                intent.putExtra("ip_address", mIpAddressTIL.getEditText().getText().toString());
-                intent.putExtra("net_mask", TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString());
-                intent.putExtra("community", mCommunityTIL.getEditText().getText().toString());
-                intent.putExtra("encrypt", mEncryptTIL.getEditText().getText().toString());
-                intent.putExtra("super_node", mSuperNodeTIL.getEditText().getText().toString());
-                intent.putExtra("spare_super_node", mSpareSuperNodeTIL.getEditText().getText().toString());
-                startService(intent);
+                }
 
             }
         });
 
-        Intent vpnPrepareIntent = VpnService.prepare(this);
-        if (vpnPrepareIntent != null) {
-            Log.e("zhangbz", "doOnCreate vpnPrepareIntent != null");
-            startActivityForResult(vpnPrepareIntent, 100);
-        } else {
-            Log.e("zhangbz", "doOnCreate vpnPrepareIntent == null");
-
-        }
 
     }
 
     @Override
     protected int getContentLayout() {
         return wang.switchy.an2n.R.layout.activity_main;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e("zhangbz", "onActivityResult requestCode = " + requestCode + "; resultCode = " + resultCode);
+        if (requestCode == 100 && resultCode == 0) {
+            Intent intent = new Intent(MainActivity.this, N2NService.class);
+
+            intent.putExtra("ip_address", mIpAddressTIL.getEditText().getText().toString());
+            intent.putExtra("net_mask", TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString());
+            intent.putExtra("community", mCommunityTIL.getEditText().getText().toString());
+            intent.putExtra("encrypt", mEncryptTIL.getEditText().getText().toString());
+            intent.putExtra("super_node", mSuperNodeTIL.getEditText().getText().toString());
+//                intent.putExtra("spare_super_node", mSpareSuperNodeTIL.getEditText().getText().toString());
+            startService(intent);
+        }
     }
 
     @Override

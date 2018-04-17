@@ -66,6 +66,7 @@ public class N2NService extends VpnService {
         cmd.vpnFd = mParcelFileDescriptor.getFd();
 
         try {
+            // TODO: 2018/4/17 需要判断返回值
             startEdge(cmd);
         } catch (Exception e) {
             Log.e("zhangbz", e.getMessage());
