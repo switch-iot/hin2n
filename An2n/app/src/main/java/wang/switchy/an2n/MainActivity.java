@@ -12,6 +12,7 @@ import android.widget.Button;
 import wang.switchy.an2n.template.BaseTemplate;
 import wang.switchy.an2n.template.MainTitleTemplate;
 
+
 public class MainActivity extends BaseActivity {
 
     private TextInputLayout mIpAddressTIL;// TODO: 2018/4/17 ip地址的输入内容要检查格式
@@ -50,50 +51,50 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
 
-                if (TextUtils.isEmpty(mIpAddressTIL.getEditText().getText())
-                        || TextUtils.isEmpty(mCommunityTIL.getEditText().getText())
-                        || TextUtils.isEmpty(mEncryptTIL.getEditText().getText())
-                        || TextUtils.isEmpty(mSuperNodeTIL.getEditText().getText())
-//                        || TextUtils.isEmpty(mSpareSuperNodeTIL.getEditText().getText())
-                        ) {
-
-//                    if (TextUtils.isEmpty(mSpareSuperNodeTIL.getEditText().getText())) {
-//                        mSpareSuperNodeTIL.setError("Required");
-//                        mSpareSuperNodeTIL.getEditText().requestFocus();
+//                if (TextUtils.isEmpty(mIpAddressTIL.getEditText().getText())
+//                        || TextUtils.isEmpty(mCommunityTIL.getEditText().getText())
+//                        || TextUtils.isEmpty(mEncryptTIL.getEditText().getText())
+//                        || TextUtils.isEmpty(mSuperNodeTIL.getEditText().getText())
+////                        || TextUtils.isEmpty(mSpareSuperNodeTIL.getEditText().getText())
+//                        ) {
+//
+////                    if (TextUtils.isEmpty(mSpareSuperNodeTIL.getEditText().getText())) {
+////                        mSpareSuperNodeTIL.setError("Required");
+////                        mSpareSuperNodeTIL.getEditText().requestFocus();
+////                    } else {
+////                        mSpareSuperNodeTIL.setErrorEnabled(false);
+////                    }
+//
+//                    if (TextUtils.isEmpty(mSuperNodeTIL.getEditText().getText())) {
+//                        mSuperNodeTIL.setError("Required");
+//                        mSuperNodeTIL.getEditText().requestFocus();
 //                    } else {
-//                        mSpareSuperNodeTIL.setErrorEnabled(false);
+//                        mSuperNodeTIL.setErrorEnabled(false);
 //                    }
-
-                    if (TextUtils.isEmpty(mSuperNodeTIL.getEditText().getText())) {
-                        mSuperNodeTIL.setError("Required");
-                        mSuperNodeTIL.getEditText().requestFocus();
-                    } else {
-                        mSuperNodeTIL.setErrorEnabled(false);
-                    }
-
-                    if (TextUtils.isEmpty(mEncryptTIL.getEditText().getText())) {
-                        mEncryptTIL.setError("Required");
-                        mEncryptTIL.getEditText().requestFocus();
-                    } else {
-                        mEncryptTIL.setErrorEnabled(false);
-                    }
-
-                    if (TextUtils.isEmpty(mCommunityTIL.getEditText().getText())) {
-                        mCommunityTIL.setError("Required");
-                        mCommunityTIL.getEditText().requestFocus();
-                    } else {
-                        mCommunityTIL.setErrorEnabled(false);
-                    }
-
-                    if (TextUtils.isEmpty(mIpAddressTIL.getEditText().getText())) {
-                        mIpAddressTIL.setError("Required");
-                        mIpAddressTIL.getEditText().requestFocus();
-                    } else {
-                        mIpAddressTIL.setErrorEnabled(false);
-                    }
-
-                    return;
-                }
+//
+//                    if (TextUtils.isEmpty(mEncryptTIL.getEditText().getText())) {
+//                        mEncryptTIL.setError("Required");
+//                        mEncryptTIL.getEditText().requestFocus();
+//                    } else {
+//                        mEncryptTIL.setErrorEnabled(false);
+//                    }
+//
+//                    if (TextUtils.isEmpty(mCommunityTIL.getEditText().getText())) {
+//                        mCommunityTIL.setError("Required");
+//                        mCommunityTIL.getEditText().requestFocus();
+//                    } else {
+//                        mCommunityTIL.setErrorEnabled(false);
+//                    }
+//
+//                    if (TextUtils.isEmpty(mIpAddressTIL.getEditText().getText())) {
+//                        mIpAddressTIL.setError("Required");
+//                        mIpAddressTIL.getEditText().requestFocus();
+//                    } else {
+//                        mIpAddressTIL.setErrorEnabled(false);
+//                    }
+//
+//                    return;
+//                }
 
                 Intent vpnPrepareIntent = VpnService.prepare(MainActivity.this);
                 if (vpnPrepareIntent != null) {
@@ -101,10 +102,21 @@ public class MainActivity extends BaseActivity {
                     startActivityForResult(vpnPrepareIntent, 100);
                 } else {
                     Log.e("zhangbz", "doOnCreate vpnPrepareIntent == null");
-                    onActivityResult(100, 0, null);
+                    onActivityResult(100, -1, null);
 
                 }
 
+            }
+        });
+
+        Button stopBtn = (Button) findViewById(R.id.btn_stop);
+        stopBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                stopService(new Intent(MainActivity.this, N2NService.class));
+//                stopEdge();
+
+                N2NService.INSTANCE.stop();
             }
         });
 
@@ -120,7 +132,8 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.e("zhangbz", "onActivityResult requestCode = " + requestCode + "; resultCode = " + resultCode);
-        if (requestCode == 100 && resultCode == 0) {
+        if (requestCode == 100 && resultCode == -1) {//RESULT_OK
+
             Intent intent = new Intent(MainActivity.this, N2NService.class);
 
             intent.putExtra("ip_address", mIpAddressTIL.getEditText().getText().toString());

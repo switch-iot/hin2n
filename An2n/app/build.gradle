@@ -37,4 +37,10 @@ dependencies {
     compile 'com.android.support:design:25.2.0'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.+'
+    compile 'org.greenrobot:eventbus:3.1.1'
+
+    //集成调试库，能够帮助用户发现埋点错误，上线前务必删除集成调试库，避免无关信息的打印
+    compile 'com.umeng.sdk:common:latest.integration'
+    compile 'com.umeng.sdk:utdid:1.1.5.3'
+    compile 'com.umeng.sdk:analytics:latest.integration'
 }

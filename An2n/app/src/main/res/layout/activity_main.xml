@@ -120,6 +120,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Start"/>
+
+            <Button
+                android:layout_below="@id/btn_action"
+                android:id="@+id/btn_stop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="stop"/>
         </RelativeLayout>
     </ScrollView>
 

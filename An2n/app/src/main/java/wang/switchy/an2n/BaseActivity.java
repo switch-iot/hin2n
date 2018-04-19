@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.umeng.analytics.MobclickAgent;
+
 import wang.switchy.an2n.template.BaseTemplate;
 
 /**
@@ -53,4 +55,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract int getContentLayout();
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
 }
