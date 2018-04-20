@@ -1,5 +1,11 @@
 apply plugin: 'com.android.application'
 
+
+//设置发布的显示的版本号
+def getVersionName(){
+    return "0.0.1"
+}
+
 android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
@@ -9,6 +15,9 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true //突破方法数65535的限制
+        manifestPlaceholders = [UMENG_CHANNEL_VALUE:"test"]
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
@@ -16,17 +25,62 @@ android {
             }
         }
     }
-    buildTypes {
+
+    //添加我们的签名文件配置 注意：signingConfigs要写在buildTypes
+    signingConfigs {
+        debug {}
+
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //为我们的release包添加签名文件配置
+            storeFile file("An2n.jks")
+            storePassword "n2n_vLTS"
+            keyAlias "An2n"
+            keyPassword "n2n_vLTS"
         }
     }
+
+    buildTypes {
+        release {
+            minifyEnabled false //是否启用混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            signingConfig signingConfigs.release
+
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    if (output.outputFile != null && output.outputFile.name.endsWith('.apk')) {
+                        //重命名
+//                        def fileName = "An2n_" + "${variant.productFlavors[0].name}_${System.env.NumberVersion}" + ".apk"
+                        variant.mergedFlavor.versionName = getVersionName()//必须这么赋值，直接用好像还不行。。
+                        def fileName = "An2n_release_${variant.mergedFlavor.versionName}.apk"
+                        output.outputFile = new File(output.outputFile.parent, fileName);
+                    }
+                }
+            }
+        }
+    }
+
+    productFlavors{
+        xiaomi{
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "xiaomi"]
+        }
+
+        wandoujia{
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "wandoujia"]
+        }
+    }
+
+    productFlavors.all{
+        flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+    }
+
+
     externalNativeBuild {
         cmake {
             path "CMakeLists.txt"
         }
     }
+    
 }
 
 dependencies {

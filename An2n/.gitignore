@@ -12,3 +12,4 @@ jacoco.exec
 .DS_Store
 /build
 .externalNativeBuild
+/app/An2n.jks

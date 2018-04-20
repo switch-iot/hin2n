@@ -37,6 +37,17 @@
                 <action android:name="android.net.VpnService" />
             </intent-filter>
         </service>
+
+        <!--友盟统计相关meta-data-->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5ad8aba3a40fa373830002f5"/> <!--友盟 AppKey-->
+
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${UMENG_CHANNEL_VALUE}"/> <!-- 渠道号 -->
+
     </application>
+
 
 </manifest>
