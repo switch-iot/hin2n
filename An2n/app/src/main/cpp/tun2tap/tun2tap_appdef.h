@@ -8,6 +8,6 @@
 #define uip_tcp_appstate_t void*
 #define UIP_APPCALL()
 
-u8_t* uip_buf;
+extern u8_t* uip_buf;
 
 #endif //_TUN2TAP_DEFINE_H_

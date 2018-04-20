@@ -46,8 +46,8 @@ struct ethip_hdr {
 #define BUF   ((struct arp_hdr *)&uip_buf[0])
 #define IPBUF ((struct ethip_hdr *)&uip_buf[0])
 
-//u8_t* uip_buf = NULL;
-u8_t uip_arp_buf[UIP_LLH_LEN + UIP_ARP_LEN];
-u16_t uip_arp_len = 0;
+extern u8_t* uip_buf;
+extern u8_t uip_arp_buf[UIP_LLH_LEN + UIP_ARP_LEN];
+extern u16_t uip_arp_len;
 
 #endif //_TUN2TAP_H_

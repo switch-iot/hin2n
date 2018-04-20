@@ -45,4 +45,5 @@ target_link_libraries(n2n_v2s log)
 add_library(uip SHARED
                 src/main/cpp/uip/uip.c
                 src/main/cpp/uip/uip_arp.c
+                src/main/cpp/tun2tap/tun2tap.c
             )
