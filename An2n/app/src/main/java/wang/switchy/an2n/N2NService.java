@@ -1,15 +1,18 @@
 package wang.switchy.an2n;
 
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.VpnService;
-import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
-import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
+import java.util.Random;
 
+import wang.switchy.an2n.event.ErrorEvent;
+import wang.switchy.an2n.event.StartEvent;
+import wang.switchy.an2n.event.StopEvent;
 import wang.switchy.an2n.model.EdgeCmd;
 
 /**
@@ -21,14 +24,11 @@ import wang.switchy.an2n.model.EdgeCmd;
 public class N2NService extends VpnService {
 
     public static N2NService INSTANCE;
+    public static boolean sIsRunning = false;
 
     private ParcelFileDescriptor mParcelFileDescriptor = null;
-    private Thread mTrd = null;
-    private PendingIntent mPendingIntent;
-
     private EdgeCmd cmd;
-
-    private Handler mHandler = new Handler();
+    private boolean mStartResult;
 
     @Override
     public void onCreate() {
@@ -45,7 +45,7 @@ public class N2NService extends VpnService {
         Builder b = new Builder();
         b.setMtu(1400 - 14);
 
-        String ipAddress = "192.168.234.2";//intent.getStringExtra("ip_address");
+        String ipAddress = intent.getStringExtra("ip_address");
         b.addAddress(ipAddress, 24);
 
         String[] split = ipAddress.split("\\.");//参数不能直接写成"."
@@ -55,15 +55,15 @@ public class N2NService extends VpnService {
         mParcelFileDescriptor = b.setSession("N2N_V2S")/*.setConfigureIntent(pendingIntent)*/.establish();
 
         cmd = new EdgeCmd();
-        cmd.ipAddr = "192.168.234.2";//intent.getStringExtra("ip_address");
+        cmd.ipAddr = intent.getStringExtra("ip_address");
         cmd.ipNetmask = intent.getStringExtra("net_mask");
         cmd.supernodes = new String[2];
-        cmd.supernodes[0] = "switchy.wang:9000";//intent.getStringExtra("super_node");
+        cmd.supernodes[0] = intent.getStringExtra("super_node");
         cmd.supernodes[1] = "";//intent.getStringExtra("spare_super_node");
-        cmd.community = "switch-comm";//intent.getStringExtra("community");
-        cmd.encKey = "0cce3058e9e376f72adda9dc3d45d0fd";//intent.getStringExtra("encrypt");
+        cmd.community = intent.getStringExtra("community");
+        cmd.encKey = intent.getStringExtra("encrypt");
         cmd.encKeyFile = null;
-        cmd.macAddr = "00:11:22:33:44:55";
+        cmd.macAddr = getRandomMac();
         cmd.mtu = 1400;
         cmd.localIP = "";
         cmd.holePunchInterval = 25;
@@ -72,33 +72,22 @@ public class N2NService extends VpnService {
         cmd.allowRouting = false;
         cmd.dropMuticast = true;
         cmd.traceLevel = 4;//2;
-        cmd.vpnFd = mParcelFileDescriptor.getFd();
+        cmd.vpnFd = mParcelFileDescriptor.detachFd();
 
         try {
             // TODO: 2018/4/17 需要判断返回值
-            startEdge(cmd);
+            mStartResult = startEdge(cmd);
+
+            if (mStartResult) {
+                sIsRunning = true;
+                EventBus.getDefault().post(new StartEvent());
+            } else {
+                EventBus.getDefault().post(new ErrorEvent());
+            }
+
         } catch (Exception e) {
             Log.e("zhangbz", e.getMessage());
         }
-
-
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Log.e("zhangbz", "call stopEdge");
-//                stopEdge();
-//
-//                try {
-//                    if (mParcelFileDescriptor != null) {
-//                        mParcelFileDescriptor.close();
-//                        mParcelFileDescriptor = null;
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }, 1000 * 15);
-
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -116,7 +105,9 @@ public class N2NService extends VpnService {
             e.printStackTrace();
         }
 
-        stopSelf();
+        sIsRunning = false;
+        EventBus.getDefault().post(new StopEvent());
+//        stopSelf();
     }
 
     @Override
@@ -124,6 +115,7 @@ public class N2NService extends VpnService {
         super.onRevoke();
 //        Toast.makeText(INSTANCE, "N2NService onRevoke", Toast.LENGTH_SHORT).show();
         Log.e("zhangbz", "N2NService onRevoke");
+        stop();
     }
 
     @Override
@@ -138,4 +130,17 @@ public class N2NService extends VpnService {
     public native void stopEdge();
 
 
+    private String getRandomMac() {
+        String mac = "", hex="0123456789abcdef";
+        Random rand = new Random();
+        for (int i = 0; i < 17; ++i)
+        {
+            if ((i + 1) % 3 == 0) {
+                mac += ':';
+                continue;
+            }
+            mac += hex.charAt(rand.nextInt(16));
+        }
+        return mac;
+    }
 }
