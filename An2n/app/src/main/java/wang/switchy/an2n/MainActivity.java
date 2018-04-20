@@ -132,18 +132,6 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        Button stopBtn = (Button) findViewById(R.id.btn_stop);
-        stopBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                stopService(new Intent(MainActivity.this, N2NService.class));
-//                stopEdge();
-
-                N2NService.INSTANCE.stop();
-            }
-        });
-
-
     }
 
     @Override
