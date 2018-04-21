@@ -1,9 +1,47 @@
 apply plugin: 'com.android.application'
 
 
-//设置发布的显示的版本号
-def getVersionName(){
-    return "0.0.1"
+def getVersionCode = { ->
+    try {
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'rev-list', '--all', '--count'
+            standardOutput = stdout
+        }
+        return Integer.parseInt(stdout.toString().trim())
+    }
+    catch (ignored) {
+        return -1;
+    }
+}
+
+def getVersionName = { ->
+    try {
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'describe', '--tags', '--always', '--dirty'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    }
+    catch (ignored) {
+        return null;
+    }
+}
+
+def getEnvOrConsole = { env, prompt ->
+    def val = null
+    try {
+        val = System.getenv(env)
+        if (val == null || val == "") {
+            if (System.console() != null) {
+                val = System.console().readLine("\n" + prompt + ": ")
+            }
+        }
+    } catch (ignored) {
+        return null
+    }
+    return val
 }
 
 android {
@@ -13,15 +51,17 @@ android {
         applicationId "wang.switchy.an2n"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode getVersionCode()
+        versionName getVersionName()
         multiDexEnabled true //突破方法数65535的限制
-        manifestPlaceholders = [UMENG_CHANNEL_VALUE:"test"]
+        manifestPlaceholders = [UMENG_CHANNEL_VALUE: "normal"]
+        resConfigs "en", "zh-rCN", "zh-rTW" // 多语言
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
                 cppFlags ""
+                abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a'
             }
         }
     }
@@ -33,44 +73,61 @@ android {
         release {
             //为我们的release包添加签名文件配置
             storeFile file("An2n.jks")
-            storePassword "n2n_vLTS"
+            storePassword getEnvOrConsole("AN2N_KSTOREPWD", "Keystore password")
             keyAlias "An2n"
-            keyPassword "n2n_vLTS"
+            keyPassword getEnvOrConsole("AN2N_KEYPWD", "Key password")
         }
     }
 
     buildTypes {
+        debug {
+            buildConfigField("boolean", "API_DEBUG", "true")
+            minifyEnabled false //是否启用混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+        }
+
         release {
+            buildConfigField("boolean", "API_DEBUG", "true")
             minifyEnabled false //是否启用混淆
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             signingConfig signingConfigs.release
+        }
+    }
 
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    if (output.outputFile != null && output.outputFile.name.endsWith('.apk')) {
-                        //重命名
-//                        def fileName = "An2n_" + "${variant.productFlavors[0].name}_${System.env.NumberVersion}" + ".apk"
-                        variant.mergedFlavor.versionName = getVersionName()//必须这么赋值，直接用好像还不行。。
-                        def fileName = "An2n_release_${variant.mergedFlavor.versionName}.apk"
-                        output.outputFile = new File(output.outputFile.parent, fileName);
-                    }
+    //配置自定义打包名称
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            def fileName = null
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                variant.mergedFlavor.versionName = getVersionName()
+                def channel = variant.mergedFlavor.manifestPlaceholders.UMENG_CHANNEL_VALUE
+                if (variant.buildType.name == "debug") {
+                    channel = "test"
                 }
+                fileName = "An2n_${variant.mergedFlavor.versionName}_${channel}_${variant.buildType.name}.apk"
+                output.outputFile = new File(output.outputFile.parent, fileName)
             }
         }
     }
 
-    productFlavors{
-        xiaomi{
-//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "xiaomi"]
-        }
+    flavorDimensions "channel"
 
-        wandoujia{
+    productFlavors {
+//        xiaomi {
+//            dimension "channel"
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "xiaomi"]
+//        }
+//
+//        wandoujia {
+//            dimension "channel"
 //            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "wandoujia"]
-        }
+//        }
     }
 
-    productFlavors.all{
+    productFlavors.all {
         flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
     }
 
@@ -80,7 +137,7 @@ android {
             path "CMakeLists.txt"
         }
     }
-    
+
 }
 
 dependencies {
