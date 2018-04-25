@@ -45,9 +45,6 @@ static FILE* create_and_open_file(char* path)
 
 static slog_t* check_log_path(slog_t* slog)
 {
-#ifndef NDEBUG
-    return slog;
-#else
     if (!slog)
         return NULL;
     if (!slog->path) {
@@ -64,14 +61,10 @@ static slog_t* check_log_path(slog_t* slog)
     }
     slog->fp = create_and_open_file(slog->path);
     return slog;
-#endif
 }
 
 slog_t* initslog(int base, const char* path)
 {
-#ifndef NDEBUG
-    return (slog_t*)-1;
-#else
     if (base < 0 || path == NULL || path[0] == '\0')
         return NULL;
     char* p = strdup(path);
@@ -86,7 +79,6 @@ slog_t* initslog(int base, const char* path)
     slog->path = p;
     slog->times = 0;
     return slog;
-#endif
 }
 
 slog_t* writeslog(slog_t* p, int level, const char* tag, const char* text)
@@ -105,16 +97,15 @@ slog_t* printslog(slog_t* p, int level, const char* tag, const char* fmt, ...)
 
 slog_t* vprintslog(slog_t* p, int level, const char* tag, const char* fmt, va_list ap)
 {
-#ifndef NDEBUG
-    __android_log_vprint(level, tag, fmt, ap);
-    return p;
-#else
     if (!p) {
         return NULL;
     }
     if (level < p->base) {
         return p;
     }
+#ifndef NDEBUG
+    __android_log_vprint(level, tag, fmt, ap);
+#endif /* #ifndef NDEBUG */
     if (p->fp) {
         fprintf(p->fp, "%s: ", tag);
         vfprintf(p->fp, fmt, ap);
@@ -126,12 +117,10 @@ slog_t* vprintslog(slog_t* p, int level, const char* tag, const char* fmt, va_li
         p = check_log_path(p);
     }
     return p;
-#endif
 }
 
 void closeslog(slog_t* p)
 {
-#ifdef NDEBUG
     if (p) {
         if (p->fp) {
             fclose(p->fp);
@@ -141,5 +130,4 @@ void closeslog(slog_t* p)
         }
         free(p);
     }
-#endif
 }
