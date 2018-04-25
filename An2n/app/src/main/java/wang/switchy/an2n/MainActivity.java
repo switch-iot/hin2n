@@ -35,9 +35,11 @@ public class MainActivity extends BaseActivity {
 
     // TODO: 2018/4/16 暂时先放这，回头再看看放哪更合适
     static {
-        System.loadLibrary("edge_v2s");
-        System.loadLibrary("n2n_v2s");
+        System.loadLibrary("slog");
         System.loadLibrary("uip");
+        System.loadLibrary("n2n_v2s");
+        System.loadLibrary("edge_v2s");
+
     }
 
     @Override
