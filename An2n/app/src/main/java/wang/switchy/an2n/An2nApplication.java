@@ -2,6 +2,7 @@ package wang.switchy.an2n;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDexApplication;
 
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
@@ -10,7 +11,7 @@ import com.umeng.commonsdk.UMConfigure;
  * Created by janiszhang on 2018/4/19.
  */
 
-public class An2nApplication extends Application {
+public class An2nApplication extends MultiDexApplication {
 
     public Context AppContext;
 
