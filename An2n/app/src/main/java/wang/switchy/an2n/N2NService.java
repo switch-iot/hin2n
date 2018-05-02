@@ -14,6 +14,7 @@ import wang.switchy.an2n.event.ErrorEvent;
 import wang.switchy.an2n.event.StartEvent;
 import wang.switchy.an2n.event.StopEvent;
 import wang.switchy.an2n.model.EdgeCmd;
+import wang.switchy.an2n.model.EdgeStatus;
 
 /**
  * Created by janiszhang on 2018/4/15.
@@ -128,6 +129,8 @@ public class N2NService extends VpnService {
     public native boolean startEdge(EdgeCmd cmd);
 
     public native void stopEdge();
+
+    public native void getEdgeStatus(EdgeStatus status);
 
 
     private String getRandomMac() {
