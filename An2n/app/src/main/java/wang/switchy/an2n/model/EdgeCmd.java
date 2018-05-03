@@ -32,8 +32,8 @@ public class EdgeCmd {
         if (!checkIPV4(ipAddr)) {
             invalids.add("ipAddr");
         }
-        if (!checkIPV4(ipNetmask)) {
-            invalids.add("ipAddr");
+        if (!checkIPV4Mask(ipNetmask)) {
+            invalids.add("ipNetmask");
         }
         if (supernodes == null || !checkSupernode(supernodes[0]) ||
                 (supernodes[1] != null && !supernodes[1].isEmpty() && !checkSupernode(supernodes[1]))) {
@@ -85,6 +85,36 @@ public class EdgeCmd {
             for (int i = 0; i < split.length; ++i) {
                 int n = Integer.parseInt(split[i]);
                 if (n < 0 || n > 255 || String.valueOf(n) != split[i]) {
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean checkIPV4Mask(String netmask) {
+        int[] arr = {0x00, 0x80, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0xFE, 0xFF};
+        if (netmask == null || netmask.length() < 7 || netmask.length() > 15) {
+            return false;
+        }
+        String[] split = netmask.split("\\.");
+        if (split == null || split.length != 4) {
+            return false;
+        }
+        try {
+            for (int i = 0; i < split.length; ++i) {
+                int n = Integer.parseInt(split[i]);
+                boolean flag = false;
+                for (int j = 0; j < arr.length; ++i) {
+                    if (n == arr[j]) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (!flag || String.valueOf(n) != split[i]) {
                     return false;
                 }
             }
