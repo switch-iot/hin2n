@@ -131,7 +131,11 @@ public class N2NService extends VpnService {
 
     public native void stopEdge();
 
-    public native void getEdgeStatus(EdgeStatus status);
+    public native EdgeStatus getEdgeStatus();
+
+    public void reportEdgeStatus(EdgeStatus status)
+    {
+    }
 
 
     private String getRandomMac() {
