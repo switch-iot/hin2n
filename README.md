@@ -1,8 +1,6 @@
 # n2n_vLTS
-n2n support for mobiles(hin2n)
 
----
-n2n是一个支持内网穿透p2p的VPN项目，最初由ntop.org大神`Luca Deri` <deri@ntop.org>, `Richard Andrews` <andrews@ntop.org>开发并开源的项目，后由`meyerd` <https://github.com/meyerd>继续做优化工作。我们的目的是在几位大神的基础上做持续优化并提供`手机版本`的支持。
+n2n是一个支持内网穿透p2p的VPN项目，最初由ntop.org大神`Luca Deri` <deri@ntop.org>, `Richard Andrews` <andrews@ntop.org>开发并开源的项目，后由`meyerd`大神 <https://github.com/meyerd>继续做优化工作。我们的目的是在几位大神的基础上做持续优化并提供`手机版本`的支持。
 
 ## hin2n
 原版的n2n支持很多平台，包括windows，linux，osx，bsd，openwrt，raspberry pie等，唯独缺少对手机(非root)的支持。因此，我们开发了hin2n项目。
@@ -21,8 +19,6 @@ n2n是一个支持内网穿透p2p的VPN项目，最初由ntop.org大神`Luca Der
 > 安卓上层仅支持建立tun虚拟网卡，仅是TCP/IP网络层，而n2n协议依赖tap虚拟网卡，需要对数据链路层的支持，因此我们模拟了数据链路层，并实现了ARP协议
 - n2n protocol
 > hin2n对n2n协议的支持是采用jni的方式，native方法可以尽量复用原n2n项目的代码
-
-**欢迎大家持续关注该项目**
 
 ## n2n协议版本
 n2n项目现有三个主流版本
