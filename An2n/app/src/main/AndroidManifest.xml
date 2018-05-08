@@ -41,7 +41,7 @@
         <!--友盟统计相关meta-data-->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="5ad8aba3a40fa373830002f5"/> <!--友盟 AppKey-->
+            android:value="${UMENG_APPKEY_VALUE}"/> <!--友盟 AppKey-->
 
         <meta-data
             android:name="UMENG_CHANNEL"
