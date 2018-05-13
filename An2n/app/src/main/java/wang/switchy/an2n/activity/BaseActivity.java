@@ -1,4 +1,4 @@
-package wang.switchy.an2n;
+package wang.switchy.an2n.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
