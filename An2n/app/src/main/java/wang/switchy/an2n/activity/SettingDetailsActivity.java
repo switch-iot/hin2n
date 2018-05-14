@@ -167,7 +167,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             mTraceLevel.getEditText().setText(String.valueOf(mN2NSettingModel.getTraceLevel()));
 
             if (mN2NSettingModel.getMoreSettings()) {
-                mMoreSettingCheckBox.setSelected(true);
+                mMoreSettingCheckBox.setChecked(true);
+                mMoreSettingView.setVisibility(View.VISIBLE);
             } else {
                 mMoreSettingCheckBox.setChecked(false);
             }
@@ -394,7 +395,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                                 TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIP.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) ? 25 : Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()),
                                 mResoveSupernodeIPCheckBox.isChecked(), TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) ? 0 : Integer.valueOf(mLocalPort.getEditText().getText().toString()),
-                                mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ? Integer.valueOf(mTraceLevel.getEditText().getText().toString()) : 1, false);
+                                mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ?  1 : Integer.valueOf(mTraceLevel.getEditText().getText().toString()), false);
                         n2NSettingModelDao.update(mN2NSettingModel);
                     } else {
                         Log.e("0511", "定位2");
@@ -413,6 +414,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
 
                 Toast.makeText(mContext, "Update Succeed", Toast.LENGTH_SHORT).show();
 
+                finish();
+
                 break;
 
             case R.id.btn_delete:
@@ -420,6 +423,9 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 n2NSettingModelDao.deleteByKey(mSaveId);
 
                 Toast.makeText(mContext, "Delete Succeed", Toast.LENGTH_SHORT).show();
+
+                finish();
+
                 break;
             default:
 

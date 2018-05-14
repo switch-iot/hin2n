@@ -18,9 +18,7 @@ import wang.switchy.an2n.event.StopEvent;
 import wang.switchy.an2n.model.EdgeCmd;
 import wang.switchy.an2n.model.EdgeStatus;
 import wang.switchy.an2n.model.N2NSettingInfo;
-import wang.switchy.an2n.storage.db.base.model.N2NSettingModel;
 
-import static android.os.Build.VERSION_CODES.N;
 import static wang.switchy.an2n.model.EdgeCmd.getRandomMac;
 
 /**
@@ -61,44 +59,32 @@ public class N2NService extends VpnService {
 //        N2NSettingModel n2nSettingInfo = setting.getParcelable("n2nSettingInfo");
         N2NSettingInfo n2nSettingInfo = setting.getParcelable("n2nSettingInfo");
 
-//        Builder b = new Builder();
-//        Log.e("zhangbz", "n2nSettingInfo = " + n2nSettingInfo.toString());
-//
-//        Log.e("zhangbz", "mtu = " + n2nSettingInfo.getMtu());
-//        b.setMtu(n2nSettingInfo.getMtu() - 14);
-//
-//        String ipAddress = n2nSettingInfo.getIp();
-//        Log.e("zhangbz", "ipAddress = " + ipAddress + "; getIpAddrPrefixLength(n2nSettingInfo.getNetmask()) = " + getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
-//
-//        b.addAddress(ipAddress, getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
-//
-////        String[] split = ipAddress.split("\\.");//参数不能直接写成"."
-////        String route = split[0] + "." + split[1] + "." + split[2] + ".0";
-//        String route = getRoute(ipAddress, getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
-//        Log.e("zhangbz", "route = " + route);
-//        b.addRoute(route, getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
-//
-//        mParcelFileDescriptor = b.setSession("N2N_V2S")/*.setConfigureIntent(pendingIntent)*/.establish();
-
         Builder b = new Builder();
-//        Log.e("zhangbz", "n2nSettingInfo = " + n2nSettingInfo.toString());
+        Log.e("zhangbz", "n2nSettingInfo = " + n2nSettingInfo.toString());
 
-//        Log.e("zhangbz", "mtu = " + n2nSettingInfo.getMtu());
-        b.setMtu(1400 - 14);
+        Log.e("zhangbz", "mtu = " + n2nSettingInfo.getMtu());
+        b.setMtu(n2nSettingInfo.getMtu() - 14);
 
-//        String ipAddress = n2nSettingInfo.getIp();
-        String ipAddress = "192.168.111.2";
-//        Log.e("zhangbz", "ipAddress = " + ipAddress + "; getIpAddrPrefixLength(n2nSettingInfo.getNetmask()) = " + getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
+        String ipAddress = n2nSettingInfo.getIp();
+        Log.e("zhangbz", "ipAddress = " + ipAddress + "; getIpAddrPrefixLength(n2nSettingInfo.getNetmask()) = " + getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
 
-        b.addAddress(ipAddress, 24);
+        b.addAddress(ipAddress, getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
 
 //        String[] split = ipAddress.split("\\.");//参数不能直接写成"."
 //        String route = split[0] + "." + split[1] + "." + split[2] + ".0";
-//        String route = getRoute(ipAddress, getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
-//        Log.e("zhangbz", "route = " + route);
-        b.addRoute("192.168.111.0", 24);
+        String route = getRoute(ipAddress, getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
+        Log.e("zhangbz", "route = " + route);
+        b.addRoute(route, getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
 
         mParcelFileDescriptor = b.setSession("N2N_V2S")/*.setConfigureIntent(pendingIntent)*/.establish();
+
+//        测试代码
+//        Builder b = new Builder();
+//        b.setMtu(1400 - 14);
+//        String ipAddress = "192.168.111.2";
+//        b.addAddress(ipAddress, 24);
+//        b.addRoute("192.168.111.0", 24);
+//        mParcelFileDescriptor = b.setSession("N2N_V2S")/*.setConfigureIntent(pendingIntent)*/.establish();
 
         if (mParcelFileDescriptor != null) {
             Log.e("zhangbz", "mParcelFileDescriptor != null");
@@ -150,10 +136,6 @@ public class N2NService extends VpnService {
 
         return super.onStartCommand(intent, flags, startId);
     }
-
-//    public void start(Intent intent) {
-//
-//    }
 
     public void stop() {
         Log.e("zhangbz", "call stop");

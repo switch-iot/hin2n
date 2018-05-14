@@ -40,8 +40,8 @@ public class An2nApplication extends MultiDexApplication {
 //        UMConfigure.init(this, "5ad8aba3a40fa373830002f5", "Umeng", UMConfigure.DEVICE_TYPE_PHONE, null);
 
         // TODO: 2018/5/10 不知道问什么有问题了。。
-        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, null);
-        MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL);
+//        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, null);
+//        MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL);
 
 //        MobclickAgent.setSecret(this, );
 

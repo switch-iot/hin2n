@@ -24,6 +24,7 @@
             android:id="@+id/tv_setting_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="16dp"
             android:text="SettingName"/>
 
         <TextView
@@ -33,7 +34,9 @@
             android:id="@+id/tv_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="16dp"
             android:text="详情"
+            android:padding="10dp"
             />
     </RelativeLayout>
 </RelativeLayout>
