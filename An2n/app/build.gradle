@@ -1,3 +1,4 @@
+apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'com.android.application'
 
 
@@ -151,6 +152,12 @@ android {
 
 }
 
+greendao {
+    schemaVersion 1 //版本
+    daoPackage 'wang.switchy.an2n.storage.db.base'// 一般为app包名+生成文件的文件夹名
+    targetGenDir 'src/main/java' //生成文件路径
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -165,4 +172,8 @@ dependencies {
     implementation 'com.umeng.sdk:common:latest.integration'
     implementation 'com.umeng.sdk:utdid:1.1.5.3'
     implementation 'com.umeng.sdk:analytics:latest.integration'
+
+    implementation 'org.greenrobot:greendao:3.2.0' // add library
+//    compile 'org.greenrobot:greendao-generator:3.2.2'
+
 }
