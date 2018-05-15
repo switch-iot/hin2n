@@ -291,19 +291,37 @@
                         android:text="Drop Muticast"/>
                 </RelativeLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <!--<android.support.design.widget.TextInputLayout-->
+                    <!--android:layout_below="@id/rl_drop_muticast"-->
+                    <!--android:id="@+id/til_trace_level"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content">-->
+
+                    <!--<android.support.design.widget.TextInputEditText-->
+                        <!--android:id="@+id/tie_trace_level"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:hint="Trace Level"/>-->
+
+                <!--</android.support.design.widget.TextInputLayout>-->
+                <RelativeLayout
                     android:layout_below="@id/rl_drop_muticast"
-                    android:id="@+id/til_trace_level"
+                    android:id="@+id/rl_trace_level"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/tie_trace_level"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tv_trace_level"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="Trace Level"/>
+                        android:text="Trace Level : "/>
 
-                </android.support.design.widget.TextInputLayout>
+                    <Spinner
+                        android:layout_toRightOf="@id/tv_trace_level"
+                        android:id="@+id/spinner_trace_level"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
 
                 <!--<android.support.design.widget.TextInputLayout-->
                     <!--android:layout_below="@id/til_trace_level"-->

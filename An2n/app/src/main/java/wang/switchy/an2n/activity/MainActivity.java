@@ -47,7 +47,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected BaseTemplate createTemplate() {
-        CommonTitleTemplate titleTemplate = new CommonTitleTemplate(this, "hin2n");
+        CommonTitleTemplate titleTemplate = new CommonTitleTemplate(this, "Hin2n");
         titleTemplate.mRightImg.setImageResource(R.mipmap.img_add);
         titleTemplate.mRightImg.setVisibility(View.VISIBLE);
         titleTemplate.mRightImg.setOnClickListener(new View.OnClickListener() {

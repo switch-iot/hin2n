@@ -8,12 +8,17 @@ import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import wang.switchy.an2n.An2nApplication;
 import wang.switchy.an2n.N2NService;
@@ -24,6 +29,8 @@ import wang.switchy.an2n.storage.db.base.N2NSettingModelDao;
 import wang.switchy.an2n.storage.db.base.model.N2NSettingModel;
 import wang.switchy.an2n.template.BaseTemplate;
 import wang.switchy.an2n.template.CommonTitleTemplate;
+
+import static android.R.id.list;
 
 /**
  * Created by janiszhang on 2018/5/4.
@@ -56,6 +63,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
     private CheckBox mAllowRoutinCheckBox;
     private CheckBox mDropMuticastCheckBox;
     private TextInputLayout mTraceLevel;
+    private Spinner mTraceLevelSpinner;
     //    private TextInputLayout mVpnFd;
     private CheckBox mMoreSettingCheckBox;
     private RelativeLayout mMoreSettingView;
@@ -64,6 +72,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
     private LinearLayout mButtons;
     private Button mDeleteBtn;
     private long mSaveId;
+    private ArrayList<String> mTraceLevelList;
 
 
     @Override
@@ -116,7 +125,44 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         mLocalPort = (TextInputLayout) findViewById(R.id.til_local_port);
         mAllowRoutinCheckBox = (CheckBox) findViewById(R.id.allow_routing_check_box);
         mDropMuticastCheckBox = (CheckBox) findViewById(R.id.drop_muticast_check_box);
-        mTraceLevel = (TextInputLayout) findViewById(R.id.til_trace_level);
+//        mTraceLevel = (TextInputLayout) findViewById(R.id.til_trace_level);
+
+        mTraceLevelSpinner = (Spinner) findViewById(R.id.spinner_trace_level);
+
+        mTraceLevelList = new ArrayList<>();
+        mTraceLevelList.add("0");
+        mTraceLevelList.add("1");
+        mTraceLevelList.add("2");
+        mTraceLevelList.add("3");
+        mTraceLevelList.add("4");
+
+        final ArrayAdapter<String> traceLevelAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mTraceLevelList);
+        traceLevelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        mTraceLevelSpinner.setAdapter(traceLevelAdapter);
+
+        mTraceLevelSpinner.setSelection(1);
+
+        mTraceLevelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {// parent： 为控件Spinner view：显示文字的TextView position：下拉选项的位置从0开始
+                String item = traceLevelAdapter.getItem(position);
+
+//                traceLevelSpinner.get
+                int selectedItemPosition = mTraceLevelSpinner.getSelectedItemPosition();
+                String traceLevel = mTraceLevelList.get(selectedItemPosition);
+
+                Log.e("zhangbz", "traceLevel = " + traceLevel);
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
 //        mVpnFd = (TextInputLayout) findViewById(R.id.til_vpn_fd);
 
         mSaveAndSetCheckBox = (CheckBox) findViewById(R.id.check_box);
@@ -138,7 +184,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             mMtu.getEditText().setText("1400");
             mHolePunchInterval.getEditText().setText("25");
             mDropMuticastCheckBox.setChecked(true);
-            mTraceLevel.getEditText().setText("1");
+//            mTraceLevel.getEditText().setText("1");
+            mTraceLevelSpinner.setSelection(1);
 
             mSaveBtn.setVisibility(View.VISIBLE);
             mButtons.setVisibility(View.GONE);
@@ -164,7 +211,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             mLocalPort.getEditText().setText(String.valueOf(mN2NSettingModel.getLocalPort()));
             mAllowRoutinCheckBox.setChecked(mN2NSettingModel.getAllowRouting());
             mDropMuticastCheckBox.setChecked(mN2NSettingModel.getDropMuticast());
-            mTraceLevel.getEditText().setText(String.valueOf(mN2NSettingModel.getTraceLevel()));
+//            mTraceLevel.getEditText().setText(String.valueOf(mN2NSettingModel.getTraceLevel()));
+            mTraceLevelSpinner.setSelection(Integer.valueOf(mN2NSettingModel.getTraceLevel()));
 
             if (mN2NSettingModel.getMoreSettings()) {
                 mMoreSettingCheckBox.setChecked(true);
@@ -209,7 +257,9 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         switch (view.getId()) {
             case R.id.btn_save:
 
-                checkValues();
+                if (!checkValues()) {
+                    return;
+                }
 
                 if (mSaveAndSetCheckBox.isChecked()) {
                     Log.e("zhangbz", "AddItemActivity 定位1");
@@ -239,7 +289,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                                 TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()) , mLocalIP.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) ? 25 : Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()),
                                 mResoveSupernodeIPCheckBox.isChecked(), TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) ? 0 : Integer.valueOf(mLocalPort.getEditText().getText().toString()),
-                                mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ? Integer.valueOf(mTraceLevel.getEditText().getText().toString()) : 1, true);
+                                mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), Integer.valueOf(mTraceLevelList.get(mTraceLevelSpinner.getSelectedItemPosition()))/*TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ? 1:Integer.valueOf(mTraceLevel.getEditText().getText().toString())*/, true);
                         id = n2NSettingModelDao.insert(mN2NSettingModel);
                     } else {
                         Log.e("zhangbz", "AddItemActivity 定位4");
@@ -292,7 +342,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                                 TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIP.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) ? 25 : Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()),
                                 mResoveSupernodeIPCheckBox.isChecked(), TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) ? 0 : Integer.valueOf(mLocalPort.getEditText().getText().toString()),
-                                mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ? Integer.valueOf(mTraceLevel.getEditText().getText().toString()) : 1, false);
+                                mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), Integer.valueOf(mTraceLevelList.get(mTraceLevelSpinner.getSelectedItemPosition()))/*TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ?  1:Integer.valueOf(mTraceLevel.getEditText().getText().toString())*/, false);
                         id = n2NSettingModelDao.insert(mN2NSettingModel);
                     } else {
                         Log.e("0511", "定位2");
@@ -308,10 +358,15 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                     }
 
                 }
+
+                Toast.makeText(mContext, "Add Succeed", Toast.LENGTH_SHORT).show();
+                finish();
                 break;
 
             case R.id.btn_modify:
-                checkValues();
+                if (!checkValues()) {
+                    return;
+                }
 
                 if (mSaveAndSetCheckBox.isChecked()) {
                     Log.e("zhangbz", "AddItemActivity 定位1");
@@ -340,7 +395,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                                 TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()) , mLocalIP.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) ? 25 : Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()),
                                 mResoveSupernodeIPCheckBox.isChecked(), TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) ? 0 : Integer.valueOf(mLocalPort.getEditText().getText().toString()),
-                                mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ? Integer.valueOf(mTraceLevel.getEditText().getText().toString()) : 1, true);
+                                mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ? 1:Integer.valueOf(mTraceLevel.getEditText().getText().toString()) , true);
 //                        id = n2NSettingModelDao.insert(mN2NSettingModel);
                         n2NSettingModelDao.update(mN2NSettingModel);
                     } else {
@@ -395,7 +450,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                                 TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIP.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) ? 25 : Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()),
                                 mResoveSupernodeIPCheckBox.isChecked(), TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) ? 0 : Integer.valueOf(mLocalPort.getEditText().getText().toString()),
-                                mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ?  1 : Integer.valueOf(mTraceLevel.getEditText().getText().toString()), false);
+                                mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), Integer.valueOf(mTraceLevelList.get(mTraceLevelSpinner.getSelectedItemPosition()))/*TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ?  1 : Integer.valueOf(mTraceLevel.getEditText().getText().toString())*/, false);
                         n2NSettingModelDao.update(mN2NSettingModel);
                     } else {
                         Log.e("0511", "定位2");
@@ -433,7 +488,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         }
     }
 
-    private void checkValues() {
+    private boolean checkValues() {
         /**
          * 基础配置判空
          *
@@ -480,7 +535,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mSettingName.setErrorEnabled(false);
             }
 
-            return;
+            return false;
         }
 
         /**
@@ -567,7 +622,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
 
             mIpAddressTIL.setError("IP Address Error!");
             mIpAddressTIL.getEditText().requestFocus();
-            return;
+            return false;
 
         } else {
             mIpAddressTIL.setErrorEnabled(false);
@@ -581,7 +636,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             mNetMaskTIL.getEditText().requestFocus();
             Log.e("zhangbzln", "定位1~1");
 
-            return;
+            return false;
 
         } else {
             Log.e("zhangbzln", "定位1~2");
@@ -595,7 +650,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         if (!EdgeCmd.checkCommunity(mCommunityTIL.getEditText().getText().toString())) {
             mCommunityTIL.setError("Community Error!");
             mCommunityTIL.getEditText().requestFocus();
-            return;
+            return false;
 
         } else {
             mCommunityTIL.setErrorEnabled(false);
@@ -607,7 +662,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         if (!EdgeCmd.checkEncKey(mEncryptTIL.getEditText().getText().toString())) {
             mEncryptTIL.setError("Password Error!");
             mEncryptTIL.getEditText().requestFocus();
-            return;
+            return false;
 
         } else {
             mEncryptTIL.setErrorEnabled(false);
@@ -619,7 +674,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         if (!EdgeCmd.checkSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
             mSuperNodeTIL.setError("Supernode Error!");
             mSuperNodeTIL.getEditText().requestFocus();
-            return;
+            return false;
 
         } else {
             mSuperNodeTIL.setErrorEnabled(false);
@@ -648,7 +703,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             if (!TextUtils.isEmpty(mSuperNodeBackup.getEditText().getText().toString()) && !EdgeCmd.checkSupernode(mSuperNodeBackup.getEditText().getText().toString())) {
                 mSuperNodeBackup.setError("Supernode Back Error!");
                 mSuperNodeBackup.getEditText().requestFocus();
-                return;
+                return false;
             } else {
                 mSuperNodeBackup.setErrorEnabled(false);
 
@@ -671,7 +726,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             if (!TextUtils.isEmpty(mMacAddr.getEditText().getText().toString()) && !EdgeCmd.checkMacAddr(mMacAddr.getEditText().getText().toString())) {
                 mMacAddr.setError("Mac Address Error!");
                 mMacAddr.getEditText().requestFocus();
-                return;
+                return false;
 
             } else {
                 mMacAddr.setErrorEnabled(false);
@@ -695,7 +750,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             if (!TextUtils.isEmpty(mMtu.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mMtu.getEditText().getText().toString()), 64, 65535)) {
                 mMtu.setError("Mtu Error!");
                 mMtu.getEditText().requestFocus();
-                return;
+                return false;
 
             } else {
                 mMtu.setErrorEnabled(false);
@@ -705,7 +760,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             if (!TextUtils.isEmpty(mLocalIP.getEditText().getText().toString()) && !EdgeCmd.checkIPV4(mLocalIP.getEditText().getText().toString())) {
                 mLocalIP.setError("Local IP Error!");
                 mLocalIP.getEditText().requestFocus();
-                return;
+                return false;
 
             } else {
                 mLocalIP.setErrorEnabled(false);
@@ -714,7 +769,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             if (!TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()), 10, 120)) {
                 mHolePunchInterval.setError("Hole Punch Interval Error!");
                 mHolePunchInterval.getEditText().requestFocus();
-                return;
+                return false;
             } else {
                 mHolePunchInterval.setErrorEnabled(false);
 
@@ -723,22 +778,22 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             if (!TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mLocalPort.getEditText().getText().toString()), 0, 65535)) {
                 mLocalPort.setError("Local Port Error!");
                 mLocalPort.getEditText().requestFocus();
-                return;
+                return false;
 
             } else {
                 mLocalPort.setErrorEnabled(false);
 
             }
 
-            if (!TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mTraceLevel.getEditText().getText().toString()), 0, 4)) {
-                mTraceLevel.setError("Trace Level Error!");
-                mTraceLevel.getEditText().requestFocus();
-                return;
-
-            } else {
-                mTraceLevel.setErrorEnabled(false);
-
-            }
+//            if (!TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mTraceLevel.getEditText().getText().toString()), 0, 4)) {
+//                mTraceLevel.setError("Trace Level Error!");
+//                mTraceLevel.getEditText().requestFocus();
+//                return false;
+//
+//            } else {
+//                mTraceLevel.setErrorEnabled(false);
+//
+//            }
 
 //                    if (!EdgeCmd.checkInt(Integer.valueOf(mVpnFd.getEditText().getText().toString()), 0, 65535)) {
 //                        mVpnFd.setError("VpnFd Error!");
@@ -750,5 +805,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
 //
 //                    }
         }
+
+        return true;
     }
+
 }
