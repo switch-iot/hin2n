@@ -2,20 +2,18 @@ package wang.switchy.an2n.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.VpnService;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import wang.switchy.an2n.An2nApplication;
-import wang.switchy.an2n.N2NService;
+import wang.switchy.an2n.service.N2NService;
 import wang.switchy.an2n.R;
 import wang.switchy.an2n.adapter.SettingItemAdapter;
 import wang.switchy.an2n.entity.SettingItemEvtity;
