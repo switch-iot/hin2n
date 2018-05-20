@@ -1,4 +1,4 @@
-package wang.switchy.an2n;
+package wang.switchy.an2n.service;
 
 import android.content.Intent;
 import android.net.VpnService;

@@ -38,7 +38,7 @@
         <activity android:name=".activity.SettingDetailsActivity"
                   android:screenOrientation="portrait"/>
 
-        <service android:name=".N2NService"
+        <service android:name=".service.N2NService"
             android:permission="android.permission.BIND_VPN_SERVICE">
             <intent-filter>
                 <action android:name="android.net.VpnService" />

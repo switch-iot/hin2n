@@ -22,7 +22,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import wang.switchy.an2n.An2nApplication;
-import wang.switchy.an2n.N2NService;
+import wang.switchy.an2n.service.N2NService;
 import wang.switchy.an2n.R;
 import wang.switchy.an2n.model.EdgeCmd;
 import wang.switchy.an2n.model.N2NSettingInfo;
@@ -30,8 +30,6 @@ import wang.switchy.an2n.storage.db.base.N2NSettingModelDao;
 import wang.switchy.an2n.storage.db.base.model.N2NSettingModel;
 import wang.switchy.an2n.template.BaseTemplate;
 import wang.switchy.an2n.template.CommonTitleTemplate;
-
-import static android.R.id.list;
 
 /**
  * Created by janiszhang on 2018/5/4.

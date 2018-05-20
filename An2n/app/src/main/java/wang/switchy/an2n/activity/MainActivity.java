@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.VpnService;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +16,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import wang.switchy.an2n.An2nApplication;
-import wang.switchy.an2n.N2NService;
+import wang.switchy.an2n.service.N2NService;
 import wang.switchy.an2n.R;
 import wang.switchy.an2n.event.ErrorEvent;
 import wang.switchy.an2n.event.StartEvent;
