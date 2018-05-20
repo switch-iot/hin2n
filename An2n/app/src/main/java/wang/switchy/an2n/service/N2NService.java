@@ -76,7 +76,15 @@ public class N2NService extends VpnService {
         Log.e("zhangbz", "route = " + route);
         b.addRoute(route, getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
 
-        mParcelFileDescriptor = b.setSession("N2N_V2S")/*.setConfigureIntent(pendingIntent)*/.establish();
+        try {
+            mParcelFileDescriptor = b.setSession("N2N_V2S")/*.setConfigureIntent(pendingIntent)*/.establish();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            Toast.makeText(INSTANCE, "~error~", Toast.LENGTH_SHORT).show();
+            return super.onStartCommand(intent, flags, startId);
+        }
 
 //        测试代码
 //        Builder b = new Builder();
