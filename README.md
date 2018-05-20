@@ -12,13 +12,8 @@ n2n是一个支持内网穿透p2p的VPN项目，最初由ntop.org大神`Luca Der
 - 该项目现处于持续开发阶段，仅支持基本的配置连接功能，后续会提供更完善的功能
 - 该项目现只支持[n2n_v2s](#关于v2s版本)协议，其他版本的n2n协议正在开发中
 
-### Hin2n最新版本
-Hin2n最新版本为[`v0.5.0`](https://github.com/switch-iot/n2n_vLTS/releases/tag/hin2n_v0.5.0)版本，该版本于2018-05-14发布，大家可在[release地址](https://github.com/switch-iot/n2n_vLTS/releases)下载体验对应APP。
-
-#### Hin2n_v0.5.0 [CHANGELOG](An2n/CHANGELOG)
-- 增加配置保存功能
-- 配置参数校验功能
-- 高级配置(完全支持命令行版本的全部参数)
+### Hin2n最新版本 [CHANGELOG](Hin2n_android/CHANGELOG)
+Hin2n最新版本可在[release地址](https://github.com/switch-iot/n2n_vLTS/releases)查看下载。
 
 ### Hin2n开发计划
 详细开发计划请见[`Projects`](https://github.com/switch-iot/n2n_vLTS/projects)。
@@ -45,9 +40,9 @@ v2s版本是N2N交流QQ群(256572040)中对meyerd大神维护的v2版本(又称v
 ### Hin2n
 - git clone https://github.com/switch-iot/n2n_vLTS.git `--recurse-submodules`
 - windows环境下需要在项目文件夹下执行`link.bat`，用于替换linux下的符号链接
-- An2n目录即是Hin2n项目安卓源码目录(由于历史原因，原来该项目名为an2n)
-- An2n目录下执行`gradlew assemble`编译
-- An2n项目的gradle是2.14.1版本，如需4.4版本的gradle，请将分支`dev_android_gradle4.4`下的文件拷贝至分支`dev_android`下，覆盖相应的文件
+- Hin2n_android目录即是Hin2n项目安卓源码目录
+- Hin2n_android目录下执行`gradlew assemble`编译
+- Hin2n_android项目的gradle是2.14.1版本，如需4.4版本的gradle，请将分支`dev_android_gradle4.4`下的文件拷贝至分支`marster`/`dev_android`下，覆盖相应的文件
 
 ### 关于开源协议
 该项目以[`GPLv3`](LICENSE)协议进行开源，与n2n原有开源协议保持一致，也希望大家支持并遵守本项目的开源协议。
