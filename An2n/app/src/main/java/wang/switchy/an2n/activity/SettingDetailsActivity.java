@@ -732,7 +732,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             }
 
 //                    if (mMtu.getEditText().getText().toString() != "") {
-//                        if (!EdgeCmd.checkInt(Integer.valueOf(mMtu.getEditText().getText().toString()), 64, 65535)) {
+//                        if (!EdgeCmd.checkInt(Integer.valueOf(mMtu.getEditText().getText().toString()), 46, 1500)) {
 //                            mMtu.setError("Mtu Error!");
 //                            mMtu.getEditText().requestFocus();
 //                            return;
@@ -745,7 +745,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
 //                        mMtu.setErrorEnabled(false);
 //
 //                    }
-            if (!TextUtils.isEmpty(mMtu.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mMtu.getEditText().getText().toString()), 64, 65535)) {
+            if (!TextUtils.isEmpty(mMtu.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mMtu.getEditText().getText().toString()), 46, 1500)) {
                 mMtu.setError("Mtu Error!");
                 mMtu.getEditText().requestFocus();
                 return false;

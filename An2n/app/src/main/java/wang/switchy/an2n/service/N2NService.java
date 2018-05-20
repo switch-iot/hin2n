@@ -63,7 +63,7 @@ public class N2NService extends VpnService {
         Log.e("zhangbz", "n2nSettingInfo = " + n2nSettingInfo.toString());
 
         Log.e("zhangbz", "mtu = " + n2nSettingInfo.getMtu());
-        b.setMtu(n2nSettingInfo.getMtu() - 14);
+        b.setMtu(n2nSettingInfo.getMtu());
 
         String ipAddress = n2nSettingInfo.getIp();
         Log.e("zhangbz", "ipAddress = " + ipAddress + "; getIpAddrPrefixLength(n2nSettingInfo.getNetmask()) = " + getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
@@ -80,7 +80,7 @@ public class N2NService extends VpnService {
 
 //        测试代码
 //        Builder b = new Builder();
-//        b.setMtu(1400 - 14);
+//        b.setMtu(1400);
 //        String ipAddress = "192.168.111.2";
 //        b.addAddress(ipAddress, 24);
 //        b.addRoute("192.168.111.0", 24);

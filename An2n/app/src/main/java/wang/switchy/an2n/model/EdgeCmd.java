@@ -50,7 +50,7 @@ public class EdgeCmd {
         if (!checkMacAddr(macAddr)) {
             invalids.add("macAddr");
         }
-        if (!checkInt(mtu, 64, 65535)) {
+        if (!checkInt(mtu, 46, 1500)) {
             invalids.add("mut");
         }
         if (localIP != null && !localIP.isEmpty() && !checkIPV4(localIP)) {
@@ -203,8 +203,8 @@ public class EdgeCmd {
         return true;
     }
 
-    public static boolean checkInt(int mtu, int min, int max) {
-        if (mtu < min || mtu > max) {
+    public static boolean checkInt(int n, int min, int max) {
+        if (n < min || n > max) {
             return false;
         }
 
