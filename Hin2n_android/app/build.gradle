@@ -98,11 +98,14 @@ android {
 
     //配置自定义打包名称
     applicationVariants.all { variant ->
-        def umeng_appkey = getEnvOrConsole("UMENG_APPKEY", "UMENG appkey")
-        if (umeng_appkey == null) {
-            umeng_appkey = ""
+        if (variant.buildType.name == "release") {
+            def umeng_appkey = getEnvOrConsole("UMENG_APPKEY", "UMENG appkey")
+            if (umeng_appkey == null) {
+                variant.println("UMENG_APPKEY is not set")
+                return
+            }
+            variant.mergedFlavor.manifestPlaceholders += [UMENG_APPKEY_VALUE: umeng_appkey]
         }
-        variant.mergedFlavor.manifestPlaceholders += [UMENG_APPKEY_VALUE: umeng_appkey]
 
         variant.outputs.each { output ->
             def outputFile = output.outputFile
