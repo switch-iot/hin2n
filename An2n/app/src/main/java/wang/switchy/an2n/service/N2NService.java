@@ -82,7 +82,7 @@ public class N2NService extends VpnService {
         } catch (Exception e) {
             e.printStackTrace();
 
-            Toast.makeText(INSTANCE, "~error~", Toast.LENGTH_SHORT).show();
+            Toast.makeText(INSTANCE, "系统错误", Toast.LENGTH_SHORT).show();
             return super.onStartCommand(intent, flags, startId);
         }
 
@@ -113,7 +113,7 @@ public class N2NService extends VpnService {
         cmd.community = n2nSettingInfo.getCommunity();
         cmd.encKey = n2nSettingInfo.getPassword();
         cmd.encKeyFile = null;
-        cmd.macAddr = getRandomMac();
+        cmd.macAddr = n2nSettingInfo.getMacAddr();//getRandomMac();
         cmd.mtu = n2nSettingInfo.getMtu();
         cmd.localIP = n2nSettingInfo.getLocalIP();
         cmd.holePunchInterval = n2nSettingInfo.getHolePunchInterval();

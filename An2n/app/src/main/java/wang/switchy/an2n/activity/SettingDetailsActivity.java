@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.SpanWatcher;
 import android.text.TextUtils;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -99,6 +100,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         mNetMaskTIL = (TextInputLayout) findViewById(R.id.til_net_mask);
         mCommunityTIL = (TextInputLayout) findViewById(R.id.til_community);
         mEncryptTIL = (TextInputLayout) findViewById(R.id.til_encrypt);
+        mEncryptTIL.getEditText().setTransformationMethod(PasswordTransformationMethod.getInstance());//隐藏
         mSuperNodeTIL = (TextInputLayout) findViewById(R.id.til_super_node);
 
         mMoreSettingView = (RelativeLayout) findViewById(R.id.rl_more_setting);
@@ -280,9 +282,17 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                     Log.e("zhangbz", "AddItemActivity 定位3");
 
                     N2NSettingModelDao n2NSettingModelDao = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
+                    String settingName = mSettingName.getEditText().getText().toString();
+                    String setingNameTmp = settingName;//原始字符串
+                    int i = 0;
+                    while (n2NSettingModelDao.queryBuilder().where(N2NSettingModelDao.Properties.Name.eq(settingName)).unique() != null) {
+                        i++;
+                        settingName = setingNameTmp + "(" + i + ")";
+
+                    }
                     long id;
                     if (mMoreSettingCheckBox.isChecked()) {
-                        mN2NSettingModel = new N2NSettingModel(null, mSettingName.getEditText().getText().toString(), mIpAddressTIL.getEditText().getText().toString(),
+                        mN2NSettingModel = new N2NSettingModel(null, settingName, mIpAddressTIL.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString(),
                                 mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
                                 mSuperNodeTIL.getEditText().getText().toString(), true, mSuperNodeBackup.getEditText().getText().toString(),
@@ -295,7 +305,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                     } else {
                         Log.e("zhangbz", "AddItemActivity 定位4");
 
-                        mN2NSettingModel = new N2NSettingModel(null, mSettingName.getEditText().getText().toString(), mIpAddressTIL.getEditText().getText().toString(),
+                        mN2NSettingModel = new N2NSettingModel(null, settingName, mIpAddressTIL.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString(),
                                 mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
                                 mSuperNodeTIL.getEditText().getText().toString(), false, "", EdgeCmd.getRandomMac(), 1400, "", 25, false, 0, false, true, 1, true);
@@ -331,11 +341,19 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 } else {
                     Log.e("0511", "定位1");
                     N2NSettingModelDao n2NSettingModelDao = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
+          String settingName = mSettingName.getEditText().getText().toString();
+                    String setingNameTmp = settingName;//原始字符串
+                    int i = 0;
+                    while (n2NSettingModelDao.queryBuilder().where(N2NSettingModelDao.Properties.Name.eq(settingName)).unique() != null) {
+                        i++;
+                        settingName = setingNameTmp + "(" + i + ")";
+
+                    }
                     Long id;
                     if (mMoreSettingCheckBox.isChecked()) {
                         Log.e("0511", "定位2");
 
-                        mN2NSettingModel = new N2NSettingModel(null, mSettingName.getEditText().getText().toString(), mIpAddressTIL.getEditText().getText().toString(),
+                        mN2NSettingModel = new N2NSettingModel(null, settingName, mIpAddressTIL.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString(),
                                 mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
                                 mSuperNodeTIL.getEditText().getText().toString(), true, mSuperNodeBackup.getEditText().getText().toString(),
@@ -348,7 +366,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                     } else {
                         Log.e("0511", "定位2");
 
-                        mN2NSettingModel = new N2NSettingModel(null, mSettingName.getEditText().getText().toString(), mIpAddressTIL.getEditText().getText().toString(),
+                        mN2NSettingModel = new N2NSettingModel(null, settingName, mIpAddressTIL.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString(),
                                 mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
                                 mSuperNodeTIL.getEditText().getText().toString(), false, "", EdgeCmd.getRandomMac(), 1400, "", 25, false, 0, false, true, 1, false);
@@ -451,7 +469,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                                 TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIP.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) ? 25 : Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()),
                                 mResoveSupernodeIPCheckBox.isChecked(), TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) ? 0 : Integer.valueOf(mLocalPort.getEditText().getText().toString()),
-                                mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), mTraceLevelSpinner.getSelectedItemPosition()/*TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ?  1 : Integer.valueOf(mTraceLevel.getEditText().getText().toString())*/, false);
+                                mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), mTraceLevelSpinner.getSelectedItemPosition()/*TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ?  1 : Integer.valueOf(mTraceLevel.getEditText().getText().toString())*/, mN2NSettingModel.getIsSelcected());
                         n2NSettingModelDao.update(mN2NSettingModel);
                     } else {
                         Log.e("0511", "定位2");
@@ -459,7 +477,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                         mN2NSettingModel = new N2NSettingModel(mSaveId, mSettingName.getEditText().getText().toString(), mIpAddressTIL.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString(),
                                 mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
-                                mSuperNodeTIL.getEditText().getText().toString(), false, "", EdgeCmd.getRandomMac(), 1400, "", 25, false, 0, false, true, 1, false);
+                                mSuperNodeTIL.getEditText().getText().toString(), false, "", EdgeCmd.getRandomMac(), 1400, "", 25, false, 0, false, true, 1, mN2NSettingModel.getIsSelcected());
 
                         n2NSettingModelDao.update(mN2NSettingModel);
                         Log.e("0511", "定位3");
