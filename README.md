@@ -12,7 +12,7 @@ n2n是一个支持内网穿透p2p的VPN项目，最初由ntop.org大神`Luca Der
 - 该项目现处于持续开发阶段，仅支持基本的配置连接功能，后续会提供更完善的功能
 - 该项目现只支持[n2n_v2s](#关于v2s版本)协议，其他版本的n2n协议正在开发中
 
-### Hin2n最新版本 [CHANGELOG](Hin2n_android/CHANGELOG)
+### Hin2n最新版本 [CHANGELOG](An2n/CHANGELOG)
 Hin2n最新版本可在[release地址](https://github.com/switch-iot/n2n_vLTS/releases)查看下载。
 
 ### Hin2n开发计划
