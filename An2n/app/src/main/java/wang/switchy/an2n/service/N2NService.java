@@ -79,11 +79,16 @@ public class N2NService extends VpnService {
         try {
             mParcelFileDescriptor = b.setSession("N2N_V2S")/*.setConfigureIntent(pendingIntent)*/.establish();
 
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
+            Toast.makeText(INSTANCE, "Parameter is not accepted by the operating system.", Toast.LENGTH_SHORT).show();
 
-            Toast.makeText(INSTANCE, "系统错误", Toast.LENGTH_SHORT).show();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            Toast.makeText(INSTANCE, "Parameter cannot be applied by the operating system.", Toast.LENGTH_SHORT).show();
+        } finally {
             return super.onStartCommand(intent, flags, startId);
+
         }
 
 //        测试代码
