@@ -80,15 +80,15 @@
                 android:id="@+id/til_encrypt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/til_community"
-                app:passwordToggleEnabled="true">
+                android:layout_below="@id/til_community">
+                <!--app:passwordToggleEnabled="true"-->
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/tie_encrypt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password"
                     android:inputType="textPassword"/>
+                <!--android:hint="Password"-->
 
             </android.support.design.widget.TextInputLayout>
 
