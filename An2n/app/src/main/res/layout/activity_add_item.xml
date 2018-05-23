@@ -87,8 +87,8 @@
                     android:id="@+id/tie_encrypt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword"/>
-                <!--android:hint="Password"-->
+                    android:hint="Password"/>
+                <!--android:inputType="textPassword"-->
 
             </android.support.design.widget.TextInputLayout>
 
