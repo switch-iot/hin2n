@@ -12,13 +12,8 @@ n2n是一个支持内网穿透p2p的VPN项目，最初由ntop.org大神`Luca Der
 - 该项目现处于持续开发阶段，仅支持基本的配置连接功能，后续会提供更完善的功能
 - 该项目现只支持[n2n_v2s](#关于v2s版本)协议，其他版本的n2n协议正在开发中
 
-### Hin2n最新版本
-Hin2n最新版本为[`v0.5.0`](https://github.com/switch-iot/n2n_vLTS/releases/tag/hin2n_v0.5.0)版本，该版本于2018-05-14发布，大家可在[release地址](https://github.com/switch-iot/n2n_vLTS/releases)下载体验对应APP。
-
-#### Hin2n_v0.5.0 [CHANGELOG](An2n/CHANGELOG)
-- 增加配置保存功能
-- 配置参数校验功能
-- 高级配置(完全支持命令行版本的全部参数)
+### Hin2n最新版本 [CHANGELOG](Hin2n_android/CHANGELOG)
+Hin2n最新版本可在[release地址](https://github.com/switch-iot/n2n_vLTS/releases)查看下载。
 
 ### Hin2n开发计划
 详细开发计划请见[`Projects`](https://github.com/switch-iot/n2n_vLTS/projects)。
