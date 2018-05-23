@@ -82,13 +82,11 @@ public class N2NService extends VpnService {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             Toast.makeText(INSTANCE, "Parameter is not accepted by the operating system.", Toast.LENGTH_SHORT).show();
-
+            return super.onStartCommand(intent, flags, startId);
         } catch (IllegalStateException e) {
             e.printStackTrace();
             Toast.makeText(INSTANCE, "Parameter cannot be applied by the operating system.", Toast.LENGTH_SHORT).show();
-        } finally {
             return super.onStartCommand(intent, flags, startId);
-
         }
 
 //        测试代码
