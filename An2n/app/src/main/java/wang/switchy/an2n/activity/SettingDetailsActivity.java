@@ -74,7 +74,6 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
     private long mSaveId;
     private ArrayList<String> mTraceLevelList;
 
-
     @Override
     protected BaseTemplate createTemplate() {
         CommonTitleTemplate titleTemplate = new CommonTitleTemplate(mContext, "Add New Setting");
@@ -196,7 +195,6 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
 
             mSaveId = intent.getLongExtra("saveId", 0);
             mN2NSettingModel = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load(mSaveId);
-
             mSettingName.getEditText().setText(mN2NSettingModel.getName());
             mIpAddressTIL.getEditText().setText(mN2NSettingModel.getIp());
             mNetMaskTIL.getEditText().setText(mN2NSettingModel.getNetmask());
@@ -407,10 +405,17 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                     String settingName = mSettingName.getEditText().getText().toString();
                     String setingNameTmp = settingName;//原始字符串
                     int i = 0;
-                    while (n2NSettingModelDao.queryBuilder().where(N2NSettingModelDao.Properties.Name.eq(settingName)).unique() != null) {
+                    N2NSettingModel n2NSettingModelTmp = n2NSettingModelDao.queryBuilder().where(N2NSettingModelDao.Properties.Name.eq(settingName)).unique();
+
+                    while (n2NSettingModelTmp != null) {
+                        if (n2NSettingModelTmp.getId() == mSaveId) {
+                            break;
+                        }
+
                         i++;
                         settingName = setingNameTmp + "(" + i + ")";
 
+                        n2NSettingModelTmp = n2NSettingModelDao.queryBuilder().where(N2NSettingModelDao.Properties.Name.eq(settingName)).unique();
                     }
 
                     long id;
@@ -469,10 +474,17 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                     String settingName = mSettingName.getEditText().getText().toString();
                     String setingNameTmp = settingName;//原始字符串
                     int i = 0;
-                    while (n2NSettingModelDao.queryBuilder().where(N2NSettingModelDao.Properties.Name.eq(settingName)).unique() != null) {
+                    N2NSettingModel n2NSettingModelTmp = n2NSettingModelDao.queryBuilder().where(N2NSettingModelDao.Properties.Name.eq(settingName)).unique();
+
+                    while (n2NSettingModelTmp != null) {
+                        if (n2NSettingModelTmp.getId() == mSaveId) {
+                            break;
+                        }
+
                         i++;
                         settingName = setingNameTmp + "(" + i + ")";
 
+                        n2NSettingModelTmp = n2NSettingModelDao.queryBuilder().where(N2NSettingModelDao.Properties.Name.eq(settingName)).unique();
                     }
                     Long id;
                     if (mMoreSettingCheckBox.isChecked()) {

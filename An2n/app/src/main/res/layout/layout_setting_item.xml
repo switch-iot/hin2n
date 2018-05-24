@@ -5,8 +5,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        >
+        android:layout_height="50dp">
 
         <ImageView
             android:layout_marginLeft="20dp"
@@ -37,6 +36,6 @@
             android:textSize="16dp"
             android:text="详情"
             android:padding="10dp"
-            />
+            android:visibility="gone"/>
     </RelativeLayout>
 </RelativeLayout>
