@@ -138,6 +138,13 @@ android {
                 manifestPlaceholders += [ARCH: "x86"]
             }
         }
+        allarch {
+            dimension "arch"
+            ndk {
+                abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+                manifestPlaceholders += [ARCH: "allarch"]
+            }
+        }
     }
 
 //    productFlavors.all {
