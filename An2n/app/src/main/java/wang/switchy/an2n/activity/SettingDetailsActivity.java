@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -629,85 +630,39 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         }
 
         /**
-         * 高级配置判空
-         */
-//                if (mMoreSettingCheckBox.isChecked()) {
-//                    if (TextUtils.isEmpty(mSuperNodeBackup.getEditText().getText())
-//                            || TextUtils.isEmpty(mMacAddr.getEditText().getText())
-//                            || TextUtils.isEmpty(mMtu.getEditText().getText())
-//                            || TextUtils.isEmpty(mLocalIP.getEditText().getText())
-//                            || TextUtils.isEmpty(mHolePunchInterval.getEditText().getText())
-//                            || TextUtils.isEmpty(mLocalPort.getEditText().getText())
-//                            || TextUtils.isEmpty(mTraceLevel.getEditText().getText())
-////                            || TextUtils.isEmpty(mVpnFd.getEditText().getText())
-//                            ) {
-//
-//                        if (TextUtils.isEmpty(mSuperNodeBackup.getEditText().getText())) {
-//                            mSuperNodeBackup.setError("Required");
-//                            mSuperNodeBackup.getEditText().requestFocus();
-//                        } else {
-//                            mSuperNodeBackup.setErrorEnabled(false);
-//                        }
-//
-//                        if (TextUtils.isEmpty(mMacAddr.getEditText().getText())) {
-//                            mMacAddr.setError("Required");
-//                            mMacAddr.getEditText().requestFocus();
-//                        } else {
-//                            mMacAddr.setErrorEnabled(false);
-//                        }
-//
-//                        if (TextUtils.isEmpty(mMtu.getEditText().getText())) {
-//                            mMtu.setError("Required");
-//                            mMtu.getEditText().requestFocus();
-//                        } else {
-//                            mMtu.setErrorEnabled(false);
-//                        }
-//
-//                        if (TextUtils.isEmpty(mLocalIP.getEditText().getText())) {
-//                            mLocalIP.setError("Required");
-//                            mLocalIP.getEditText().requestFocus();
-//                        } else {
-//                            mLocalIP.setErrorEnabled(false);
-//                        }
-//
-//                        if (TextUtils.isEmpty(mHolePunchInterval.getEditText().getText())) {
-//                            mHolePunchInterval.setError("Required");
-//                            mHolePunchInterval.getEditText().requestFocus();
-//                        } else {
-//                            mHolePunchInterval.setErrorEnabled(false);
-//                        }
-//
-//                        if (TextUtils.isEmpty(mLocalPort.getEditText().getText())) {
-//                            mLocalPort.setError("Required");
-//                            mLocalPort.getEditText().requestFocus();
-//                        } else {
-//                            mLocalPort.setErrorEnabled(false);
-//                        }
-//
-//                        if (TextUtils.isEmpty(mTraceLevel.getEditText().getText())) {
-//                            mTraceLevel.setError("Required");
-//                            mTraceLevel.getEditText().requestFocus();
-//                        } else {
-//                            mTraceLevel.setErrorEnabled(false);
-//                        }
-//
-////                        if (TextUtils.isEmpty(mVpnFd.getEditText().getText())) {
-////                            mVpnFd.setError("Required");
-////                            mVpnFd.getEditText().requestFocus();
-////                        } else {
-////                            mVpnFd.setErrorEnabled(false);
-////                        }
-//
-//                        return;
-//                    }
-//
-//                }
-
-
-        /**
          * 基础配置参数检查
          */
-        Log.e("zhangbz", "ipAddress = " + mIpAddressTIL.getEditText().getText().toString());
+
+        if (!EdgeCmd.checkSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
+            mSuperNodeTIL.setError("Supernode Error!");
+            mSuperNodeTIL.getEditText().requestFocus();
+            return false;
+
+        } else {
+            mSuperNodeTIL.setErrorEnabled(false);
+
+        }
+
+        if (!EdgeCmd.checkCommunity(mCommunityTIL.getEditText().getText().toString())) {
+            mCommunityTIL.setError("Community Error!");
+            mCommunityTIL.getEditText().requestFocus();
+            return false;
+
+        } else {
+            mCommunityTIL.setErrorEnabled(false);
+
+        }
+
+        if (!EdgeCmd.checkEncKey(mEncryptTIL.getEditText().getText().toString())) {
+            mEncryptTIL.setError("Password Error!");
+            mEncryptTIL.getEditText().requestFocus();
+            return false;
+
+        } else {
+            mEncryptTIL.setErrorEnabled(false);
+
+        }
+
         if (!EdgeCmd.checkIPV4(mIpAddressTIL.getEditText().getText().toString())) {
 
             mIpAddressTIL.setError("IP Address Error!");
@@ -717,9 +672,6 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         } else {
             mIpAddressTIL.setErrorEnabled(false);
         }
-
-        Log.e("zhangbzln", "定位1");
-//                Log.e("zhangbzln", "定位1 , " + EdgeCmd.checkIPV4Mask(TextUtils.isEmpty(mNetMaskTIL.getEditText().getText().toString()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString()));
 
         if (!EdgeCmd.checkIPV4Mask(TextUtils.isEmpty(mNetMaskTIL.getEditText().getText().toString()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString())) {
             mNetMaskTIL.setError("NetMask Error!");
@@ -735,59 +687,11 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
 
         }
 
-        Log.e("zhangbzln", "定位2");
-
-        if (!EdgeCmd.checkCommunity(mCommunityTIL.getEditText().getText().toString())) {
-            mCommunityTIL.setError("Community Error!");
-            mCommunityTIL.getEditText().requestFocus();
-            return false;
-
-        } else {
-            mCommunityTIL.setErrorEnabled(false);
-
-        }
-
-        Log.e("zhangbzln", "定位3");
-
-        if (!EdgeCmd.checkEncKey(mEncryptTIL.getEditText().getText().toString())) {
-            mEncryptTIL.setError("Password Error!");
-            mEncryptTIL.getEditText().requestFocus();
-            return false;
-
-        } else {
-            mEncryptTIL.setErrorEnabled(false);
-
-        }
-
-        Log.e("zhangbzln", "定位4");
-
-        if (!EdgeCmd.checkSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
-            mSuperNodeTIL.setError("Supernode Error!");
-            mSuperNodeTIL.getEditText().requestFocus();
-            return false;
-
-        } else {
-            mSuperNodeTIL.setErrorEnabled(false);
-
-        }
-
         /**
          * 高级配置参数检查
          */
 
         if (mMoreSettingCheckBox.isChecked()) {
-            Log.e("0511", "mSuperNodeBackup.getEditText().getText().toString() = " + mSuperNodeBackup.getEditText().getText().toString() + " " + (mSuperNodeBackup.getEditText().getText().toString() != ""));
-//                    if (mSuperNodeBackup.getEditText().getText().toString() != "") {
-//                        if (!EdgeCmd.checkSupernode(mSuperNodeBackup.getEditText().getText().toString())) {
-//                            mSuperNodeBackup.setError("Supernode Back Error!");
-//                            mSuperNodeBackup.getEditText().requestFocus();
-//                        } else {
-//                            mSuperNodeBackup.setErrorEnabled(false);
-//                        }
-//                    } else {
-//                        mSuperNodeBackup.setErrorEnabled(false);
-//
-//                    }
 
             Log.e("0511", "TextUtils.isEmpty(mSuperNodeBackup.getEditText().getText().toString()) = " + TextUtils.isEmpty(mSuperNodeBackup.getEditText().getText().toString()));
             if (!TextUtils.isEmpty(mSuperNodeBackup.getEditText().getText().toString()) && !EdgeCmd.checkSupernode(mSuperNodeBackup.getEditText().getText().toString())) {
@@ -798,6 +702,62 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mSuperNodeBackup.setErrorEnabled(false);
 
             }
+
+            //                    if (mMtu.getEditText().getText().toString() != "") {
+//                        if (!EdgeCmd.checkInt(Integer.valueOf(mMtu.getEditText().getText().toString()), 46, 1500)) {
+//                            mMtu.setError("Mtu Error!");
+//                            mMtu.getEditText().requestFocus();
+//                            return;
+//
+//                        } else {
+//                            mMtu.setErrorEnabled(false);
+//
+//                        }
+//                    } else {
+//                        mMtu.setErrorEnabled(false);
+//
+//                    }
+            if (!TextUtils.isEmpty(mMtu.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mMtu.getEditText().getText().toString()), 46, 1500)) {
+                mMtu.setError("Mtu Error!");
+                mMtu.getEditText().requestFocus();
+                return false;
+
+            } else {
+                mMtu.setErrorEnabled(false);
+
+            }
+
+            if (!TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()), 10, 120)) {
+                mHolePunchInterval.setError("Hole Punch Interval Error!");
+                mHolePunchInterval.getEditText().requestFocus();
+                return false;
+            } else {
+                mHolePunchInterval.setErrorEnabled(false);
+
+            }
+
+            if (!mLocalIpCheckBox.isChecked()) {
+                if (!TextUtils.isEmpty(mLocalIP.getEditText().getText().toString()) && !EdgeCmd.checkIPV4(mLocalIP.getEditText().getText().toString())) {
+                    mLocalIP.setError("Local IP Error!");
+                    mLocalIP.getEditText().requestFocus();
+                    return false;
+
+                } else {
+                    mLocalIP.setErrorEnabled(false);
+
+                }
+            }
+
+            if (!TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mLocalPort.getEditText().getText().toString()), 0, 65535)) {
+                mLocalPort.setError("Local Port Error!");
+                mLocalPort.getEditText().requestFocus();
+                return false;
+
+            } else {
+                mLocalPort.setErrorEnabled(false);
+
+            }
+
 
 //                    if (mMacAddr.getEditText().getText().toString()  != "") {
 //                        if (!EdgeCmd.checkMacAddr(mMacAddr.getEditText().getText().toString())) {
@@ -822,81 +782,6 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mMacAddr.setErrorEnabled(false);
 
             }
-
-//                    if (mMtu.getEditText().getText().toString() != "") {
-//                        if (!EdgeCmd.checkInt(Integer.valueOf(mMtu.getEditText().getText().toString()), 46, 1500)) {
-//                            mMtu.setError("Mtu Error!");
-//                            mMtu.getEditText().requestFocus();
-//                            return;
-//
-//                        } else {
-//                            mMtu.setErrorEnabled(false);
-//
-//                        }
-//                    } else {
-//                        mMtu.setErrorEnabled(false);
-//
-//                    }
-            if (!TextUtils.isEmpty(mMtu.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mMtu.getEditText().getText().toString()), 46, 1500)) {
-                mMtu.setError("Mtu Error!");
-                mMtu.getEditText().requestFocus();
-                return false;
-
-            } else {
-                mMtu.setErrorEnabled(false);
-
-            }
-
-            if (!mLocalIpCheckBox.isChecked()) {
-                if (!TextUtils.isEmpty(mLocalIP.getEditText().getText().toString()) && !EdgeCmd.checkIPV4(mLocalIP.getEditText().getText().toString())) {
-                    mLocalIP.setError("Local IP Error!");
-                    mLocalIP.getEditText().requestFocus();
-                    return false;
-
-                } else {
-                    mLocalIP.setErrorEnabled(false);
-
-                }
-            }
-
-            if (!TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()), 10, 120)) {
-                mHolePunchInterval.setError("Hole Punch Interval Error!");
-                mHolePunchInterval.getEditText().requestFocus();
-                return false;
-            } else {
-                mHolePunchInterval.setErrorEnabled(false);
-
-            }
-
-            if (!TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mLocalPort.getEditText().getText().toString()), 0, 65535)) {
-                mLocalPort.setError("Local Port Error!");
-                mLocalPort.getEditText().requestFocus();
-                return false;
-
-            } else {
-                mLocalPort.setErrorEnabled(false);
-
-            }
-
-//            if (!TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mTraceLevel.getEditText().getText().toString()), 0, 4)) {
-//                mTraceLevel.setError("Trace Level Error!");
-//                mTraceLevel.getEditText().requestFocus();
-//                return false;
-//
-//            } else {
-//                mTraceLevel.setErrorEnabled(false);
-//
-//            }
-
-//                    if (!EdgeCmd.checkInt(Integer.valueOf(mVpnFd.getEditText().getText().toString()), 0, 65535)) {
-//                        mVpnFd.setError("VpnFd Error!");
-//                        mVpnFd.getEditText().requestFocus();
-//                        return;
-//
-//                    } else {
-//                        mVpnFd.setErrorEnabled(false);
-//
-//                    }
         }
 
         return true;

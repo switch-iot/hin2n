@@ -5,11 +5,9 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.TextView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
@@ -22,22 +20,16 @@ import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import wang.switchy.an2n.An2nApplication;
-import wang.switchy.an2n.model.EdgeCmd;
-import wang.switchy.an2n.service.N2NService;
 import wang.switchy.an2n.R;
 import wang.switchy.an2n.adapter.SettingItemAdapter;
 import wang.switchy.an2n.entity.SettingItemEvtity;
 import wang.switchy.an2n.model.N2NSettingInfo;
+import wang.switchy.an2n.service.N2NService;
 import wang.switchy.an2n.storage.db.base.N2NSettingModelDao;
 import wang.switchy.an2n.storage.db.base.model.N2NSettingModel;
 import wang.switchy.an2n.template.BaseTemplate;
 import wang.switchy.an2n.template.CommonTitleTemplate;
 import wang.switchy.an2n.tool.N2nTools;
-
-import static android.R.attr.id;
-import static android.R.attr.name;
-import static android.R.attr.password;
-import static com.umeng.analytics.pro.j.a.p;
 
 
 /**
@@ -59,7 +51,7 @@ public class ListActivity extends BaseActivity {
     protected BaseTemplate createTemplate() {
         CommonTitleTemplate titleTemplate = new CommonTitleTemplate(mContext, "Setting List");
         titleTemplate.mRightImg.setVisibility(View.VISIBLE);
-        titleTemplate.mRightImg.setImageResource(R.mipmap.img_add);
+        titleTemplate.mRightImg.setImageResource(R.mipmap.ic_add);
         titleTemplate.mRightImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -150,31 +142,31 @@ public class ListActivity extends BaseActivity {
 
             @Override
             public void create(SwipeMenu menu) {
-                // create "open" item
-                SwipeMenuItem modifyItem = new SwipeMenuItem(
-                        getApplicationContext());
-                // set item background
-                modifyItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
-                        0xCE)));
-                // set item width
-                modifyItem.setWidth(N2nTools.dp2px(ListActivity.this, 70));
-                // set item title
-                modifyItem.setTitle("Edit");
-                // set item title fontsize
-                modifyItem.setTitleSize(18);
-                // set item title font color
-                modifyItem.setTitleColor(Color.WHITE);
-                // add to menu
-                menu.addMenuItem(modifyItem);
+//                // create "open" item
+//                SwipeMenuItem modifyItem = new SwipeMenuItem(
+//                        getApplicationContext());
+//                // set item background
+//                modifyItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
+//                        0xCE)));
+//                // set item width
+//                modifyItem.setWidth(N2nTools.dp2px(ListActivity.this, 70));
+//                // set item title
+//                modifyItem.setTitle("Edit");
+//                // set item title fontsize
+//                modifyItem.setTitleSize(18);
+//                // set item title font color
+//                modifyItem.setTitleColor(Color.WHITE);
+//                // add to menu
+//                menu.addMenuItem(modifyItem);
 
 
                 SwipeMenuItem copyItem = new SwipeMenuItem(getApplicationContext());
-                copyItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
-                        0xCE)));
+                copyItem.setBackground(new ColorDrawable(Color.rgb(0xff, 0xff,
+                        0xff)));
                 copyItem.setWidth(N2nTools.dp2px(ListActivity.this, 70));
                 copyItem.setTitle("Copy");
                 copyItem.setTitleSize(18);
-                copyItem.setTitleColor(Color.WHITE);
+                copyItem.setTitleColor(Color.GRAY);
                 menu.addMenuItem(copyItem);
 
                 // create "delete" item
@@ -211,18 +203,18 @@ public class ListActivity extends BaseActivity {
                 SettingItemEvtity settingItemEvtity = mSettingItemEvtities.get(position);
 
                 switch (index) {
+//                    case 0:
+////                        Toast.makeText(mContext, "ToDo：Modify", Toast.LENGTH_SHORT).show();
+//
+//                        settingItemEvtity = mSettingItemEvtities.get(position);
+//                        Intent intent = new Intent(ListActivity.this, SettingDetailsActivity.class);
+//                        intent.putExtra("type", SettingDetailsActivity.TYPE_SETTING_MODIFY);
+//                        intent.putExtra("saveId", settingItemEvtity.getSaveId());
+//
+//                        startActivity(intent);
+//                        break;
+
                     case 0:
-//                        Toast.makeText(mContext, "ToDo：Modify", Toast.LENGTH_SHORT).show();
-
-                        settingItemEvtity = mSettingItemEvtities.get(position);
-                        Intent intent = new Intent(ListActivity.this, SettingDetailsActivity.class);
-                        intent.putExtra("type", SettingDetailsActivity.TYPE_SETTING_MODIFY);
-                        intent.putExtra("saveId", settingItemEvtity.getSaveId());
-
-                        startActivity(intent);
-                        break;
-
-                    case 1:
 //                        Toast.makeText(mContext, "ToDo：Copy", Toast.LENGTH_SHORT).show();
 
                         N2NSettingModelDao n2NSettingModelDao1 = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
@@ -257,7 +249,7 @@ public class ListActivity extends BaseActivity {
 
                         break;
 
-                    case 2:
+                    case 1:
 //                        Toast.makeText(mContext, "ToDo：Delete", Toast.LENGTH_SHORT).show();
 
                         final SettingItemEvtity finalSettingItemEvtity = settingItemEvtity;
@@ -286,7 +278,6 @@ public class ListActivity extends BaseActivity {
                                     }
                                 })
                                 .show();
-
 
 
                         break;
@@ -329,15 +320,15 @@ public class ListActivity extends BaseActivity {
 
                 @Override
                 public void onClick(int positon) {
-//                    // TODO: 2018/5/10
-//                    Log.e("zhangbz", "settingItemEvtity onClick~");
-//
-//                    Intent intent = new Intent(ListActivity.this, SettingDetailsActivity.class);
-//                    intent.putExtra("type", SettingDetail.TYPE_SETTING_MODIFY);
-//                    intent.putExtra("saveId", settingItemEvtity.getSaveId());
-//
-//                    startActivity(intent);
-                   mSettingsListView.smoothOpenMenu(positon);
+
+//                    mSettingsListView.smoothOpenMenu(positon);
+
+                    Intent intent = new Intent(ListActivity.this, SettingDetailsActivity.class);
+                    intent.putExtra("type", SettingDetailsActivity.TYPE_SETTING_MODIFY);
+                    intent.putExtra("saveId", settingItemEvtity.getSaveId());
+
+                    startActivity(intent);
+
                 }
             });
             mSettingItemEvtities.add(settingItemEvtity);

@@ -25,6 +25,14 @@ public class An2nApplication extends MultiDexApplication {
     private DaoMaster mDaoMaster;
     private DaoSession mDaoSession;
 
+    static {
+        System.loadLibrary("slog");
+        System.loadLibrary("uip");
+        System.loadLibrary("n2n_v2s");
+        System.loadLibrary("edge_v2s");
+
+    }
+
     //静态单例
     public static An2nApplication instance;
 
@@ -37,16 +45,9 @@ public class An2nApplication extends MultiDexApplication {
 
         setDatabase();
 
-//        UMConfigure.init(this, "5ad8aba3a40fa373830002f5", "Umeng", UMConfigure.DEVICE_TYPE_PHONE, null);
-
-        // TODO: 2018/5/10 不知道问什么有问题了。。
         UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, null);
         MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL);
 
-//        MobclickAgent.setSecret(this, );
-
-
-//        startService(new Intent(this, N2NService.class));
     }
 
     public static An2nApplication getInstance(){

@@ -5,7 +5,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="70dp">
 
         <ImageView
             android:layout_marginLeft="20dp"
@@ -33,7 +33,7 @@
             android:id="@+id/iv_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/img_info"/>
+            android:src="@mipmap/ic_info"/>
 
     </RelativeLayout>
 </RelativeLayout>
