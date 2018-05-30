@@ -20,6 +20,7 @@ import com.baoyz.swipemenulistview.SwipeMenuListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import wang.switchy.an2n.An2nApplication;
 import wang.switchy.an2n.model.EdgeCmd;
 import wang.switchy.an2n.service.N2NService;
@@ -36,6 +37,7 @@ import wang.switchy.an2n.tool.N2nTools;
 import static android.R.attr.id;
 import static android.R.attr.name;
 import static android.R.attr.password;
+import static com.umeng.analytics.pro.j.a.p;
 
 
 /**
@@ -157,13 +159,23 @@ public class ListActivity extends BaseActivity {
                 // set item width
                 modifyItem.setWidth(N2nTools.dp2px(ListActivity.this, 70));
                 // set item title
-                modifyItem.setTitle("Modify");
+                modifyItem.setTitle("Edit");
                 // set item title fontsize
                 modifyItem.setTitleSize(18);
                 // set item title font color
                 modifyItem.setTitleColor(Color.WHITE);
                 // add to menu
                 menu.addMenuItem(modifyItem);
+
+
+                SwipeMenuItem copyItem = new SwipeMenuItem(getApplicationContext());
+                copyItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
+                        0xCE)));
+                copyItem.setWidth(N2nTools.dp2px(ListActivity.this, 70));
+                copyItem.setTitle("Copy");
+                copyItem.setTitleSize(18);
+                copyItem.setTitleColor(Color.WHITE);
+                menu.addMenuItem(copyItem);
 
                 // create "delete" item
                 SwipeMenuItem deleteItem = new SwipeMenuItem(
@@ -180,17 +192,6 @@ public class ListActivity extends BaseActivity {
                 deleteItem.setTitleColor(Color.WHITE);
                 // add to menu
                 menu.addMenuItem(deleteItem);
-
-
-                SwipeMenuItem copyItem = new SwipeMenuItem(getApplicationContext());
-                copyItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
-                        0xCE)));
-                copyItem.setWidth(N2nTools.dp2px(ListActivity.this, 70));
-                copyItem.setTitle("Copy");
-                copyItem.setTitleSize(18);
-                copyItem.setTitleColor(Color.WHITE);
-                menu.addMenuItem(copyItem);
-
 
             }
         };
@@ -222,17 +223,6 @@ public class ListActivity extends BaseActivity {
                         break;
 
                     case 1:
-//                        Toast.makeText(mContext, "ToDo：Delete", Toast.LENGTH_SHORT).show();
-
-                        N2NSettingModelDao n2NSettingModelDao = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
-                        n2NSettingModelDao.deleteByKey(settingItemEvtity.getSaveId());
-
-                        mSettingItemEvtities.remove(settingItemEvtity);
-                        mSettingItemAdapter.notifyDataSetChanged();
-
-                        break;
-
-                    case 2:
 //                        Toast.makeText(mContext, "ToDo：Copy", Toast.LENGTH_SHORT).show();
 
                         N2NSettingModelDao n2NSettingModelDao1 = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
@@ -267,6 +257,39 @@ public class ListActivity extends BaseActivity {
 
                         break;
 
+                    case 2:
+//                        Toast.makeText(mContext, "ToDo：Delete", Toast.LENGTH_SHORT).show();
+
+                        final SettingItemEvtity finalSettingItemEvtity = settingItemEvtity;
+                        new SweetAlertDialog(ListActivity.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Are you sure?")
+//                                .setContentText("Won't be able to recover this file!")
+                                .setCancelText("No,cancel plx!")
+                                .setConfirmText("Yes,delete it!")
+                                .showCancelButton(true)
+                                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sDialog) {
+                                        sDialog.cancel();
+                                    }
+                                })
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        N2NSettingModelDao n2NSettingModelDao = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
+                                        n2NSettingModelDao.deleteByKey(finalSettingItemEvtity.getSaveId());
+
+                                        mSettingItemEvtities.remove(finalSettingItemEvtity);
+                                        mSettingItemAdapter.notifyDataSetChanged();
+
+                                        sweetAlertDialog.cancel();
+                                    }
+                                })
+                                .show();
+
+
+
+                        break;
                     default:
 
                         break;
@@ -275,6 +298,8 @@ public class ListActivity extends BaseActivity {
                 return false;
             }
         });
+
+//        mSettingsListView.smoothOpenMenu();
         /*****************侧滑菜单 end********************/
 
         mSettingsListView.setAdapter(mSettingItemAdapter);
@@ -300,19 +325,21 @@ public class ListActivity extends BaseActivity {
 
 //            final SettingItemEvtity finalSettingItemEvtity = settingItemEvtity;
 
-//            settingItemEvtity.setOnMoreBtnClickListener(new SettingItemEvtity.OnMoreBtnClickListener() {
-//                @Override
-//                public void onClick() {
+            settingItemEvtity.setOnMoreBtnClickListener(new SettingItemEvtity.OnMoreBtnClickListener() {
+
+                @Override
+                public void onClick(int positon) {
 //                    // TODO: 2018/5/10
 //                    Log.e("zhangbz", "settingItemEvtity onClick~");
 //
 //                    Intent intent = new Intent(ListActivity.this, SettingDetailsActivity.class);
-//                    intent.putExtra("type", SettingDetailsActivity.TYPE_SETTING_MODIFY);
+//                    intent.putExtra("type", SettingDetail.TYPE_SETTING_MODIFY);
 //                    intent.putExtra("saveId", settingItemEvtity.getSaveId());
 //
 //                    startActivity(intent);
-//                }
-//            });
+                   mSettingsListView.smoothOpenMenu(positon);
+                }
+            });
             mSettingItemEvtities.add(settingItemEvtity);
         }
 

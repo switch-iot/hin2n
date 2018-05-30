@@ -26,16 +26,14 @@
             android:textSize="16dp"
             android:text="SettingName"/>
 
-        <TextView
+        <ImageView
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
             android:layout_alignParentRight="true"
-            android:id="@+id/tv_more"
+            android:id="@+id/iv_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16dp"
-            android:text="详情"
-            android:padding="10dp"
-            android:visibility="gone"/>
+            android:src="@mipmap/img_info"/>
+
     </RelativeLayout>
 </RelativeLayout>

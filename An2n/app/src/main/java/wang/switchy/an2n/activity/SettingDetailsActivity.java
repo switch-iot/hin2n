@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import wang.switchy.an2n.An2nApplication;
 import wang.switchy.an2n.service.N2NService;
 import wang.switchy.an2n.R;
@@ -62,7 +63,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
     private TextInputLayout mLocalPort;
     private CheckBox mAllowRoutinCheckBox;
     private CheckBox mDropMuticastCheckBox;
-//    private TextInputLayout mTraceLevel;
+    //    private TextInputLayout mTraceLevel;
     private Spinner mTraceLevelSpinner;
     //    private TextInputLayout mVpnFd;
     private CheckBox mMoreSettingCheckBox;
@@ -73,6 +74,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
     private Button mDeleteBtn;
     private long mSaveId;
     private ArrayList<String> mTraceLevelList;
+    private CheckBox mLocalIpCheckBox;
 
     @Override
     protected BaseTemplate createTemplate() {
@@ -120,6 +122,18 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         mMacAddr = (TextInputLayout) findViewById(R.id.til_mac_addr);
         mMtu = (TextInputLayout) findViewById(R.id.til_mtu);
         mLocalIP = (TextInputLayout) findViewById(R.id.til_local_ip);
+        mLocalIpCheckBox = (CheckBox) findViewById(R.id.check_box_local_ip);
+        mLocalIpCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    mLocalIP.getEditText().setText("");
+                    mLocalIP.setEnabled(false);
+                } else {
+                    mLocalIP.setEnabled(true);
+                }
+            }
+        });
         mHolePunchInterval = (TextInputLayout) findViewById(R.id.til_hole_punch_Interval);
         mResoveSupernodeIPCheckBox = (CheckBox) findViewById(R.id.resove_super_node_ip_check_box);
         mLocalPort = (TextInputLayout) findViewById(R.id.til_local_port);
@@ -137,7 +151,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         mTraceLevelList.add("INFO");
         mTraceLevelList.add("DEBUG");
 
-        final ArrayAdapter<String> traceLevelAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mTraceLevelList);
+        final ArrayAdapter<String> traceLevelAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mTraceLevelList);
         traceLevelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         mTraceLevelSpinner.setAdapter(traceLevelAdapter);
@@ -174,8 +188,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         mButtons = (LinearLayout) findViewById(R.id.ll_buttons);
         mModifyBtn = (Button) findViewById(R.id.btn_modify);
         mModifyBtn.setOnClickListener(this);
-        mDeleteBtn = (Button) findViewById(R.id.btn_delete);
-        mDeleteBtn.setOnClickListener(this);
+//        mDeleteBtn = (Button) findViewById(R.id.btn_delete);
+//        mDeleteBtn.setOnClickListener(this);
 
         Intent intent = getIntent();
         type = intent.getIntExtra("type", 0);
@@ -191,7 +205,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             mSaveBtn.setVisibility(View.VISIBLE);
             mButtons.setVisibility(View.GONE);
         } else if (type == TYPE_SETTING_MODIFY) {
-            // TODO: 2018/5/11 从数据库读取存储
+            // 从数据库读取存储
 
             mSaveId = intent.getLongExtra("saveId", 0);
             mN2NSettingModel = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load(mSaveId);
@@ -205,7 +219,16 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             mSuperNodeBackup.getEditText().setText(mN2NSettingModel.getSuperNodeBackup());
             mMacAddr.getEditText().setText(mN2NSettingModel.getMacAddr());
             mMtu.getEditText().setText(String.valueOf(mN2NSettingModel.getMtu()));
-            mLocalIP.getEditText().setText(mN2NSettingModel.getLocalIP());
+            /**
+             * todo local Ip : auto
+             */
+            if (mN2NSettingModel.getLocalIP().equals("auto")) {
+                mLocalIP.setEnabled(false);
+                mLocalIpCheckBox.setChecked(true);
+            } else {
+                mLocalIP.getEditText().setText(mN2NSettingModel.getLocalIP());
+                mLocalIpCheckBox.setChecked(false);
+            }
             mHolePunchInterval.getEditText().setText(String.valueOf(mN2NSettingModel.getHolePunchInterval()));
             mResoveSupernodeIPCheckBox.setChecked(mN2NSettingModel.getResoveSupernodeIP());
             mLocalPort.getEditText().setText(String.valueOf(mN2NSettingModel.getLocalPort()));
@@ -295,7 +318,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                                 mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
                                 mSuperNodeTIL.getEditText().getText().toString(), true, mSuperNodeBackup.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mMacAddr.getEditText().getText().toString()) ? EdgeCmd.getRandomMac() : mMacAddr.getEditText().getText().toString(),
-                                TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()) , mLocalIP.getEditText().getText().toString(),
+                                TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIpCheckBox.isChecked() ? "auto" : mLocalIP.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) ? 25 : Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()),
                                 mResoveSupernodeIPCheckBox.isChecked(), TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) ? 0 : Integer.valueOf(mLocalPort.getEditText().getText().toString()),
                                 mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), mTraceLevelSpinner.getSelectedItemPosition()/*TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ? 1:Integer.valueOf(mTraceLevel.getEditText().getText().toString())*/, true);
@@ -339,7 +362,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 } else {
                     Log.e("0511", "定位1");
                     N2NSettingModelDao n2NSettingModelDao = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
-          String settingName = mSettingName.getEditText().getText().toString();
+                    String settingName = mSettingName.getEditText().getText().toString();
                     String setingNameTmp = settingName;//原始字符串
                     int i = 0;
                     while (n2NSettingModelDao.queryBuilder().where(N2NSettingModelDao.Properties.Name.eq(settingName)).unique() != null) {
@@ -356,7 +379,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                                 mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
                                 mSuperNodeTIL.getEditText().getText().toString(), true, mSuperNodeBackup.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mMacAddr.getEditText().getText().toString()) ? EdgeCmd.getRandomMac() : mMacAddr.getEditText().getText().toString(),
-                                TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIP.getEditText().getText().toString(),
+                                TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIpCheckBox.isChecked() ? "auto" : mLocalIP.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) ? 25 : Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()),
                                 mResoveSupernodeIPCheckBox.isChecked(), TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) ? 0 : Integer.valueOf(mLocalPort.getEditText().getText().toString()),
                                 mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), mTraceLevelSpinner.getSelectedItemPosition()/*TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ?  1:Integer.valueOf(mTraceLevel.getEditText().getText().toString())*/, false);
@@ -376,8 +399,18 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
 
                 }
 
-                Toast.makeText(mContext, "Add Succeed", Toast.LENGTH_SHORT).show();
-                finish();
+                new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText("Add Succeed!")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                finish();
+                            }
+                        })
+                        .show();
+
+//                Toast.makeText(mContext, "Add Succeed", Toast.LENGTH_SHORT).show();
+
                 break;
 
             case R.id.btn_modify:
@@ -425,10 +458,10 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                                 mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
                                 mSuperNodeTIL.getEditText().getText().toString(), true, mSuperNodeBackup.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mMacAddr.getEditText().getText().toString()) ? EdgeCmd.getRandomMac() : mMacAddr.getEditText().getText().toString(),
-                                TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()) , mLocalIP.getEditText().getText().toString(),
+                                TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIpCheckBox.isChecked() ? "auto" : mLocalIP.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) ? 25 : Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()),
                                 mResoveSupernodeIPCheckBox.isChecked(), TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) ? 0 : Integer.valueOf(mLocalPort.getEditText().getText().toString()),
-                                mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), mTraceLevelSpinner.getSelectedItemPosition() , true);
+                                mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), mTraceLevelSpinner.getSelectedItemPosition(), true);
 //                        id = n2NSettingModelDao.insert(mN2NSettingModel);
                         n2NSettingModelDao.update(mN2NSettingModel);
                     } else {
@@ -495,7 +528,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                                 mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
                                 mSuperNodeTIL.getEditText().getText().toString(), true, mSuperNodeBackup.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mMacAddr.getEditText().getText().toString()) ? EdgeCmd.getRandomMac() : mMacAddr.getEditText().getText().toString(),
-                                TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIP.getEditText().getText().toString(),
+                                TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIpCheckBox.isChecked() ? "auto" : mLocalIP.getEditText().getText().toString(),
                                 TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) ? 25 : Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()),
                                 mResoveSupernodeIPCheckBox.isChecked(), TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) ? 0 : Integer.valueOf(mLocalPort.getEditText().getText().toString()),
                                 mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), mTraceLevelSpinner.getSelectedItemPosition()/*TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ?  1 : Integer.valueOf(mTraceLevel.getEditText().getText().toString())*/, mN2NSettingModel.getIsSelcected());
@@ -515,21 +548,30 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
 
                 }
 
-                Toast.makeText(mContext, "Update Succeed", Toast.LENGTH_SHORT).show();
-
-                finish();
+                new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText("Save Succeed!")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                finish();
+                            }
+                        })
+                        .show();
+//                Toast.makeText(mContext, "Update Succeed", Toast.LENGTH_SHORT).show();
+//
+//                finish();
 
                 break;
 
-            case R.id.btn_delete:
-                N2NSettingModelDao n2NSettingModelDao = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
-                n2NSettingModelDao.deleteByKey(mSaveId);
-
-                Toast.makeText(mContext, "Delete Succeed", Toast.LENGTH_SHORT).show();
-
-                finish();
-
-                break;
+//            case R.id.btn_delete:
+//                N2NSettingModelDao n2NSettingModelDao = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
+//                n2NSettingModelDao.deleteByKey(mSaveId);
+//
+//                Toast.makeText(mContext, "Delete Succeed", Toast.LENGTH_SHORT).show();
+//
+//                finish();
+//
+//                break;
             default:
 
                 break;
@@ -805,15 +847,18 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
 
             }
 
-            if (!TextUtils.isEmpty(mLocalIP.getEditText().getText().toString()) && !EdgeCmd.checkIPV4(mLocalIP.getEditText().getText().toString())) {
-                mLocalIP.setError("Local IP Error!");
-                mLocalIP.getEditText().requestFocus();
-                return false;
+            if (!mLocalIpCheckBox.isChecked()) {
+                if (!TextUtils.isEmpty(mLocalIP.getEditText().getText().toString()) && !EdgeCmd.checkIPV4(mLocalIP.getEditText().getText().toString())) {
+                    mLocalIP.setError("Local IP Error!");
+                    mLocalIP.getEditText().requestFocus();
+                    return false;
 
-            } else {
-                mLocalIP.setErrorEnabled(false);
+                } else {
+                    mLocalIP.setErrorEnabled(false);
 
+                }
             }
+
             if (!TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()), 10, 120)) {
                 mHolePunchInterval.setError("Hole Punch Interval Error!");
                 mHolePunchInterval.getEditText().requestFocus();

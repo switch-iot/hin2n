@@ -1,6 +1,7 @@
 package wang.switchy.an2n.adapter;
 
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +49,7 @@ public class SettingItemAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         final SettingItemEvtity settingItemEvtity = mSettingItemEvtities.get(position);
         if (convertView == null) {
@@ -56,7 +57,7 @@ public class SettingItemAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.settingName = (TextView) convertView.findViewById(R.id.tv_setting_name);
             viewHolder.imgIsSelected = (ImageView) convertView.findViewById(R.id.iv_selected);
-            viewHolder.moreInfo = (TextView) convertView.findViewById(R.id.tv_more);
+            viewHolder.moreInfo = (ImageView) convertView.findViewById(R.id.iv_info);
 
             convertView.setTag(viewHolder);
 
@@ -75,7 +76,7 @@ public class SettingItemAdapter extends BaseAdapter {
         viewHolder.moreInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                settingItemEvtity.mOnMoreBtnClickListener.onClick();
+                settingItemEvtity.mOnMoreBtnClickListener.onClick(position);
             }
         });
         return convertView;
@@ -85,6 +86,6 @@ public class SettingItemAdapter extends BaseAdapter {
     class ViewHolder {
         TextView settingName;
         ImageView imgIsSelected;
-        TextView moreInfo;
+        ImageView moreInfo;
     }
 }

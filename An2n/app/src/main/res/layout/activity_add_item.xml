@@ -188,12 +188,40 @@
 
                 </android.support.design.widget.TextInputLayout>
 
+                <!--<RelativeLayout-->
+                    <!--android:id="@+id/ll_local_ip"-->
+                    <!--android:layout_below="@id/til_mtu"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="vertical">-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_local_ip"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="Local IP"/>-->
+
+                    <!--<CheckBox-->
+                        <!--android:layout_below="@id/tv_local_ip"-->
+                        <!--android:id="@+id/check_box_local_ip"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="AUTO"/>-->
+
+                    <!--<EditText-->
+                        <!--android:layout_toRightOf="@id/check_box_local_ip"-->
+                        <!--android:layout_below="@id/tv_local_ip"-->
+                        <!--android:id="@+id/et_local_ip"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"/>-->
+
+                <!--</RelativeLayout>-->
+
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/til_local_ip"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/til_mtu">
-
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/tie_local_ip"
                         android:layout_width="match_parent"
@@ -202,11 +230,18 @@
 
                 </android.support.design.widget.TextInputLayout>
 
+                <CheckBox
+                    android:layout_below="@id/til_local_ip"
+                    android:id="@+id/check_box_local_ip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="AUTO"/>
+                <!--android:layout_below="@id/til_local_ip"-->
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/til_hole_punch_Interval"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/til_local_ip">
+                    android:layout_below="@id/check_box_local_ip">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/tie_hole_punch_interval"
@@ -354,22 +389,20 @@
 
                 <LinearLayout
                     android:id="@+id/ll_buttons"
-                    android:weightSum="1"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <Button
-                        android:layout_weight="0.5"
                         android:id="@+id/btn_modify"
-                        android:text="modify"
-                        android:layout_width="wrap_content"
+                        android:text="save"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
-                    <Button
-                        android:layout_weight="0.5"
-                        android:id="@+id/btn_delete"
-                        android:text="delete"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                    <!--<Button-->
+                        <!--android:layout_weight="0.5"-->
+                        <!--android:id="@+id/btn_delete"-->
+                        <!--android:text="delete"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"/>-->
                 </LinearLayout>
             </RelativeLayout>
 

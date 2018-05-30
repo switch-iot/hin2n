@@ -48,6 +48,6 @@ public class SettingItemEvtity {
     }
 
     public interface OnMoreBtnClickListener {
-        void onClick();
+        void onClick(int positon);
     }
 }
