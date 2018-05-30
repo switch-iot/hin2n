@@ -27,14 +27,14 @@ endif(CMAKE_BUILD_TYPE)
 
 
 add_definitions(-DN2N_VERSION=\"${N2N_VERSION}\" -DN2N_OSNAME=\"${N2N_OSNAME}\" -DN2N_MODIFY_VERSION=\"${N2N_MODIFY_VERSION}\" -DN2N_MODIFY_AUTHOR=\"${N2N_MODIFY_AUTHOR}\" -DUIP_CONF_BYTE_ORDER=\"${UIP_CONF_BYTE_ORDER}\")
-include_directories(src/main/cpp src/main/cpp/tun2tap src/main/cpp/uip)
+include_directories(src/main/cpp src/main/cpp/edge_jni src/main/cpp/slog src/main/cpp/tun2tap src/main/cpp/uip)
 
-add_library(edge_v2s SHARED
-                src/main/cpp/n2n_v2s/android/edge_jni.c
+add_library(edge SHARED
+                src/main/cpp/edge_jni/edge_jni.c
                 src/main/cpp/n2n_v2s/edge.c
             )
-target_link_libraries(edge_v2s n2n_v2s)
-target_link_libraries(edge_v2s slog)
+target_link_libraries(edge n2n_v2s)
+target_link_libraries(edge slog)
 
 add_library(n2n_v2s SHARED
                 src/main/cpp/n2n_v2s/n2n.c
