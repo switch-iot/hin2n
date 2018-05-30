@@ -185,4 +185,6 @@ dependencies {
 //    compile 'org.greenrobot:greendao-generator:3.2.2'
 
     compile 'com.baoyz.swipemenulistview:library:1.3.0'
+
+    compile 'cn.pedant.sweetalert:library:1.3'
 }
