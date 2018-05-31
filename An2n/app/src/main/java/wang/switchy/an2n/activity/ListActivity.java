@@ -4,16 +4,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.VpnService;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +28,10 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import wang.switchy.an2n.An2nApplication;
 import wang.switchy.an2n.R;
 import wang.switchy.an2n.adapter.SettingItemAdapter;
-import wang.switchy.an2n.entity.SettingItemEvtity;
+import wang.switchy.an2n.entity.SettingItemEntity;
+import wang.switchy.an2n.event.ErrorEvent;
+import wang.switchy.an2n.event.StartEvent;
+import wang.switchy.an2n.event.StopEvent;
 import wang.switchy.an2n.model.N2NSettingInfo;
 import wang.switchy.an2n.service.N2NService;
 import wang.switchy.an2n.storage.db.base.N2NSettingModelDao;
@@ -40,12 +49,13 @@ public class ListActivity extends BaseActivity {
 
     private SwipeMenuListView mSettingsListView;
     private SettingItemAdapter mSettingItemAdapter;
-    private ArrayList<SettingItemEvtity> mSettingItemEvtities;
+    private ArrayList<SettingItemEntity> mSettingItemEntities;
 
     private SharedPreferences mAn2nSp;
     private SharedPreferences.Editor mAn2nEdit;
-    private TextView mMoreInfo;
     private N2NSettingModel mN2NSettingModel;
+    private SweetAlertDialog mSweetAlertDialog;
+    private int mTargetSettingPosition;
 
     @Override
     protected BaseTemplate createTemplate() {
@@ -77,63 +87,114 @@ public class ListActivity extends BaseActivity {
     @Override
     protected void doOnCreate(Bundle savedInstanceState) {
 
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+
         mAn2nSp = getSharedPreferences("An2n", MODE_PRIVATE);
         mAn2nEdit = mAn2nSp.edit();
 
         mSettingsListView = (SwipeMenuListView) findViewById(R.id.lv_setting_item);
 
-        mSettingItemEvtities = new ArrayList<>();
+        mSettingItemEntities = new ArrayList<>();
 
-        mSettingItemAdapter = new SettingItemAdapter(this, mSettingItemEvtities);
+        mSettingItemAdapter = new SettingItemAdapter(this, mSettingItemEntities);
 
         mSettingsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
 
-//                Toast.makeText(mContext, "mSettingsListView onItemClick", Toast.LENGTH_SHORT).show();
+                final Long currentSettingId = mAn2nSp.getLong("current_setting_id", -1);
 
-                Long currentSettingId = mAn2nSp.getLong("current_setting_id", -1);
+                SettingItemEntity settingItemEntity = mSettingItemEntities.get(position);
+                Long saveId = settingItemEntity.getSaveId();
 
-                if (currentSettingId != -1) {
-                    N2NSettingModel currentSettingItem = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load((long) currentSettingId);
-                    if (currentSettingItem != null) {
-                        currentSettingItem.setIsSelcected(false);
-                        An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().update(currentSettingItem);
+                if (currentSettingId.equals(saveId)) {
+                    return;
+                }
+
+                if (N2NService.INSTANCE != null && N2NService.INSTANCE.getEdgeStatus().isRunning) {
+                    mSweetAlertDialog = new SweetAlertDialog(ListActivity.this, SweetAlertDialog.WARNING_TYPE);
+                    mSweetAlertDialog
+                            .setTitleText("Change the setting ?")
+//                                .setContentText("Won't be able to recover this file!")
+                            .setCancelText("No")
+                            .setConfirmText("Yes")
+                            .showCancelButton(true)
+                            .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    sDialog.cancel();
+                                }
+                            })
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    N2NService.INSTANCE.stop();
+
+                                    Intent vpnPrepareIntent = VpnService.prepare(ListActivity.this);
+
+                                    if (vpnPrepareIntent != null) {
+                                        startActivityForResult(vpnPrepareIntent, 100);
+                                    } else {
+                                        onActivityResult(100, -1, null);
+
+                                    }
+
+                                    mTargetSettingPosition = position;
+
+                                    if (currentSettingId != -1) {
+                                        N2NSettingModel currentSettingItem = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load((long) currentSettingId);
+                                        if (currentSettingItem != null) {
+                                            currentSettingItem.setIsSelcected(false);
+                                            An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().update(currentSettingItem);
+                                        }
+                                    }
+
+                                    for (int i = 0; i < mSettingItemEntities.size(); i++) {
+                                        mSettingItemEntities.get(i).setSelected(false);
+                                    }
+
+                                    N2NSettingModelDao n2NSettingModelDao = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
+                                    mN2NSettingModel = n2NSettingModelDao.load(mSettingItemEntities.get(position).getSaveId());
+                                    mN2NSettingModel.setIsSelcected(true);
+
+                                    n2NSettingModelDao.update(mN2NSettingModel);
+
+                                    mAn2nEdit.putLong("current_setting_id", mN2NSettingModel.getId());
+                                    mAn2nEdit.commit();
+                                    mSettingItemEntities.get(position).setSelected(true);
+                                    mSettingItemAdapter.notifyDataSetChanged();
+
+                                    sweetAlertDialog.cancel();
+                                }
+                            })
+                            .show();
+                }else {
+                    if (currentSettingId != -1) {
+                        N2NSettingModel currentSettingItem = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load((long) currentSettingId);
+                        if (currentSettingItem != null) {
+                            currentSettingItem.setIsSelcected(false);
+                            An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().update(currentSettingItem);
+                        }
                     }
+
+                    for (int i = 0; i < mSettingItemEntities.size(); i++) {
+                        mSettingItemEntities.get(i).setSelected(false);
+                    }
+
+                    N2NSettingModelDao n2NSettingModelDao = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
+                    mN2NSettingModel = n2NSettingModelDao.load(mSettingItemEntities.get(position).getSaveId());
+                    mN2NSettingModel.setIsSelcected(true);
+
+                    n2NSettingModelDao.update(mN2NSettingModel);
+
+                    mAn2nEdit.putLong("current_setting_id", mN2NSettingModel.getId());
+                    mAn2nEdit.commit();
+                    mSettingItemEntities.get(position).setSelected(true);
+                    mSettingItemAdapter.notifyDataSetChanged();
                 }
 
-                for (int i = 0; i < mSettingItemEvtities.size(); i++) {
-                    mSettingItemEvtities.get(i).setSelected(false);
-                }
-
-                mSettingItemAdapter.notifyDataSetChanged();
-
-
-                N2NSettingModelDao n2NSettingModelDao = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
-                mN2NSettingModel = n2NSettingModelDao.load(mSettingItemEvtities.get(position).getSaveId());
-                mN2NSettingModel.setIsSelcected(true);
-
-                n2NSettingModelDao.update(mN2NSettingModel);
-
-                mAn2nEdit.putLong("current_setting_id", mN2NSettingModel.getId());
-                mAn2nEdit.commit();
-                mSettingItemEvtities.get(position).setSelected(true);
-                mSettingItemAdapter.notifyDataSetChanged();
-
-//                if (N2NService.INSTANCE != null && N2NService.INSTANCE.getEdgeStatus().isRunning) {
-//                    Log.e("zhangbz", "~定位~1");
-//                    N2NService.INSTANCE.stop();
-//                }
-//
-//                Intent vpnPrepareIntent = VpnService.prepare(ListActivity.this);
-//                if (vpnPrepareIntent != null) {
-//                    Log.e("zhangbz", "doOnCreate vpnPrepareIntent != null");
-//                    startActivityForResult(vpnPrepareIntent, 100);
-//                } else {
-//                    Log.e("zhangbz", "doOnCreate vpnPrepareIntent == null");
-//                    onActivityResult(100, -1, null);
-//
-//                }
             }
         });
 
@@ -142,31 +203,14 @@ public class ListActivity extends BaseActivity {
 
             @Override
             public void create(SwipeMenu menu) {
-//                // create "open" item
-//                SwipeMenuItem modifyItem = new SwipeMenuItem(
-//                        getApplicationContext());
-//                // set item background
-//                modifyItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
-//                        0xCE)));
-//                // set item width
-//                modifyItem.setWidth(N2nTools.dp2px(ListActivity.this, 70));
-//                // set item title
-//                modifyItem.setTitle("Edit");
-//                // set item title fontsize
-//                modifyItem.setTitleSize(18);
-//                // set item title font color
-//                modifyItem.setTitleColor(Color.WHITE);
-//                // add to menu
-//                menu.addMenuItem(modifyItem);
-
 
                 SwipeMenuItem copyItem = new SwipeMenuItem(getApplicationContext());
-                copyItem.setBackground(new ColorDrawable(Color.rgb(0xff, 0xff,
-                        0xff)));
+                copyItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
+                        0xCE)));
                 copyItem.setWidth(N2nTools.dp2px(ListActivity.this, 70));
                 copyItem.setTitle("Copy");
                 copyItem.setTitleSize(18);
-                copyItem.setTitleColor(Color.GRAY);
+                copyItem.setTitleColor(Color.WHITE);
                 menu.addMenuItem(copyItem);
 
                 // create "delete" item
@@ -198,27 +242,14 @@ public class ListActivity extends BaseActivity {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
 
-                Log.e("zhangbz", "onMenuItemClick index = " + index);
 
-                SettingItemEvtity settingItemEvtity = mSettingItemEvtities.get(position);
+                final SettingItemEntity settingItemEntity = mSettingItemEntities.get(position);
 
                 switch (index) {
-//                    case 0:
-////                        Toast.makeText(mContext, "ToDo：Modify", Toast.LENGTH_SHORT).show();
-//
-//                        settingItemEvtity = mSettingItemEvtities.get(position);
-//                        Intent intent = new Intent(ListActivity.this, SettingDetailsActivity.class);
-//                        intent.putExtra("type", SettingDetailsActivity.TYPE_SETTING_MODIFY);
-//                        intent.putExtra("saveId", settingItemEvtity.getSaveId());
-//
-//                        startActivity(intent);
-//                        break;
 
                     case 0:
-//                        Toast.makeText(mContext, "ToDo：Copy", Toast.LENGTH_SHORT).show();
-
                         N2NSettingModelDao n2NSettingModelDao1 = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
-                        N2NSettingModel n2NSettingModelCopy = n2NSettingModelDao1.load(settingItemEvtity.getSaveId());
+                        N2NSettingModel n2NSettingModelCopy = n2NSettingModelDao1.load(settingItemEntity.getSaveId());
 
                         //1.db update
                         String copyName = n2NSettingModelCopy.getName() + "-copy";
@@ -241,21 +272,30 @@ public class ListActivity extends BaseActivity {
 
                         //2.ui update
 
-                        SettingItemEvtity settingItemEvtity2 = new SettingItemEvtity(n2NSettingModel.getName(),
+                        final SettingItemEntity settingItemEntity2 = new SettingItemEntity(n2NSettingModel.getName(),
                                 n2NSettingModel.getId(), n2NSettingModel.getIsSelcected());
-                        mSettingItemEvtities.add(settingItemEvtity2);
+
+                        settingItemEntity2.setOnMoreBtnClickListener(new SettingItemEntity.OnMoreBtnClickListener() {
+                            @Override
+                            public void onClick(int positon) {
+                                Intent intent = new Intent(ListActivity.this, SettingDetailsActivity.class);
+                                intent.putExtra("type", SettingDetailsActivity.TYPE_SETTING_MODIFY);
+                                intent.putExtra("saveId", settingItemEntity2.getSaveId());
+
+                                startActivity(intent);
+                            }
+                        });
+                        mSettingItemEntities.add(settingItemEntity2);
 
                         mSettingItemAdapter.notifyDataSetChanged();
 
                         break;
 
                     case 1:
-//                        Toast.makeText(mContext, "ToDo：Delete", Toast.LENGTH_SHORT).show();
 
-                        final SettingItemEvtity finalSettingItemEvtity = settingItemEvtity;
+                        final SettingItemEntity finalSettingItemEntity = settingItemEntity;
                         new SweetAlertDialog(ListActivity.this, SweetAlertDialog.WARNING_TYPE)
                                 .setTitleText("Are you sure?")
-//                                .setContentText("Won't be able to recover this file!")
                                 .setCancelText("No,cancel plx!")
                                 .setConfirmText("Yes,delete it!")
                                 .showCancelButton(true)
@@ -269,9 +309,9 @@ public class ListActivity extends BaseActivity {
                                     @Override
                                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                                         N2NSettingModelDao n2NSettingModelDao = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
-                                        n2NSettingModelDao.deleteByKey(finalSettingItemEvtity.getSaveId());
+                                        n2NSettingModelDao.deleteByKey(finalSettingItemEntity.getSaveId());
 
-                                        mSettingItemEvtities.remove(finalSettingItemEvtity);
+                                        mSettingItemEntities.remove(finalSettingItemEntity);
                                         mSettingItemAdapter.notifyDataSetChanged();
 
                                         sweetAlertDialog.cancel();
@@ -290,7 +330,6 @@ public class ListActivity extends BaseActivity {
             }
         });
 
-//        mSettingsListView.smoothOpenMenu();
         /*****************侧滑菜单 end********************/
 
         mSettingsListView.setAdapter(mSettingItemAdapter);
@@ -304,34 +343,28 @@ public class ListActivity extends BaseActivity {
         N2NSettingModelDao n2NSettingModelDao = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
         List<N2NSettingModel> n2NSettingModels = n2NSettingModelDao.loadAll();
 
-        Log.e("zhangbz", "ListActivity onResume n2NSettingModels : " + n2NSettingModels.size());
         N2NSettingModel n2NSettingModel;
-//        SettingItemEvtity settingItemEvtity;
         //需要判空吗？
-        mSettingItemEvtities.clear();
+        mSettingItemEntities.clear();
         for (int i = 0; i < n2NSettingModels.size(); i++) {
             n2NSettingModel = n2NSettingModels.get(i);
-            final SettingItemEvtity settingItemEvtity = new SettingItemEvtity(n2NSettingModel.getName(),
+            final SettingItemEntity settingItemEntity = new SettingItemEntity(n2NSettingModel.getName(),
                     n2NSettingModel.getId(), n2NSettingModel.getIsSelcected());
 
-//            final SettingItemEvtity finalSettingItemEvtity = settingItemEvtity;
-
-            settingItemEvtity.setOnMoreBtnClickListener(new SettingItemEvtity.OnMoreBtnClickListener() {
+            settingItemEntity.setOnMoreBtnClickListener(new SettingItemEntity.OnMoreBtnClickListener() {
 
                 @Override
                 public void onClick(int positon) {
 
-//                    mSettingsListView.smoothOpenMenu(positon);
-
                     Intent intent = new Intent(ListActivity.this, SettingDetailsActivity.class);
                     intent.putExtra("type", SettingDetailsActivity.TYPE_SETTING_MODIFY);
-                    intent.putExtra("saveId", settingItemEvtity.getSaveId());
+                    intent.putExtra("saveId", settingItemEntity.getSaveId());
 
                     startActivity(intent);
 
                 }
             });
-            mSettingItemEvtities.add(settingItemEvtity);
+            mSettingItemEntities.add(settingItemEntity);
         }
 
         mSettingItemAdapter.notifyDataSetChanged();
@@ -343,13 +376,15 @@ public class ListActivity extends BaseActivity {
         Log.e("zhangbz", "onActivityResult requestCode = " + requestCode + "; resultCode = " + resultCode);
         if (requestCode == 100 && resultCode == -1) {//RESULT_OK
 
+            SettingItemEntity settingItemEntity = mSettingItemEntities.get(mTargetSettingPosition);
+
+            N2NSettingModelDao n2NSettingModelDao1 = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
+            N2NSettingModel n2NSettingModel = n2NSettingModelDao1.load(settingItemEntity.getSaveId());
+
             Intent intent = new Intent(ListActivity.this, N2NService.class);
-
             Bundle bundle = new Bundle();
-//            N2NSettingModel n2NSettingModel = n2NSettingModelDao.load(mSettingItemEvtities.get(position).getSaveId());
 
-            N2NSettingInfo n2NSettingInfo = new N2NSettingInfo(mN2NSettingModel);
-
+            N2NSettingInfo n2NSettingInfo = new N2NSettingInfo(n2NSettingModel);
             bundle.putParcelable("n2nSettingInfo", n2NSettingInfo);
             intent.putExtra("Setting", bundle);
 
@@ -360,5 +395,35 @@ public class ListActivity extends BaseActivity {
     @Override
     protected int getContentLayout() {
         return R.layout.activity_setting_list;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onStartEvent(StartEvent event) {
+
+        Log.e("zhangbz", "ListActivity onStartEvent");
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onStopEvent(StopEvent event) {
+
+        Log.e("zhangbz", "ListActivity onStopEvent");
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onErrorEvent(ErrorEvent event) {
+
+        Log.e("zhangbz", "ListActivity onErrorEvent");
+
+        Toast.makeText(mContext, "~_~Error~_~", Toast.LENGTH_SHORT).show();
     }
 }

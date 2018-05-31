@@ -4,14 +4,14 @@ package wang.switchy.an2n.entity;
  * Created by janiszhang on 2018/5/5.
  */
 
-public class SettingItemEvtity {
+public class SettingItemEntity {
     private String mSettingName;
     private Long mSaveId;
     private boolean isSelected;
 
 
 
-    public SettingItemEvtity(String settingName, Long saveId, boolean isSelected) {
+    public SettingItemEntity(String settingName, Long saveId, boolean isSelected) {
         mSettingName = settingName;
         mSaveId = saveId;
         this.isSelected = isSelected;

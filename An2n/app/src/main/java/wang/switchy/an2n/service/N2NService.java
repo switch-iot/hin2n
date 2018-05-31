@@ -123,7 +123,7 @@ public class N2NService extends VpnService {
         cmd.reResoveSupernodeIP = n2nSettingInfo.isResoveSupernodeIP();
         cmd.localPort = n2nSettingInfo.getLocalPort();
         cmd.allowRouting = n2nSettingInfo.isAllowRouting();
-        cmd.dropMuticast = n2nSettingInfo.isDropMuticast();
+        cmd.dropMuticast = !n2nSettingInfo.isDropMuticast();
         cmd.traceLevel = n2nSettingInfo.getTraceLevel();//2;
         cmd.vpnFd = mParcelFileDescriptor.detachFd();//????????????
 

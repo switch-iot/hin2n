@@ -1,7 +1,6 @@
 package wang.switchy.an2n.adapter;
 
 import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 import wang.switchy.an2n.R;
-import wang.switchy.an2n.entity.SettingItemEvtity;
+import wang.switchy.an2n.entity.SettingItemEntity;
 
 /**
  * Created by janiszhang on 2018/5/6.
@@ -23,10 +20,10 @@ import wang.switchy.an2n.entity.SettingItemEvtity;
 public class SettingItemAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<SettingItemEvtity> mSettingItemEvtities;
+    private List<SettingItemEntity> mSettingItemEvtities;
     private final LayoutInflater mLayoutInflater;
 
-    public SettingItemAdapter(Context context, List<SettingItemEvtity> settingItemEvtities) {
+    public SettingItemAdapter(Context context, List<SettingItemEntity> settingItemEvtities) {
         mContext = context;
         mSettingItemEvtities = settingItemEvtities;
 
@@ -51,7 +48,7 @@ public class SettingItemAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
-        final SettingItemEvtity settingItemEvtity = mSettingItemEvtities.get(position);
+        final SettingItemEntity settingItemEntity = mSettingItemEvtities.get(position);
         if (convertView == null) {
             convertView = mLayoutInflater.inflate(R.layout.layout_setting_item, null);
             viewHolder = new ViewHolder();
@@ -65,8 +62,8 @@ public class SettingItemAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.settingName.setText(settingItemEvtity.getSettingName());
-        if (settingItemEvtity.isSelected()) {
+        viewHolder.settingName.setText(settingItemEntity.getSettingName());
+        if (settingItemEntity.isSelected()) {
             viewHolder.imgIsSelected.setVisibility(View.VISIBLE);
         } else {
             viewHolder.imgIsSelected.setVisibility(View.INVISIBLE);
@@ -76,7 +73,7 @@ public class SettingItemAdapter extends BaseAdapter {
         viewHolder.moreInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                settingItemEvtity.mOnMoreBtnClickListener.onClick(position);
+                settingItemEntity.mOnMoreBtnClickListener.onClick(position);
             }
         });
         return convertView;
