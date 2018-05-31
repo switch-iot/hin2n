@@ -104,6 +104,8 @@ public class ListActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
 
+                Log.e("0531", "mSettingsListView setOnItemClickListener = " + position);
+
                 final Long currentSettingId = mAn2nSp.getLong("current_setting_id", -1);
 
                 SettingItemEntity settingItemEntity = mSettingItemEntities.get(position);
@@ -132,6 +134,8 @@ public class ListActivity extends BaseActivity {
                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
                                     N2NService.INSTANCE.stop();
 
+                                    mTargetSettingPosition = position;
+
                                     Intent vpnPrepareIntent = VpnService.prepare(ListActivity.this);
 
                                     if (vpnPrepareIntent != null) {
@@ -140,8 +144,6 @@ public class ListActivity extends BaseActivity {
                                         onActivityResult(100, -1, null);
 
                                     }
-
-                                    mTargetSettingPosition = position;
 
                                     if (currentSettingId != -1) {
                                         N2NSettingModel currentSettingItem = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load((long) currentSettingId);
@@ -314,6 +316,8 @@ public class ListActivity extends BaseActivity {
                                         mSettingItemEntities.remove(finalSettingItemEntity);
                                         mSettingItemAdapter.notifyDataSetChanged();
 
+                                        N2NService.INSTANCE.stop();
+
                                         sweetAlertDialog.cancel();
                                     }
                                 })
@@ -375,6 +379,8 @@ public class ListActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.e("zhangbz", "onActivityResult requestCode = " + requestCode + "; resultCode = " + resultCode);
         if (requestCode == 100 && resultCode == -1) {//RESULT_OK
+
+            Log.e("0531", "onActivityResult targetSettingPosition = " + mTargetSettingPosition);
 
             SettingItemEntity settingItemEntity = mSettingItemEntities.get(mTargetSettingPosition);
 

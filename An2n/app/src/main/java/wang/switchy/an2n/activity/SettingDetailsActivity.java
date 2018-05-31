@@ -41,6 +41,8 @@ import wang.switchy.an2n.storage.db.base.model.N2NSettingModel;
 import wang.switchy.an2n.template.BaseTemplate;
 import wang.switchy.an2n.template.CommonTitleTemplate;
 
+import static android.R.attr.id;
+
 /**
  * Created by janiszhang on 2018/5/4.
  */
@@ -280,31 +282,32 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
 
                 }
                 Long id;
-                if (mMoreSettingCheckBox.isChecked()) {
-                    Log.e("0511", "定位2");
+//                if (mMoreSettingCheckBox.isChecked()) {
+//                    Log.e("0511", "定位2");
 
                     mN2NSettingModel = new N2NSettingModel(null, settingName, mIpAddressTIL.getEditText().getText().toString(),
                             TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString(),
                             mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
-                            mSuperNodeTIL.getEditText().getText().toString(), true, mSuperNodeBackup.getEditText().getText().toString(),
+                            mSuperNodeTIL.getEditText().getText().toString(), mMoreSettingCheckBox.isChecked(), mSuperNodeBackup.getEditText().getText().toString(),
                             TextUtils.isEmpty(mMacAddr.getEditText().getText().toString()) ? EdgeCmd.getRandomMac() : mMacAddr.getEditText().getText().toString(),
                             TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIpCheckBox.isChecked() ? "auto" : mLocalIP.getEditText().getText().toString(),
                             TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) ? 25 : Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()),
                             mResoveSupernodeIPCheckBox.isChecked(), TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) ? 0 : Integer.valueOf(mLocalPort.getEditText().getText().toString()),
                             mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), mTraceLevelSpinner.getSelectedItemPosition()/*TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ?  1:Integer.valueOf(mTraceLevel.getEditText().getText().toString())*/, false);
                     id = n2NSettingModelDao.insert(mN2NSettingModel);
-                } else {
-                    Log.e("0511", "定位2");
 
-                    mN2NSettingModel = new N2NSettingModel(null, settingName, mIpAddressTIL.getEditText().getText().toString(),
-                            TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString(),
-                            mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
-                            mSuperNodeTIL.getEditText().getText().toString(), false, "", EdgeCmd.getRandomMac(), 1400, "", 25, false, 0, false, true, 1, false);
-
-                    id = n2NSettingModelDao.insert(mN2NSettingModel);
-                    Log.e("0511", "定位3");
-
-                }
+//                } else {
+//                    Log.e("0511", "定位2");
+//
+//                    mN2NSettingModel = new N2NSettingModel(null, settingName, mIpAddressTIL.getEditText().getText().toString(),
+//                            TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString(),
+//                            mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
+//                            mSuperNodeTIL.getEditText().getText().toString(), false, "", EdgeCmd.getRandomMac(), 1400, "", 25, false, 0, false, false, 1, false);
+//
+//                    id = n2NSettingModelDao.insert(mN2NSettingModel);
+//                    Log.e("0511", "定位3");
+//
+//                }
 
 
                 new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
@@ -325,7 +328,6 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                     return;
                 }
 
-
                 Log.e("0511", "定位1");
                 N2NSettingModelDao n2NSettingModelDao1 = An2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
                 String settingName1 = mSettingName.getEditText().getText().toString();
@@ -344,31 +346,32 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                     n2NSettingModelTmp = n2NSettingModelDao1.queryBuilder().where(N2NSettingModelDao.Properties.Name.eq(settingName1)).unique();
                 }
 
-                if (mMoreSettingCheckBox.isChecked()) {
-                    Log.e("0511", "定位2");
+//                if (mMoreSettingCheckBox.isChecked()) {
+//                    Log.e("0511", "定位2");
 
                     mN2NSettingModel = new N2NSettingModel(mSaveId, settingName1, mIpAddressTIL.getEditText().getText().toString(),
                             TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString(),
                             mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
-                            mSuperNodeTIL.getEditText().getText().toString(), true, mSuperNodeBackup.getEditText().getText().toString(),
+                            mSuperNodeTIL.getEditText().getText().toString(), mMoreSettingCheckBox.isChecked(), mSuperNodeBackup.getEditText().getText().toString(),
                             TextUtils.isEmpty(mMacAddr.getEditText().getText().toString()) ? EdgeCmd.getRandomMac() : mMacAddr.getEditText().getText().toString(),
                             TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIpCheckBox.isChecked() ? "auto" : mLocalIP.getEditText().getText().toString(),
                             TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) ? 25 : Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()),
                             mResoveSupernodeIPCheckBox.isChecked(), TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) ? 0 : Integer.valueOf(mLocalPort.getEditText().getText().toString()),
                             mAllowRoutinCheckBox.isChecked(), mDropMuticastCheckBox.isChecked(), mTraceLevelSpinner.getSelectedItemPosition()/*TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ?  1 : Integer.valueOf(mTraceLevel.getEditText().getText().toString())*/, mN2NSettingModel.getIsSelcected());
                     n2NSettingModelDao1.update(mN2NSettingModel);
-                } else {
-                    Log.e("0511", "定位2");
-
-                    mN2NSettingModel = new N2NSettingModel(mSaveId, settingName1, mIpAddressTIL.getEditText().getText().toString(),
-                            TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString(),
-                            mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
-                            mSuperNodeTIL.getEditText().getText().toString(), false, "", EdgeCmd.getRandomMac(), 1400, "", 25, false, 0, false, true, 1, mN2NSettingModel.getIsSelcected());
-
-                    n2NSettingModelDao1.update(mN2NSettingModel);
-                    Log.e("0511", "定位3");
-
-                }
+//                } else {
+//                    Log.e("0511", "定位2");
+//
+//                    mN2NSettingModel = new N2NSettingModel(mSaveId, settingName1, mIpAddressTIL.getEditText().getText().toString(),
+//                            TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString(),
+//                            mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
+//                            mSuperNodeTIL.getEditText().getText().toString(), false, mSuperNodeBackup.getEditText().getText().toString(), TextUtils.isEmpty(mMacAddr.getEditText().getText().toString()) ? EdgeCmd.getRandomMac() : mMacAddr.getEditText().getText().toString(),
+//                            TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIpCheckBox.isChecked() ? "auto" : mLocalIP.getEditText().getText().toString(), 25, false, 0, false, false, 1, mN2NSettingModel.getIsSelcected());
+//
+//                    n2NSettingModelDao1.update(mN2NSettingModel);
+//                    Log.e("0511", "定位3");
+//
+//                }
 
                 if (N2NService.INSTANCE != null && N2NService.INSTANCE.getEdgeStatus().isRunning) {
                     Long currentSettingId = mAn2nSp.getLong("current_setting_id", -1);
@@ -542,12 +545,18 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
          * 高级配置参数检查
          */
 
-        if (mMoreSettingCheckBox.isChecked()) {
+//        if (mMoreSettingCheckBox.isChecked()) {
 
             Log.e("0511", "TextUtils.isEmpty(mSuperNodeBackup.getEditText().getText().toString()) = " + TextUtils.isEmpty(mSuperNodeBackup.getEditText().getText().toString()));
             if (!TextUtils.isEmpty(mSuperNodeBackup.getEditText().getText().toString()) && !EdgeCmd.checkSupernode(mSuperNodeBackup.getEditText().getText().toString())) {
                 mSuperNodeBackup.setError("Supernode Back Error!");
                 mSuperNodeBackup.getEditText().requestFocus();
+
+                if (!mMoreSettingCheckBox.isChecked()) {
+                    mMoreSettingCheckBox.setChecked(true);
+                    mMoreSettingView.setVisibility(View.VISIBLE);
+                }
+
                 return false;
             } else {
                 mSuperNodeBackup.setErrorEnabled(false);
@@ -557,6 +566,12 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             if (!TextUtils.isEmpty(mMtu.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mMtu.getEditText().getText().toString()), 46, 1500)) {
                 mMtu.setError("Mtu Error!");
                 mMtu.getEditText().requestFocus();
+
+                if (!mMoreSettingCheckBox.isChecked()) {
+                    mMoreSettingCheckBox.setChecked(true);
+                    mMoreSettingView.setVisibility(View.VISIBLE);
+                }
+
                 return false;
 
             } else {
@@ -567,6 +582,12 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             if (!TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()), 10, 120)) {
                 mHolePunchInterval.setError("Hole Punch Interval Error!");
                 mHolePunchInterval.getEditText().requestFocus();
+
+                if (!mMoreSettingCheckBox.isChecked()) {
+                    mMoreSettingCheckBox.setChecked(true);
+                    mMoreSettingView.setVisibility(View.VISIBLE);
+                }
+
                 return false;
             } else {
                 mHolePunchInterval.setErrorEnabled(false);
@@ -577,6 +598,12 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 if (!TextUtils.isEmpty(mLocalIP.getEditText().getText().toString()) && !EdgeCmd.checkIPV4(mLocalIP.getEditText().getText().toString())) {
                     mLocalIP.setError("Local IP Error!");
                     mLocalIP.getEditText().requestFocus();
+
+                    if (!mMoreSettingCheckBox.isChecked()) {
+                        mMoreSettingCheckBox.setChecked(true);
+                        mMoreSettingView.setVisibility(View.VISIBLE);
+                    }
+
                     return false;
 
                 } else {
@@ -588,6 +615,12 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             if (!TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mLocalPort.getEditText().getText().toString()), 0, 65535)) {
                 mLocalPort.setError("Local Port Error!");
                 mLocalPort.getEditText().requestFocus();
+
+                if (!mMoreSettingCheckBox.isChecked()) {
+                    mMoreSettingCheckBox.setChecked(true);
+                    mMoreSettingView.setVisibility(View.VISIBLE);
+                }
+
                 return false;
 
             } else {
@@ -598,13 +631,19 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             if (!TextUtils.isEmpty(mMacAddr.getEditText().getText().toString()) && !EdgeCmd.checkMacAddr(mMacAddr.getEditText().getText().toString())) {
                 mMacAddr.setError("Mac Address Error!");
                 mMacAddr.getEditText().requestFocus();
+
+                if (!mMoreSettingCheckBox.isChecked()) {
+                    mMoreSettingCheckBox.setChecked(true);
+                    mMoreSettingView.setVisibility(View.VISIBLE);
+                }
+
                 return false;
 
             } else {
                 mMacAddr.setErrorEnabled(false);
 
             }
-        }
+//        }
 
         return true;
     }
