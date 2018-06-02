@@ -3,15 +3,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/c_white">
 
     <RelativeLayout
-        android:layout_centerVertical="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RelativeLayout
 
+        <ImageView
+            android:id="@+id/iv_connect_btn"
+            android:layout_marginTop="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@mipmap/ic_state_connect"/>
+
+        <RelativeLayout
+            android:layout_marginTop="30dp"
+            android:layout_below="@id/iv_connect_btn"
             android:id="@+id/rl_current_setting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,6 +43,8 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:id="@+id/tv_current_setting_name"
@@ -43,6 +55,7 @@
 
 
                 <ImageView
+                    android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -55,6 +68,7 @@
 
 
         <Button
+            android:visibility="invisible"
             android:layout_marginTop="30dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"

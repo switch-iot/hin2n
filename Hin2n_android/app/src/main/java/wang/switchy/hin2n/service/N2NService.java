@@ -63,7 +63,7 @@ public class N2NService extends VpnService {
         Log.e("zhangbz", "n2nSettingInfo = " + n2nSettingInfo.toString());
 
         Log.e("zhangbz", "mtu = " + n2nSettingInfo.getMtu());
-        b.setMtu(n2nSettingInfo.getMtu() - 14);
+        b.setMtu(n2nSettingInfo.getMtu());
 
         String ipAddress = n2nSettingInfo.getIp();
         Log.e("zhangbz", "ipAddress = " + ipAddress + "; getIpAddrPrefixLength(n2nSettingInfo.getNetmask()) = " + getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
@@ -76,11 +76,22 @@ public class N2NService extends VpnService {
         Log.e("zhangbz", "route = " + route);
         b.addRoute(route, getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
 
-        mParcelFileDescriptor = b.setSession("N2N_V2S")/*.setConfigureIntent(pendingIntent)*/.establish();
+        try {
+            mParcelFileDescriptor = b.setSession("N2N_V2S")/*.setConfigureIntent(pendingIntent)*/.establish();
+
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            Toast.makeText(INSTANCE, "Parameter is not accepted by the operating system.", Toast.LENGTH_SHORT).show();
+            return super.onStartCommand(intent, flags, startId);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            Toast.makeText(INSTANCE, "Parameter cannot be applied by the operating system.", Toast.LENGTH_SHORT).show();
+            return super.onStartCommand(intent, flags, startId);
+        }
 
 //        测试代码
 //        Builder b = new Builder();
-//        b.setMtu(1400 - 14);
+//        b.setMtu(1400);
 //        String ipAddress = "192.168.111.2";
 //        b.addAddress(ipAddress, 24);
 //        b.addRoute("192.168.111.0", 24);
@@ -105,14 +116,14 @@ public class N2NService extends VpnService {
         cmd.community = n2nSettingInfo.getCommunity();
         cmd.encKey = n2nSettingInfo.getPassword();
         cmd.encKeyFile = null;
-        cmd.macAddr = getRandomMac();
+        cmd.macAddr = n2nSettingInfo.getMacAddr();//getRandomMac();
         cmd.mtu = n2nSettingInfo.getMtu();
         cmd.localIP = n2nSettingInfo.getLocalIP();
         cmd.holePunchInterval = n2nSettingInfo.getHolePunchInterval();
         cmd.reResoveSupernodeIP = n2nSettingInfo.isResoveSupernodeIP();
         cmd.localPort = n2nSettingInfo.getLocalPort();
         cmd.allowRouting = n2nSettingInfo.isAllowRouting();
-        cmd.dropMuticast = n2nSettingInfo.isDropMuticast();
+        cmd.dropMuticast = !n2nSettingInfo.isDropMuticast();
         cmd.traceLevel = n2nSettingInfo.getTraceLevel();//2;
         cmd.vpnFd = mParcelFileDescriptor.detachFd();//????????????
 

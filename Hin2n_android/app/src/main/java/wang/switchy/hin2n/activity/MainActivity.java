@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,24 +30,15 @@ import wang.switchy.hin2n.template.CommonTitleTemplate;
 
 public class MainActivity extends BaseActivity {
 
-    private Button mActionBtn;
-
-    // TODO: 2018/4/16 暂时先放这，回头再看看放哪更合适
-    static {
-        System.loadLibrary("slog");
-        System.loadLibrary("uip");
-        System.loadLibrary("n2n_v2s");
-        System.loadLibrary("edge");
-    }
-
     private N2NSettingModel mCurrentSettingInfo;
     private RelativeLayout mCurrentSettingItem;
     private TextView mCurrentSettingName;
+    private ImageView mConnectBtn;
 
     @Override
     protected BaseTemplate createTemplate() {
         CommonTitleTemplate titleTemplate = new CommonTitleTemplate(this, "Hin2n");
-        titleTemplate.mRightImg.setImageResource(R.mipmap.img_add);
+        titleTemplate.mRightImg.setImageResource(R.mipmap.ic_add);
         titleTemplate.mRightImg.setVisibility(View.VISIBLE);
         titleTemplate.mRightImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,80 +48,62 @@ public class MainActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
-        
+
         return titleTemplate;
     }
 
     @Override
     protected void doOnCreate(Bundle savedInstanceState) {
 
-//        EdgeStatus edgeStatus = new EdgeStatus();
-//        N2NService.INSTANCE.getEdgeStatus();
-
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-
-        Log.e("zhangbz", "MainActivity doOnCreate");
 
         mCurrentSettingItem = (RelativeLayout) findViewById(R.id.rl_current_setting_item);
         mCurrentSettingItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Toast.makeText(mContext, "~~onClick~~", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, ListActivity.class));
 
-                if (N2NService.INSTANCE != null && N2NService.INSTANCE.getEdgeStatus().isRunning) {
-                    Toast.makeText(mContext, "~Running~", Toast.LENGTH_SHORT).show();
-
-                } else {
-                    startActivity(new Intent(MainActivity.this, ListActivity.class));
-
-                }
             }
         });
 
         mCurrentSettingName = (TextView) findViewById(R.id.tv_current_setting_name);
 
-        mActionBtn = (Button) findViewById(R.id.btn_action);
+        mConnectBtn = (ImageView) findViewById(R.id.iv_connect_btn);
 
         if (N2NService.INSTANCE == null) {
-            mActionBtn.setText("start");
 
+            mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
         } else {
             if (N2NService.INSTANCE.getEdgeStatus().isRunning) {
-                mActionBtn.setText("stop");
+                mConnectBtn.setImageResource(R.mipmap.ic_state_connect);
+
             } else {
-                mActionBtn.setText("start");
+                mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
+
             }
         }
 
-        mActionBtn.setOnClickListener(new View.OnClickListener() {
+        mConnectBtn.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-
-                Log.e("zhangbz", "~定位~");
 
                 if (mCurrentSettingName.getText().equals("--null--")) {
                     Toast.makeText(mContext, "null setting", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                Log.e("zhangbz", "~定位~0");
-
                 if (N2NService.INSTANCE != null && N2NService.INSTANCE.getEdgeStatus().isRunning) {
-                    Log.e("zhangbz", "~定位~1");
                     N2NService.INSTANCE.stop();
                 } else {
-                    Log.e("zhangbz", "~定位~2");
 
                     Intent vpnPrepareIntent = VpnService.prepare(MainActivity.this);
-                    Log.e("zhangbz", "~定位~3");
 
                     if (vpnPrepareIntent != null) {
-                        Log.e("zhangbz", "doOnCreate vpnPrepareIntent != null");
                         startActivityForResult(vpnPrepareIntent, 100);
                     } else {
-                        Log.e("zhangbz", "doOnCreate vpnPrepareIntent == null");
                         onActivityResult(100, -1, null);
 
                     }
@@ -149,7 +123,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("zhangbz", "onActivityResult requestCode = " + requestCode + "; resultCode = " + resultCode);
         if (requestCode == 100 && resultCode == -1) {//RESULT_OK
 
             Intent intent = new Intent(MainActivity.this, N2NService.class);
@@ -159,10 +132,6 @@ public class MainActivity extends BaseActivity {
             N2NSettingInfo n2NSettingInfo = new N2NSettingInfo(mCurrentSettingInfo);
             bundle.putParcelable("n2nSettingInfo", n2NSettingInfo);
             intent.putExtra("Setting", bundle);
-
-            Log.e("zhangbz", "n2NSettingInfo = " + n2NSettingInfo.toString());
-
-            Log.e("zhangbz", "mtu = " + n2NSettingInfo.getMtu());
 
             startService(intent);
         }
@@ -209,17 +178,18 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStartEvent(StartEvent event) {
-        mActionBtn.setText("stop");
+        mConnectBtn.setImageResource(R.mipmap.ic_state_connect);
     }
-    
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStopEvent(StopEvent event) {
-        mActionBtn.setText("start");
+        mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
     }
-    
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onErrorEvent(ErrorEvent event) {
-        mActionBtn.setText("start");
+        mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
+
         Toast.makeText(mContext, "~_~Error~_~", Toast.LENGTH_SHORT).show();
     }
 

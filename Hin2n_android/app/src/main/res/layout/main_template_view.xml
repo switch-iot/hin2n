@@ -28,11 +28,11 @@
         <ImageView
             android:id="@+id/iv_right_img"
             android:layout_alignParentRight="true"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:visibility="visible"
             android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginRight="10dp"/>
     </RelativeLayout>
 
     <FrameLayout

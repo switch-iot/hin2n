@@ -1,3 +1,16 @@
+2018-06-01 Hin2n_v0.6.0-rc1 体验版(https://github.com/switch-iot/n2n_vLTS/releases/tag/hin2n_v0.6.1-rc1)
+* APP页面UI改版
+* 优化配置项页面，优化配置切换连接逻辑
+* 配置项左滑操作
+* 自动获取本地IP支持(-L auto参数)
+* 项目整体由an2n切换到hin2n
+* BUG修复
+
+2018-05-23 Hin2n_v0.5.1(https://github.com/switch-iot/n2n_vLTS/releases/tag/hin2n_v0.5.1)
+* 配置页面优化/BUG修复
+* 建立VPN时的系统异常处理
+* 优化stop耗时
+
 2018-05-14 Hin2n_v0.5.0(https://github.com/switch-iot/n2n_vLTS/releases/tag/hin2n_v0.5.0)
 * 增加配置保存功能
 * 配置参数校验功能

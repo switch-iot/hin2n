@@ -5,8 +5,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        >
+        android:layout_height="70dp">
 
         <ImageView
             android:layout_marginLeft="20dp"
@@ -27,16 +26,15 @@
             android:textSize="16dp"
             android:text="SettingName"/>
 
-        <TextView
+        <ImageView
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
+            android:padding="10dp"
             android:layout_alignParentRight="true"
-            android:id="@+id/tv_more"
+            android:id="@+id/iv_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16dp"
-            android:text="详情"
-            android:padding="10dp"
-            />
+            android:src="@mipmap/ic_info"/>
+
     </RelativeLayout>
 </RelativeLayout>
