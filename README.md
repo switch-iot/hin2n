@@ -1,65 +1,67 @@
 # n2n_vLTS
 
-n2n是一个支持内网穿透p2p的VPN项目，最初由ntop.org大神`Luca Deri` <deri@ntop.org>, `Richard Andrews` <andrews@ntop.org>开发并开源的项目，后由`meyerd`大神 <https://github.com/meyerd>继续做优化工作。我们的目的是在几位大神的基础上做持续优化并提供`手机版本`的支持。
+[README](README.md) | [中文文档](README_zh.md)
+
+N2N is a VPN project that supports p2p. It was originally developed and open sourced by `Luca Deri` <deri@ntop.org>, `Richard Andrews` <andrews@ntop.org> of ntop.org, and `Meyerd` <https://github.com/meyerd> continues to do optimization work. Our goal is to continuously optimize n2n based on several masters and provide `mobile version` support.
 
 ## Hin2n
-原版的n2n支持很多平台，包括windows，linux，osx，bsd，openwrt，raspberry pie等，唯独缺少对手机(非root)的支持。因此，我们开发了Hin2n项目。
+The original n2n supports many platforms, including windows, linux, osx, bsd, openwrt, raspberry pie, etc., except for mobile phones(non-root). Therefore, we have developed the Hin2n project.
 
-### Hin2n是什么
-- Hin2n是支持n2n协议的手机VPN软件
-- 该APP不需要root手机
-- 该APP暂时只支持安卓手机，后续会发开IPhone版本
-- 该项目现处于持续开发阶段，仅支持基本的配置连接功能，后续会提供更完善的功能
-- 该项目现只支持[n2n_v2s](#关于v2s版本)协议，其他版本的n2n协议正在开发中
+### What is Hin2n
+- Hin2n is a mobile VPN app that supports the n2n protocol
+- Hin2n does not need a rooted phone
+- Hin2n only supports Android phones for now, IPhone version will be developed in the future
+- Hin2n is currently in continuous development and will gradually provide more complete versions
+- Hin2n only supports [n2n_v2s](#About v2s version) protocol now, other versions of n2n protocol are under development
 
-### Hin2n最新版本 [CHANGELOG](Hin2n_android/CHANGELOG)
-Hin2n最新版本可在[release地址](https://github.com/switch-iot/n2n_vLTS/releases)查看下载。
+### Hin2n latest version [CHANGELOG](Hin2n_android/CHANGELOG)
+The latest version of Hin2n is available for download at [release link](https://github.com/switch-iot/n2n_vLTS/releases).
 
-### Hin2n开发计划
-详细开发计划请见[`Projects`](https://github.com/switch-iot/n2n_vLTS/projects)。
-大家如果有新需求和想法，任何意见建议均可提交在[`issues`](https://github.com/switch-iot/n2n_vLTS/issues)中，我们将会酌情安排开发计划。您的关注就是我们的动力。
+### Hin2n Development Plan
+View the development plan at [`Projects`](https://github.com/switch-iot/n2n_vLTS/projects).
+If you have new features and ideas, you can submit them in [`issues`](https://github.com/switch-iot/n2n_vLTS/issues), and we will arrange development plans as appropriate. Your concern is our motivation.
 
-### 技术原理
+### Technical principle
 - VPNService
-> Hin2n基于安卓原生提供的VPNService，通过VPNService建立tun虚拟网卡，与supernode和edge通讯。
+> Hin2n is based on Android's native VPNService. It builds a tun virtual network card through VPNService and communicates with supernode and edges.
 - tun2tap
-> 安卓上层仅支持建立tun虚拟网卡，仅是TCP/IP网络层，而n2n协议依赖tap虚拟网卡，需要对数据链路层的支持，因此我们模拟了数据链路层，并实现了ARP协议。
+> Android only supports tun virtual network card, only support network layer, and n2n  requires tap virtual network card, which needs data link layer support. So we simulated the data link layer and ARP protocol.
 - n2n protocol
-> Hin2n对n2n协议的支持是采用jni的方式，native方法可以尽量复用原n2n项目的代码。
+> Hin2n supports the n2n protocol by using the native method of jni to reuse the code of the original n2n project as far as possible.
 
-## n2n协议版本
-n2n项目现有三个主流版本
-- ntop.org大神们维护的v1版本，项目地址：https://github.com/meyerd/n2n.git(n2n_v1)
-- ntop.org大神们维护的v2版本，项目地址：https://github.com/ntop/n2n.git
-- meyerd大神维护的[v2s版本](#关于v2s版本)，项目地址：https://github.com/meyerd/n2n.git(n2n_v2)
+## N2N protocol version
+There are three popular versions of the n2n project
+- Version v1 developed by the great masters of ntop.org. Project address：https://github.com/meyerd/n2n.git(n2n_v1)
+- Version v2 developed by the great masters of ntop.org. Project address：https://github.com/ntop/n2n.git
+- Version [v2s](#About v2s version) developed by the master Meyerd. Project address：https://github.com/meyerd/n2n.git(n2n_v2)
 
-### 关于v2s版本
-v2s版本是N2N交流QQ群(256572040)中对meyerd大神维护的v2版本(又称v2.1)的命名，即v2升级版，该版本与ntop.org大神们维护的v2版本并不互通，为避免混淆，群友们对该项目另行命名。
+### About v2s version
+The v2s is the renaming of the v2 (also known as v2.1) developed by master Meyerd in the QQ group(256572040), that is, the v2 upgrade version. The v2s version is not compatible with the v2 version developed by the ntop.org masters. To avoid confusion, the QQ group friends named the project separately.
 
-## 项目开发/编译说明
+## Development and compilation
 ### Hin2n
 - git clone https://github.com/switch-iot/n2n_vLTS.git `--recurse-submodules`
-- windows环境下需要在项目文件夹下执行`link.bat`，用于替换linux下的符号链接
-- Hin2n_android目录即是Hin2n项目安卓源码目录
-- Hin2n_android目录下执行`gradlew assemble`编译
-- Hin2n_android项目的gradle是2.14.1版本，如需4.4版本的gradle，请将分支`dev_android_gradle4.4`下的文件拷贝至分支`marster`/`dev_android`下，覆盖相应的文件
+- The windows environment needs to execute `link.bat` in the project folder to replace symbolic links under Linux.
+- Hin2n_android directory is the Hin2n project Android source directory
+- Execute `gradlew assemble` in Hin2n_android directory to compile Hin2n
+- The gradle version of the Hin2n_android project is 2.14.1. If you want to upgrade the gradle version to 4.4, copy the file under the branch `dev_android_gradle4.4` to the branch `marster`/`dev_android` to overwrite the corresponding files.
 
-### 关于开源协议
-该项目以[`GPLv3`](LICENSE)协议进行开源，与n2n原有开源协议保持一致，也希望大家支持并遵守本项目的开源协议。
+### About open source agreement
+The project is open sourced under the [`GPLv3`](LICENSE) agreement, and is consistent with the original open source agreement of n2n. We also hope that everyone will support and comply with the open source agreement of this project.
 
-## 为Hin2n做贡献
-Hin2n是一个免费且开源的n2n项目，我们欢迎任何人为期开发和进步贡献力量。
-- 在使用过程中出现任何问题，可以通过[`issues`](https://github.com/switch-iot/n2n_vLTS/issues) 来反馈
-- Bug的修复可以直接提交`Pull Request`到`android_dev`分支
-- 如果是增加新的功能特性，请先创建一个[`issues`](https://github.com/switch-iot/n2n_vLTS/issues)并做简单描述以及大致的实现方法，提议被采纳后，就可以创建一个实现新特性的 Pull Request
-- 欢迎对说明文档做出改善，帮助更多的人使用`Hin2n`，特别是英文文档
-- 如果您觉得Hin2n对您有帮助，欢迎您关注该项目，并给项目点个`Star`
+## Contribute to Hin2n
+Hin2n is a free and open source n2n project, and we welcome anyone to contribute to it.
+- Any problems in use can be fed back through ['issues'](https://github.com/switch-iot/n2n_vLTS/issues)
+- Bug fixes can submit `Pull Request` to `android_dev` branch
+- If you want to add a new feature, please create an [`issues`](https://github.com/switch-iot/n2n_vLTS/issues) first to describe the new feature, as well as the implementation approach. Once a proposal is accepted, create an implementation of the new features and submit it as a pull request.
+- Sorry for my poor english and improvement for this document is welcome even some typo fix.
+- Welcome to pay attention to the project and give the project a `Star`
 
-### 贡献者
-- [`lucktu`](https://github.com/lucktu)是Hin2n项目的发起人，对该项目起到至关重要的作用，感谢[`lucktu`](https://github.com/lucktu)对该项目的组织、推广、测试等工作
-- [`zhangbz`](https://github.com/zhangbz)主要负责Android层面的开发，在项目最困难的时候，给予了强有力的支持，[`zhangbz`](https://github.com/zhangbz)的参与，使得该项目得以继续
-- 同时也感谢广大群友对我们的支持
+### Contributors
+- [`lucktu`](https://github.com/lucktu) is the initiator of the Hin2n project and plays a crucial role in the project. We thank [`lucktu`](https://github.com/lucktu) for organizing, promoting and testing for the project.
+- [`zhangbz`](https://github.com/zhangbz) is mainly responsible for the development of the Android level, and has given strong support in the most difficult time of the project. The participation of [`zhangbz`](https://github.com/zhangbz) has enabled the project to continue.
+- At the same time, thank all the friends for their support
 
-## 交流群
-- Hin2n交流群： 769731491(QQ群号)
-- N2N交流群：256572040(QQ群号)
+## QQ group
+- Hin2n QQ group： 769731491
+- N2N QQ group： 256572040
