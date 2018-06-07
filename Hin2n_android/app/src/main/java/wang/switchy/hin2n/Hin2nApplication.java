@@ -29,7 +29,7 @@ public class Hin2nApplication extends MultiDexApplication {
         System.loadLibrary("slog");
         System.loadLibrary("uip");
         System.loadLibrary("n2n_v2s");
-        System.loadLibrary("edge_v2s");
+        System.loadLibrary("edge");
 
     }
 
