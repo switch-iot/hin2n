@@ -1,3 +1,6 @@
+2018-06-08 Hin2n_v0.5.2(https://github.com/switch-iot/n2n_vLTS/releases/tag/hin2n_v0.5.2)
+* BUG fix
+
 2018-05-23 Hin2n_v0.5.1(https://github.com/switch-iot/n2n_vLTS/releases/tag/hin2n_v0.5.1)
 * Configuration page optimization
 * System exception handling when VPN is established
