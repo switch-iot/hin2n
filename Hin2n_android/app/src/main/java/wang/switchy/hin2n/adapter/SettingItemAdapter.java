@@ -20,24 +20,24 @@ import wang.switchy.hin2n.entity.SettingItemEntity;
 public class SettingItemAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<SettingItemEntity> mSettingItemEvtities;
+    private List<SettingItemEntity> mSettingItemEntities;
     private final LayoutInflater mLayoutInflater;
 
-    public SettingItemAdapter(Context context, List<SettingItemEntity> settingItemEvtities) {
+    public SettingItemAdapter(Context context, List<SettingItemEntity> settingItemEntities) {
         mContext = context;
-        mSettingItemEvtities = settingItemEvtities;
+        mSettingItemEntities = settingItemEntities;
 
         mLayoutInflater = LayoutInflater.from(mContext);
     }
 
     @Override
     public int getCount() {
-        return mSettingItemEvtities.size();
+        return mSettingItemEntities.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return mSettingItemEvtities.get(i);
+        return mSettingItemEntities.get(i);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class SettingItemAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
-        final SettingItemEntity settingItemEntity = mSettingItemEvtities.get(position);
+        final SettingItemEntity settingItemEntity = mSettingItemEntities.get(position);
         if (convertView == null) {
             convertView = mLayoutInflater.inflate(R.layout.layout_setting_item, null);
             viewHolder = new ViewHolder();
