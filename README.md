@@ -12,7 +12,7 @@ The original n2n supports many platforms, including windows, linux, osx, bsd, op
 - Hin2n does not need a rooted phone
 - Hin2n only supports Android phones for now, IPhone version will be developed in the future
 - Hin2n is currently in continuous development and will gradually provide more complete versions
-- Hin2n only supports [n2n_v2s](#About v2s version) protocol now, other versions of n2n protocol are under development
+- Hin2n only supports [n2n_v2s](#about-v2s-version) protocol now, other versions of n2n protocol are under development
 
 ### Hin2n latest version [CHANGELOG](Hin2n_android/CHANGELOG)
 The latest version of Hin2n is available for download at [release link](https://github.com/switch-iot/n2n_vLTS/releases).
@@ -33,7 +33,7 @@ If you have new features and ideas, you can submit them in [`issues`](https://gi
 There are three popular versions of the n2n project
 - Version v1 developed by the great masters of ntop.org. Project address：https://github.com/meyerd/n2n.git(n2n_v1)
 - Version v2 developed by the great masters of ntop.org. Project address：https://github.com/ntop/n2n.git
-- Version [v2s](#About v2s version) developed by the master Meyerd. Project address：https://github.com/meyerd/n2n.git(n2n_v2)
+- Version [v2s](#about-v2s-version) developed by the master Meyerd. Project address：https://github.com/meyerd/n2n.git(n2n_v2)
 
 ### About v2s version
 The v2s is the renaming of the v2 (also known as v2.1) developed by master Meyerd in the QQ group(256572040), that is, the v2 upgrade version. The v2s version is not compatible with the v2 version developed by the ntop.org masters. To avoid confusion, the QQ group friends named the project separately.
