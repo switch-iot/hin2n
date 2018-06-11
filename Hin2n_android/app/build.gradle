@@ -127,6 +127,14 @@ android {
             dimension "channel"
             manifestPlaceholders += [UMENG_CHANNEL_VALUE: "normal"]
         }
+        github {
+            dimension "channel"
+            manifestPlaceholders += [UMENG_CHANNEL_VALUE: "github"]
+        }
+        osc {
+            dimension "channel"
+            manifestPlaceholders += [UMENG_CHANNEL_VALUE: "osc"]
+        }
         arm {
             dimension "arch"
             ndk {
