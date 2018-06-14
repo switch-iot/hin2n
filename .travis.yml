@@ -1,0 +1,59 @@
+language: android
+
+jdk:
+    - oraclejdk8
+
+os:
+    linux
+
+android:
+    components:
+        - tools
+        - platform-tools
+        - build-tools-25.0.0
+        - android-25
+
+before_cache:
+    - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+    - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+    directories:
+        - "$HOME/.gradle/caches/"
+        - "$HOME/.gradle/wrapper/"
+        - "$HOME/.android/build-cache"
+
+install:
+    - echo y | sdkmanager "ndk-bundle"
+    - echo y | sdkmanager "cmake;3.6.4111459"
+    - echo y | sdkmanager "lldb;3.1"
+    - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
+
+before_script:
+    - cd An2n
+    - chmod +x gradlew
+    - git submodule init
+    - git submodule sync
+    - git submodule update
+    - openssl aes-256-cbc -K $encrypted_3f9198e573fa_key -iv $encrypted_3f9198e573fa_iv -in app/An2n.jks.enc -out app/An2n.jks -d
+
+script:
+    - ./gradlew assembleRelease
+
+deploy:
+    provider: releases
+    api_key:
+        secure: A43i7MdFw1CzdppS+SsaNYHo6+wdX7tvDxLmJqDH/16gOm6XojT9ZlCWtRBqSgBRQijmZy/AnT6q4R40bF4Lyhy94NuJl7qUxNh8BEPxpB06OKTEcrif9yYqvu5uGcrU61k1LAkFJ1HMJVVVYzg7Mn9NHngFVtmYocgnyspga9YWdN1X2j8m/dIPL6o0uYBESTz0voR/7h6h+hUn0hlIgTY7G05InsnuQ6etw0ogG5akUlBmCYGK31L4iMrp3GxM4QxOMXcM5dEVYj0hiYmYpdDLP8dDqdrxF+vmdHOTbMimH2a57pXMevrxg8sg+mWDRo/3VJwH54wHfsQMQ1YHcCIkpnQI0hmCVh/f2HCPU20WC1xEw6YjWoU7Q211yiwgVFnZh93jvblucUx3uYxhNU7Kwd5utR6J6fFQ2RC7cl4+HZyzy94AFXXxpk71piCZrZRAOw6ZpnipfgJuk7RhBptdqkxJOjTOHsA7CTAwrmrfdZu/RGiFEcsPBIDkgpyHREQcvKY1GrMp/XaWnAU+oH8Zj3EwvMp75DtSu/ZT06BV9scufgo4gY2QGE7oVDb4ksk1FZPAxiWEBAO2i/PMESTTOtKuMUm44ffEGE6CXwIFFVCfMh9m8SLzxcbVdsK3nTyQ9Tdm+OYBKt6yQ15zFt/2GdCLBEmQDvit7ee3vJs=
+    file_glob: true
+    file: app/build/outputs/apk/*.apk
+    skip_cleanup: true
+    on:
+        repo: switch-iot/n2n_vLTS
+        tags: true
+        all_branches: true
+
+env:
+    global:
+        - secure: L9WA5NYxQLXyhyXnd9exoxZPFGlZD1XHwNU6SAemCIbiuQFZLJOctwBy5oVk/OYLErMA69qSDrUi6u2RSrWSP+kWMMmzITIvRzLIqFTSq/VyBhH6zJMUdH0TDlgtlr/bN2idjfZRfV/9n09yNIvr4SPAWsAl5Vl9241EH/JaCgGVQy/H7V6oy8YniFBRcmIuXi99DMfVOkSrEA0PQVdqPJCf8K5znmdgjO6wpipH/MVqZz2ChaQyhmH7BVvFkwAJxDCZ2gic9oNxco2LhxdkQNfpEJNm8Rpmlj7ZQfcMkgsi1+2U0bWwcgp70k1tgppeRURsR5IlykhtTofBxCcAsWCv7bBekA0aByD6JkT80hwVDJ7ElTBMoPMFjxruGfGwEvumJRQtJxcOIOLOxaByU5MMVTyp/7cnjipW+eo1cpglfPGv5YcwbGSAbnH89J3AcCKuaCLYzsUp+utPkLptWYq9rUEbfD/3rKWd6GWq3ypHc31Lm9gMDDKmUb0kZgW+QjZakznPsZU9yLQ+GgVnQs8y057q6PfyYL58X/ejS2gUnTjfXmxKi5wk0hIoJBxn5BpfkCedJCKgVSXfGMPJ32GAii5XSaIlR3WR6Ar1pM3VTQjijW+yfc5kcb675/b7Zit/9DUsxFpBRCRRkrPWeJ4HhKVQY5QLfAPvNKDPy9Q=
+        - secure: jBxEFdxpn4TGgk36RKsD6dSDDluJhWq5chfeLR+/fykV143QC8/WxaWjUnPDXWgByZSGdIHiDWipD700M2EyFqCN9si6kiTvofkw4zJJClUrhrJhNMEMFJ7h5Mtq2/SXJCJkTScqnRkku9uW0fuzb0m0i7LGyMkTtazFZ3wbvjzY2TKfsssEcIGsrBIksYW54nbc1wLROfsn9GNDPsKxibW0iLc1wjgxqqLsm7aSDQw7FVymu/EWsnBKlq0EqbVTC56gLv2dlF2wKxGCVj54/4z+tbYWJRmDvyR5aFiH/3CqGPnHBOFPSy4Vs4u96IfHdMUBxnBY09KsqTiv6WHjH3G0uFwzdhuI9xAfLpqrfuVOFWTmvQts4km1w+cxDrjwmHrPAjACXwp9hlu+cja+CCrR6l2U+YZEPkAtYyg8JUKLIqmOJEzOSPyynmR0Y9X0jiUqdzjgvjJAKeLp2B4bkgEzunuwY+VXXR+IwjiLOJ9f2WOVUPdaNZMcNoMDsAPINxL0UzUkpo2K9/dBV6mICAnKqSWCBHjevZ2uMTwL5fqvPLx+u5wsFqZLUMFYMfkAQPZeJUII1hG0zYOpkIJIcsQtoWNGseS9796JwEkxCw3rmbdPWNl1wtyRGkVUo7ajRps54AZC4QNTQRKzU4SGuVTkQ5blP7swvjdlGuus/X4=
+        - secure: KB68P89Yu7eI/+h90a6ox+N8WWisXvKKI+TXaKA+TIQAIZEY9wOb32z95pEwXdiFRAD+Xz8UI4pCb1ZLNT8HhzmSOOfcf0f5kzX5FWwyc9Zo5K/a0oUS3/t0R43+nDPVm+TSkpjfnxg6id6NKCWFcKNDw4VE/NzTjdJmZ7RjLXXlDclDgIQJeA30RVFXUS4foDr/1LV+x8e0UPU2ai+cKEhQcwYSq7VZQIDkGMS69ciek87rmjddvPyWOUNfUiUN6UthU12nLZtjnWMP69AnP1EVEzp6W2tvXT0pwU7rGOuSb4BHnMI1LV3a1IzaaPwOdmYwPn0zLtXNTq4Dm71QcU1uMJJxvjzkZpaGkKRc8NWIGLUOA7ISemxLkrmVHkbcUXkzU2God//O8sLn35Y4ZuC81xPYpYnqElc7HTTlukFa9jsqSlSDVRaU9lM8R3CIYg3FxKHcldYU8Xb6GyRioknfXaDVwpqwof4D9sCoyP3CYPcZh5jH8PlU3nb5akFjVePBQlEpPIMAkbeoAzczGk4SIAQdza1Jvhtwocq4nftyc+WZfylLTmNdSoHgR4rpdrRWvPoUE3V6K4Knf1xRocnlu7X+R0RsOK9/LQLfgberTw+RZEeN0BIUE/GTIqL69EvVtzWF8dGFHBl9qnbQuYydXezlj+oYXEhRDqu7X68=
