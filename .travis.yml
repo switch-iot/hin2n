@@ -1,0 +1,59 @@
+language: android
+
+jdk:
+    - oraclejdk8
+
+os:
+    linux
+
+android:
+    components:
+        - tools
+        - platform-tools
+        - build-tools-25.0.0
+        - android-25
+
+before_cache:
+    - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+    - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+    directories:
+        - "$HOME/.gradle/caches/"
+        - "$HOME/.gradle/wrapper/"
+        - "$HOME/.android/build-cache"
+
+install:
+    - echo y | sdkmanager "ndk-bundle"
+    - echo y | sdkmanager "cmake;3.6.4111459"
+    - echo y | sdkmanager "lldb;3.1"
+    - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
+
+before_script:
+    - cd Hin2n_android
+    - chmod +x gradlew
+    - git submodule init
+    - git submodule sync
+    - git submodule update
+    - openssl aes-256-cbc -K $encrypted_13aef818f0d2_key -iv $encrypted_13aef818f0d2_iv -in app/Hin2n.jks.enc -out app/Hin2n.jks -d
+
+script:
+    - ./gradlew assembleRelease
+
+deploy:
+    provider: releases
+    api_key:
+        secure: A43i7MdFw1CzdppS+SsaNYHo6+wdX7tvDxLmJqDH/16gOm6XojT9ZlCWtRBqSgBRQijmZy/AnT6q4R40bF4Lyhy94NuJl7qUxNh8BEPxpB06OKTEcrif9yYqvu5uGcrU61k1LAkFJ1HMJVVVYzg7Mn9NHngFVtmYocgnyspga9YWdN1X2j8m/dIPL6o0uYBESTz0voR/7h6h+hUn0hlIgTY7G05InsnuQ6etw0ogG5akUlBmCYGK31L4iMrp3GxM4QxOMXcM5dEVYj0hiYmYpdDLP8dDqdrxF+vmdHOTbMimH2a57pXMevrxg8sg+mWDRo/3VJwH54wHfsQMQ1YHcCIkpnQI0hmCVh/f2HCPU20WC1xEw6YjWoU7Q211yiwgVFnZh93jvblucUx3uYxhNU7Kwd5utR6J6fFQ2RC7cl4+HZyzy94AFXXxpk71piCZrZRAOw6ZpnipfgJuk7RhBptdqkxJOjTOHsA7CTAwrmrfdZu/RGiFEcsPBIDkgpyHREQcvKY1GrMp/XaWnAU+oH8Zj3EwvMp75DtSu/ZT06BV9scufgo4gY2QGE7oVDb4ksk1FZPAxiWEBAO2i/PMESTTOtKuMUm44ffEGE6CXwIFFVCfMh9m8SLzxcbVdsK3nTyQ9Tdm+OYBKt6yQ15zFt/2GdCLBEmQDvit7ee3vJs=
+    file_glob: true
+    file: app/build/outputs/apk/*.apk
+    skip_cleanup: true
+    on:
+        repo: switch-iot/n2n_vLTS
+        tags: true
+        all_branches: true
+
+env:
+    global:
+        - secure: iOkHa0yGhQWanR/EOEEqyeVVT08QWyNZf9Z7L9T9qBOMpJp92MdBAQkQnbMmA0hZ549OKM68Zfyea0u3cMN9g1vdw7kKEb/ZyaLFtj+YPodz7Aeos6Fb2PsflQdVayt3ROcwBi/GpL2WuYrZGyFLfJv2a6qyR1GYrsmgGBioH5W+0nszVpBhNW78SWvJE5H571Fpuud2swb6u0lg3flAQ60SywpSZhDpUJ5rRfTe98muLs6eyJYXsBgRVPfOqODRqt3ef+yO4U+QI7pCAKuC8bUzSEuZGyB74V8KQxyh+eiBZo2LfH2V4cVDDVfCW5kMjgt5VRFt78Go5YxTyIpFPXAfMJZmFE1jk+D85+Ip8Co1nIKesiwTNhCFOvWVzEJd/W0QnOJPPDpqWzNdoIBG1M39v2AVs9qKgXaGRjECPgB/fs1YnNBPL8tS7Aj20mMzsSt7w4lpPB1es5NUYYjM1vnnPvBWlZ2n8CtDgL3xWIkkZcYPOP8q3dbwYWVho2w/fsBoWBID4m/hhA3+wE6myPo5WUlZxbkYWhNN4tWaO0L882JuBk2Tp454kC6ZoKDliBpNT3RIAX+AuHujo5MVxJOycGlLLtFlahHTtuO71940tP6WYu/cAXh9Lx5yrfZ9qUyNscfdXZlOuViuNAW/+nvoOJ6/hGJKPzTKXK8vSfI=
+        - secure: UfYk4hqnM9aSEMbGlbL44sDq3hbL5pW5x/fvAnl1hjgjdOmfk8M9vx3F9ehaW3uP/qwYH/fbVs/cjdFQg6d283fqFipapJiRSg0UCyqbQVMWmyRBCxkGH+ioMV/cZndN6IQWqDzYSVnfmu2gs1cq4gCbcqV/bfQYIU0m41AyeMAIYJG0hDAVBPEINny+/9oyErFjssIQHxsJZuZW5pMHHCzt9uRjcuaTyDV83Ran1g3Xyt2qNxyHjPn7kieTc/aLaAzvsQdm5Mbgelhv0ohFWmAeVoczy+V2VKOocXY26TCQmWWHn+C0m26jt+wEVA7GSR5KtmlvusRpbKLn/Hr5kJg4UtUjz8i4gyKzm1DnIEr1StzSSUuPojLgiEGjJPS0co52Qfp9w4RfkYsrAd4+MrP1rc6Ni8MEwvKFHsEXgy9eN43nlYP7olPQswPItS1Cv40g4tfRc0j0FF95Yl990GLL4W9X3Fe+Oa3DTXCsCgi9X2zAoqiR0D0CYDhDvwEiM6OeDoy0ft1/bcSBodtWW7DOF6w2o9DH2jtMUC9QUJLI36xwPVvt0HOpn5imeXRq4JV3e4JAE2ZrTbQI6SG14+EfD19Ox1W7ckxvwS2ZlEhG73JGUd8pBzra609oXSw3UYyOskPSzGZ+aGtViba+hJw2gn3AZ1nEWE9EK6E/UL4=
+        - secure: MHHjXcPbunWdzaWE3ZssDm+bNfkGkKbEi1YKNVN/fVUCpmAkYQ/xSiUfzPvwL/lkf119Lx6L7vdYfkuN8NRYYWabOkY7mzAenPGB44MvQLMnJ4+u+XMoQ7AlFunGtkVpSJUmFuth81m5xrtPrGZZyT9EVx7BN7Cxm+vf5gYGU1G9G0N8rLIK1r7DefZg01SM7rGGZX2lfTYLZpOrg/cOrmPHS+2+tGKC1yA2exxRQedOhf7BUJtJNDAzL1JlLP5UvxoBXYaFJKeok0GyutpnVWaJ0ROShyMUmfrioxM2ULJfETCHHBR7v9ufkdhjLGI1hFoYCRqrHd4QdCg9oTZNcaaXdfn4gkYbuj+i5FlGIK2iC8p5M0PS4q5Ngcioq35uYTBF1ZRZGoPDhDOrmgud1cFEbZxnJxM2cm3gQiwY/yA19BaU2F98qQYvfhG0ONsn3ommUlSujZOdaWG5G8pIec6PmQEXHOAgzvrBMq7jlx0fGLpeETRsc3b2Iko6bdG305S86Epu3/tRPRUJv8poBHX1wYD++zGOiYI+D2F530S51YroEne437wwyN3acAD1qH6tfSPmVVbzs6l+/N0JKu61s2djCN4Mk2La5MZUtKq9py0nRRaHfuCvXJ7s5sXeRzYVKsVDS3UcxlH6fa/h7tr0Bfahag1xjDvwxcVJzQc=

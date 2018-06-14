@@ -4,7 +4,15 @@
 
 N2N is a VPN project that supports p2p. It was originally developed and open sourced by `Luca Deri` <deri@ntop.org>, `Richard Andrews` <andrews@ntop.org> of ntop.org, and `Meyerd` <https://github.com/meyerd> continues to do optimization work. Our goal is to continuously optimize n2n based on several masters and provide `mobile version` support.
 
-## Hin2n
+## Hin2n <img height="24" src="doc/pic/logo.png">
+
+[![gradle](https://img.shields.io/badge/gradle-2.14.1-green.svg?style=plastic)](https://docs.gradle.org/2.14.1/userguide/userguide.html)
+[![API](https://img.shields.io/badge/API-15%2B-green.svg?style=plastic)](https://android-arsenal.com/api?level=15)
+[![license](https://img.shields.io/github/license/switch-iot/n2n_vLTS.svg?style=plastic)](https://www.gnu.org/licenses/gpl-3.0)
+[![GitHub release](https://img.shields.io/github/release/switch-iot/n2n_vLTS/all.svg?style=plastic)](https://github.com/switch-iot/n2n_vLTS/releases)
+[![Github All Releases](https://img.shields.io/github/downloads/switch-iot/n2n_vLTS/total.svg?style=plastic)](https://github.com/switch-iot/n2n_vLTS/releases)
+[![Travis branch](https://img.shields.io/travis/switch-iot/n2n_vLTS/dev_android.svg?style=plastic)](https://travis-ci.org/switch-iot/n2n_vLTS)
+
 The original n2n supports many platforms, including windows, linux, osx, bsd, openwrt, raspberry pie, etc., except for mobile phones(non-root). Therefore, we have developed the Hin2n project.
 
 ### What is Hin2n

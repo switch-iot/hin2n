@@ -4,7 +4,15 @@
 
 n2n是一个支持内网穿透p2p的VPN项目，最初由ntop.org大神`Luca Deri` <deri@ntop.org>, `Richard Andrews` <andrews@ntop.org>开发并开源的项目，后由`meyerd`大神 <https://github.com/meyerd>继续做优化工作。我们的目的是在几位大神的基础上做持续优化并提供`手机版本`的支持。
 
-## Hin2n
+## Hin2n <img height="24" src="doc/pic/logo.png">
+
+[![gradle](https://img.shields.io/badge/gradle-2.14.1-green.svg?style=plastic)](https://docs.gradle.org/2.14.1/userguide/userguide.html)
+[![API](https://img.shields.io/badge/API-15%2B-green.svg?style=plastic)](https://android-arsenal.com/api?level=15)
+[![license](https://img.shields.io/github/license/switch-iot/n2n_vLTS.svg?style=plastic)](https://www.gnu.org/licenses/gpl-3.0)
+[![GitHub release](https://img.shields.io/github/release/switch-iot/n2n_vLTS/all.svg?style=plastic)](https://github.com/switch-iot/n2n_vLTS/releases)
+[![Github All Releases](https://img.shields.io/github/downloads/switch-iot/n2n_vLTS/total.svg?style=plastic)](https://github.com/switch-iot/n2n_vLTS/releases)
+[![Travis branch](https://img.shields.io/travis/switch-iot/n2n_vLTS/dev_android.svg?style=plastic)](https://travis-ci.org/switch-iot/n2n_vLTS)
+
 原版的n2n支持很多平台，包括windows，linux，osx，bsd，openwrt，raspberry pie等，唯独缺少对手机(非root)的支持。因此，我们开发了Hin2n项目。
 
 ### Hin2n是什么
