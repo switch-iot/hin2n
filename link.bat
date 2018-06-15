@@ -18,8 +18,8 @@ goto:eof
 
 :chklink
 if exist %~1 (
-	pushd %~1 2>nul && popd || (del /q %~1 & mklink /j %~1 %~2)
+	pushd %~1 2>nul && popd || (del /q %~1 & mklink /d %~1 %~2)
 ) else (
-	mklink /j %~1 %~2
+	mklink /d %~1 %~2
 )
 goto:eof
