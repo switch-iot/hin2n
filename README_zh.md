@@ -54,8 +54,8 @@ v2s版本是N2N交流QQ群(256572040)中对meyerd大神维护的v2版本(又称v
 - An2n项目的gradle是2.14.1版本，如需4.4版本的gradle，请将分支`dev_android_gradle4.4`下的文件拷贝至分支`dev_android`下，覆盖相应的文件
 - 切换分支时，需要执行git submodule update来同步submodule的代码
 
-### windows环境
-windows环境下需要设置git兼容符号链接。
+### Windows环境
+Windows环境下需要设置git兼容符号链接。
 - 打开`gpedit.msc`，将当前账户加入设置`计算机配置/Windows 设置/安全设置/本地策略/用户权限分配/创建符号链接`中。
 - 或以管理员用户运行git-bash
 - git clone -c `core.symlinks=true` https://github.com/switch-iot/n2n_vLTS.git `--recurse-submodules`

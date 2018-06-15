@@ -53,8 +53,8 @@ The v2s is the renaming of the v2 (also known as v2.1) developed by master Meyer
 - Execute `gradlew assemble` in An2n directory to compile Hin2n(For historical reasons, the original project was called an2n)
 - The gradle version of the An2n project is 2.14.1. If you want to upgrade the gradle version to 4.4, copy the file under the branch `dev_android_gradle4.4` to the branch `marster`/`dev_android` to overwrite the corresponding files.
 
-### windows environment
-The git compatible symbolic link needs to be set in the windows environment.
+### Windows environment
+The git compatible symbolic link needs to be set in the Windows environment.
 - Launch `gpedit.msc`, and add the account(s) to `Computer Configuration/Windows Setting/Security Settings/Local Policies/User Rights Assignment/Create symbolic links`.
 - Or run git-bash as an administrator user
 - git clone -c `core.symlinks=true` https://github.com/switch-iot/n2n_vLTS.git `--recurse-submodules`
