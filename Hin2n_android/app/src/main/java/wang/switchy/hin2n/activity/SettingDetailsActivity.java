@@ -373,7 +373,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
 //
 //                }
 
-                if (N2NService.INSTANCE != null && N2NService.INSTANCE.getEdgeStatus().isRunning) {
+                if (N2NService.INSTANCE != null && N2NService.INSTANCE.isRunning) {
                     Long currentSettingId = mHin2nSp.getLong("current_setting_id", -1);
 
                     if (currentSettingId == mSaveId) {

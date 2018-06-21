@@ -115,7 +115,7 @@ public class ListActivity extends BaseActivity {
                     return;
                 }
 
-                if (N2NService.INSTANCE != null && N2NService.INSTANCE.getEdgeStatus().isRunning) {
+                if (N2NService.INSTANCE != null && N2NService.INSTANCE.isRunning) {
                     mSweetAlertDialog = new SweetAlertDialog(ListActivity.this, SweetAlertDialog.WARNING_TYPE);
                     mSweetAlertDialog
                             .setTitleText("Change the setting ?")

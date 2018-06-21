@@ -1,25 +1,37 @@
 package wang.switchy.hin2n.service;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.net.VpnService;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.orhanobut.logger.Logger;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetAddress;
 
+import wang.switchy.hin2n.R;
+import wang.switchy.hin2n.event.ConnectingEvent;
 import wang.switchy.hin2n.event.ErrorEvent;
 import wang.switchy.hin2n.event.StartEvent;
 import wang.switchy.hin2n.event.StopEvent;
+import wang.switchy.hin2n.event.SupernodeDisconnectEvent;
 import wang.switchy.hin2n.model.EdgeCmd;
 import wang.switchy.hin2n.model.EdgeStatus;
 import wang.switchy.hin2n.model.N2NSettingInfo;
 
 import static wang.switchy.hin2n.model.EdgeCmd.getRandomMac;
+import static wang.switchy.hin2n.model.EdgeStatus.RunningStatus.CONNECTING;
+import static wang.switchy.hin2n.model.EdgeStatus.RunningStatus.DISCONNECT;
+import static wang.switchy.hin2n.model.EdgeStatus.RunningStatus.SUPERNODE_DISCONNECT;
 
 /**
  * Created by janiszhang on 2018/4/15.
@@ -35,6 +47,13 @@ public class N2NService extends VpnService {
     private ParcelFileDescriptor mParcelFileDescriptor = null;
     private EdgeCmd cmd;
     private boolean mStartResult;
+    public boolean isRunning;
+
+    private EdgeStatus.RunningStatus mLastStatus = DISCONNECT;
+    private EdgeStatus.RunningStatus mCurrentStatus = DISCONNECT;
+    
+    private static final int sNotificationId = 1;
+    private NotificationManager mNotificationManager;
 
     @Override
     public void onCreate() {
@@ -188,20 +207,136 @@ public class N2NService extends VpnService {
 
     public native void stopEdge();
 
-    public native EdgeStatus getEdgeStatus();
+//    public native EdgeStatus getEdgeStatus();
 
+    //    public void reportEdgeStatus(EdgeStatus status) {
+//        Log.e("zhangbz", "N2NService reportEdgeStatus");
+//        if (status != null) {
+//            if (status.isRunning) {
+//                EventBus.getDefault().post(new StartEvent());
+//            } else {
+//                EventBus.getDefault().post(new StopEvent());
+//
+//            }
+//        } else {
+//            //nothing to do
+//        }
+//    }
+
+    /**
+     * 暂且把SUPERNODE_DISCONNECT和DISCONNECT视为同一种，后续搞清楚再说
+     * @param status
+     */
     public void reportEdgeStatus(EdgeStatus status) {
-        Log.e("zhangbz", "N2NService reportEdgeStatus");
-        if (status != null) {
-            if (status.isRunning) {
-                EventBus.getDefault().post(new StartEvent());
-            } else {
-                EventBus.getDefault().post(new StopEvent());
 
-            }
-        } else {
-            //nothing to do
+        mLastStatus = mCurrentStatus;
+        mCurrentStatus = CONNECTING;
+        
+        switch (status.runningStatus) {
+            case CONNECTING:                     // Connecting to N2N network
+               
+//                Logger.d("reportEdgeStatus CONNECTING");
+//                EventBus.getDefault().post(new ConnectingEvent());
+                break;
+            case CONNECTED:                      // Connect to N2N network successfully
+                Logger.d("reportEdgeStatus CONNECTED");
+                
+                EventBus.getDefault().post(new StartEvent());
+                isRunning = true;
+                
+                if (mLastStatus == SUPERNODE_DISCONNECT) {
+                    showOrRemoveNotification(CMD_UPDATE_NOTIFICATION);
+                }
+                
+                break;
+            case SUPERNODE_DISCONNECT:          // Disconnect from the supernode
+                Logger.d("reportEdgeStatus SUPERNODE_DISCONNECT");
+//                isRunning = false;
+                showOrRemoveNotification(CMD_ADD_NOTIFICATION);
+                EventBus.getDefault().post(new SupernodeDisconnectEvent());
+                break;
+            case DISCONNECT:                     // Disconnect from N2N network
+                Logger.d("reportEdgeStatus DISCONNECT");
+                EventBus.getDefault().post(new StopEvent());
+                if (mLastStatus == SUPERNODE_DISCONNECT) {
+                    showOrRemoveNotification(CMD_REMOVE_NOTIFICATION);
+                }
+                isRunning = false;
+                break;
+            case FAILED:                          // Fail to connect to N2N network
+                Logger.d("reportEdgeStatus FAILED");
+                isRunning = false;
+                EventBus.getDefault().post(new StopEvent());
+                if (mLastStatus == SUPERNODE_DISCONNECT) {
+                    showOrRemoveNotification(CMD_REMOVE_NOTIFICATION);
+                }
+
+                Toast.makeText(INSTANCE, "Fail to connect to N2N network.", Toast.LENGTH_SHORT).show();
+
+                break;
+
+            default:
+                break;
         }
+
+    }
+
+    private static final int CMD_REMOVE_NOTIFICATION = 0;
+    private static final int CMD_ADD_NOTIFICATION = 1;
+    private static final int CMD_UPDATE_NOTIFICATION = 2;
+    //supernode连接断开 supernode连接恢复 连接断开/失败--清除通知栏
+    private void showOrRemoveNotification(int cmd) {
+
+        switch (cmd) {
+            case CMD_REMOVE_NOTIFICATION:
+
+                if (mNotificationManager == null) {
+                    mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                }
+
+                mNotificationManager.cancel(sNotificationId);
+                break;
+
+            case CMD_ADD_NOTIFICATION:
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Hin2n")
+                        .setContentText("Disconnect from the supernode.")
+                        .setFullScreenIntent(null, false)
+                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+
+                Notification notification = builder.build();
+                notification.flags |=Notification.FLAG_NO_CLEAR;
+
+                if (mNotificationManager == null) {
+                    mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                }
+
+                mNotificationManager.notify(sNotificationId, notification);
+                break;
+
+            case CMD_UPDATE_NOTIFICATION:
+                NotificationCompat.Builder builder2 = new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Hin2n")
+                        .setContentText("Connect to N2N network successfully.")
+                        .setFullScreenIntent(null, false)
+                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+
+                Notification notification2 = builder2.build();
+//                notification2.flags |=Notification.FLAG_NO_CLEAR;
+
+                if (mNotificationManager == null) {
+                    mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                }
+
+                mNotificationManager.notify(sNotificationId, notification2);
+                break;
+
+            default:
+                break;
+        }
+
     }
 
     private int getIpAddrPrefixLength(String netmask) {

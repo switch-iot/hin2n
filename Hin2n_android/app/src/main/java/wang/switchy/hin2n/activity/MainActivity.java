@@ -12,11 +12,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wang.avi.AVLoadingIndicatorView;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import wang.switchy.hin2n.Hin2nApplication;
+import wang.switchy.hin2n.event.ConnectingEvent;
+import wang.switchy.hin2n.event.SupernodeDisconnectEvent;
 import wang.switchy.hin2n.service.N2NService;
 import wang.switchy.hin2n.R;
 import wang.switchy.hin2n.event.ErrorEvent;
@@ -34,6 +38,8 @@ public class MainActivity extends BaseActivity {
     private RelativeLayout mCurrentSettingItem;
     private TextView mCurrentSettingName;
     private ImageView mConnectBtn;
+//    private AVLoadingIndicatorView mLoadingView;
+    private TextView mSupernodeDisconnectNote;
 
     @Override
     protected BaseTemplate createTemplate() {
@@ -59,16 +65,7 @@ public class MainActivity extends BaseActivity {
             EventBus.getDefault().register(this);
         }
 
-        mCurrentSettingItem = (RelativeLayout) findViewById(R.id.rl_current_setting_item);
-        mCurrentSettingItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, ListActivity.class));
-
-            }
-        });
-
-        mCurrentSettingName = (TextView) findViewById(R.id.tv_current_setting_name);
+//        mLoadingView = (AVLoadingIndicatorView) findViewById(R.id.loading_view);
 
         mConnectBtn = (ImageView) findViewById(R.id.iv_connect_btn);
 
@@ -76,7 +73,7 @@ public class MainActivity extends BaseActivity {
 
             mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
         } else {
-            if (N2NService.INSTANCE.getEdgeStatus().isRunning) {
+            if (N2NService.INSTANCE.isRunning) {
                 mConnectBtn.setImageResource(R.mipmap.ic_state_connect);
 
             } else {
@@ -95,7 +92,7 @@ public class MainActivity extends BaseActivity {
                     return;
                 }
 
-                if (N2NService.INSTANCE != null && N2NService.INSTANCE.getEdgeStatus().isRunning) {
+                if (N2NService.INSTANCE != null && N2NService.INSTANCE.isRunning) {
                     N2NService.INSTANCE.stop();
                 } else {
 
@@ -111,6 +108,19 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+
+        mSupernodeDisconnectNote = (TextView) findViewById(R.id.tv_supernode_disconnect_note);
+
+        mCurrentSettingItem = (RelativeLayout) findViewById(R.id.rl_current_setting_item);
+        mCurrentSettingItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, ListActivity.class));
+
+            }
+        });
+
+        mCurrentSettingName = (TextView) findViewById(R.id.tv_current_setting_name);
 
 
     }
@@ -178,12 +188,20 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStartEvent(StartEvent event) {
+//        mLoadingView.setVisibility(View.GONE);
+        mConnectBtn.setVisibility(View.VISIBLE);
         mConnectBtn.setImageResource(R.mipmap.ic_state_connect);
+        mSupernodeDisconnectNote.setVisibility(View.GONE);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStopEvent(StopEvent event) {
+//        mLoadingView.setVisibility(View.GONE);
+        mConnectBtn.setVisibility(View.VISIBLE);
         mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
+        mSupernodeDisconnectNote.setVisibility(View.GONE);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -191,6 +209,20 @@ public class MainActivity extends BaseActivity {
         mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
 
         Toast.makeText(mContext, "~_~Error~_~", Toast.LENGTH_SHORT).show();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onConnectingEvent(ConnectingEvent event) {
+        mConnectBtn.setVisibility(View.GONE);
+//        mLoadingView.setVisibility(View.VISIBLE);
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSupernodeDisconnectEvent(SupernodeDisconnectEvent event) {
+//        mLoadingView.setVisibility(View.GONE);
+        mConnectBtn.setImageResource(R.mipmap.ic_state_supernode_diconnect);
+        mSupernodeDisconnectNote.setVisibility(View.VISIBLE);
     }
 
 }
