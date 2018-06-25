@@ -51,13 +51,14 @@ The v2s is the renaming of the v2 (also known as v2.1) developed by master Meyer
 - git clone https://github.com/switch-iot/n2n_vLTS.git `--recurse-submodules`
 - Hin2n_android directory is the Hin2n project Android source directory
 - Execute `gradlew assemble` in Hin2n_android directory to compile Hin2n
-- The gradle version of the Hin2n_android project is 2.14.1. If you want to upgrade the gradle version to 4.4, copy the file under the branch `dev_android_gradle4.4` to the branch `marster`/`dev_android` to overwrite the corresponding files.
+- The gradle version of the Hin2n_android project is 2.14.1. If you want to upgrade the gradle version to 4.4, copy the file under the branch `dev_android_gradle4.4` to the branch `dev_android` to overwrite the corresponding files
+- When switching branches, you need to execute `git submodule update` to synchronize the code of the submodules
 
 ### Windows environment
 The git compatible symbolic link needs to be set in the Windows environment.
-- Launch `gpedit.msc`, and add the account(s) to `Computer Configuration/Windows Setting/Security Settings/Local Policies/User Rights Assignment/Create symbolic links`.
-- Or run git-bash as an administrator user
-- git clone -c `core.symlinks=true` https://github.com/switch-iot/n2n_vLTS.git `--recurse-submodules`
+- Launch `gpedit.msc`, and add the account(s) to `Computer Configuration/Windows Setting/Security Settings/Local Policies/User Rights Assignment/Create symbolic links`
+- Or run git-cmd as an administrator user, and execute the following command
+- git clone -c `core.symlinks=true` https://github.com/switch-iot/n2n_vLTS.git `--recurse-submodules`  && cd n2n_vLTS && `link.bat`
 
 ### About open source agreement
 The project is open sourced under the [`GPLv3`](LICENSE) agreement, and is consistent with the original open source agreement of n2n. We also hope that everyone will support and comply with the open source agreement of this project.

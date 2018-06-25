@@ -51,13 +51,14 @@ v2s版本是N2N交流QQ群(256572040)中对meyerd大神维护的v2版本(又称v
 - git clone https://github.com/switch-iot/n2n_vLTS.git `--recurse-submodules`
 - Hin2n_android目录即是Hin2n项目安卓源码目录
 - Hin2n_android目录下执行`gradlew assemble`编译
-- Hin2n_android项目的gradle是2.14.1版本，如需4.4版本的gradle，请将分支`dev_android_gradle4.4`下的文件拷贝至分支`marster`/`dev_android`下，覆盖相应的文件
+- Hin2n_android项目的gradle是2.14.1版本，如需4.4版本的gradle，请将分支`dev_android_gradle4.4`下的文件拷贝至分支`dev_android`下，覆盖相应的文件
+- 切换分支时，需要执行`git submodule update`来同步submodule的代码
 
 ### Windows环境
 Windows环境下需要设置git兼容符号链接。
 - 打开`gpedit.msc`，将当前账户加入设置`计算机配置/Windows 设置/安全设置/本地策略/用户权限分配/创建符号链接`中。
-- 或以管理员用户运行git-bash
-- git clone -c `core.symlinks=true` https://github.com/switch-iot/n2n_vLTS.git `--recurse-submodules`
+- 或以管理员用户运行git-cmd，并执行下述命令
+- git clone -c `core.symlinks=true` https://github.com/switch-iot/n2n_vLTS.git `--recurse-submodules` && cd n2n_vLTS && `link.bat`
 
 ### 关于开源协议
 该项目以[`GPLv3`](LICENSE)协议进行开源，与n2n原有开源协议保持一致，也希望大家支持并遵守本项目的开源协议。
