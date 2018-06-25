@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/c_white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:id="@+id/iv_connect_btn"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"
+            android:src="@mipmap/ic_state_connect"/>
+
+        <!--<com.wang.avi.AVLoadingIndicatorView-->
+            <!--android:id="@+id/loading_view"-->
+            <!--android:layout_marginTop="140dp"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:visibility="gone"-->
+            <!--app:indicatorColor="#23A5F0"-->
+            <!--app:indicatorName="BallPulseIndicator"/>-->
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_supernode_disconnect_note"
+            android:layout_below="@id/iv_connect_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:text="Note : Disconnect from the supernode."/>
+
+        <RelativeLayout
+            android:id="@+id/rl_current_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_connect_btn"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="50dp">
+
+            <TextView
+
+                android:id="@+id/tv_current_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="Current Setting : "
+                android:textSize="18dp"/>
+
+            <RelativeLayout
+                android:id="@+id/rl_current_setting_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tv_current_setting">
+
+                <TextView
+                    android:id="@+id/tv_current_setting_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:text="--null--"
+                    android:textSize="18dp"/>
+
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/img_more"/>
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+        <Button
+            android:id="@+id/btn_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_current_setting"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="30dp"
+            android:text="Start"
+            android:visibility="invisible"/>
+
+    </RelativeLayout>
+</RelativeLayout>

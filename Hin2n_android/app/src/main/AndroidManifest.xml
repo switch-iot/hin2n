@@ -15,7 +15,10 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <!--Umeng end-->
+
+    <uses-permission android:name="android.permission.READ_LOGS" />
 
     <application
         android:name=".Hin2nApplication"
@@ -39,6 +42,8 @@
 
         <activity android:name=".activity.SettingDetailsActivity"
                   android:screenOrientation="portrait"/>
+        <activity android:name=".activity.AboutActivity"
+            android:screenOrientation="portrait"/>
 
         <service android:name=".service.N2NService"
             android:permission="android.permission.BIND_VPN_SERVICE">
@@ -46,6 +51,21 @@
                 <action android:name="android.net.VpnService" />
             </intent-filter>
         </service>
+
+        <activity
+            android:name="com.tencent.bugly.beta.ui.BetaActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|locale"
+            android:theme="@android:style/Theme.Translucent" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
 
         <!--友盟统计相关meta-data-->
         <meta-data
