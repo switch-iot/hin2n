@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/rl_title"
@@ -14,25 +14,27 @@
             android:id="@+id/iv_left_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
             android:visibility="visible"/>
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:text="Hin2n"
-            android:textSize="20dp"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white"
+            android:textSize="20dp"/>
 
         <ImageView
             android:id="@+id/iv_right_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:visibility="visible"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"/>
+            android:padding="10dp"
+            android:visibility="visible"/>
     </RelativeLayout>
 
     <FrameLayout
