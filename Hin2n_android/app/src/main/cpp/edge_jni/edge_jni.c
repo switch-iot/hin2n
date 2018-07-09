@@ -9,7 +9,9 @@
 #include <fcntl.h>
 #include "edge_jni.h"
 
-static int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t* cmd);
+static n2n_edge_status_t status;
+
+static int GetEdgeCmd(JNIEnv* env, jobject jcmd, n2n_edge_cmd_t* cmd);
 static void* EdgeRoutine(void*);
 static void ResetEdgeStatus(JNIEnv* env, uint8_t cleanup);
 static void InitEdgeStatus(void);
@@ -60,9 +62,24 @@ JNIEXPORT jboolean JNICALL Java_wang_switchy_hin2n_service_N2NService_startEdge(
     }
     status.jcls_rs = (*env)->NewGlobalRef(env, cls_rs);
 
-    status.edge_type = EDGE_TYPE_V2S;
-    status.start_edge = start_edge_v2s;
-    status.stop_edge = stop_edge_v2s;
+    switch (status.edge_type) {
+        case EDGE_TYPE_V1:
+            status.start_edge = start_edge_v1;
+            status.stop_edge = stop_edge_v1;
+            break;
+        case EDGE_TYPE_V2:
+            status.start_edge = start_edge_v2;
+            status.stop_edge = stop_edge_v2;
+            break;
+        case EDGE_TYPE_V2S:
+            status.start_edge = start_edge_v2s;
+            status.stop_edge = stop_edge_v2s;
+            break;
+        default:
+            ResetEdgeStatus(env, 1 /* cleanup*/);
+            return JNI_FALSE;
+    }
+    status.report_edge_status = report_edge_status;
     pthread_mutex_init(&status.mutex, NULL);
     int ret = pthread_create(&status.tid, NULL, EdgeRoutine, NULL);
     if (ret != 0) {
@@ -121,6 +138,7 @@ JNIEXPORT jobject JNICALL Java_wang_switchy_hin2n_service_N2NService_getEdgeStat
     jclass cls_rs = (*env)->FindClass(env, "wang/switchy/hin2n/model/EdgeStatus$RunningStatus");
     jobject jRunningStatus = (*env)->GetStaticObjectField(env, cls_rs, (*env)->GetStaticFieldID(env, cls_rs, running_status, "Lwang/switchy/hin2n/model/EdgeStatus$RunningStatus;"));
     (*env)->SetObjectField(env, jStatus, (*env)->GetFieldID(env, cls, "runningStatus", "Lwang/switchy/hin2n/model/EdgeStatus$RunningStatus;"), jRunningStatus);
+
     return jStatus;
 }
 
@@ -129,13 +147,27 @@ JNIEXPORT jobject JNICALL Java_wang_switchy_hin2n_service_N2NService_getEdgeStat
 #define JNI_CHECKNULL(p)            do { if (!(p)) return 1;}while(0)
 #endif /* JNI_CHECKNULL */
 
-int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t* cmd)
+int GetEdgeCmd(JNIEnv* env, jobject jcmd, n2n_edge_cmd_t* cmd)
 {
     jclass cls;
     int i, j;
 
     cls = (*env)->GetObjectClass(env, jcmd);
     JNI_CHECKNULL(cls);
+
+    // edgeType
+    {
+        jint jiEdgeType = (*env)->GetIntField(env, jcmd,
+                                              (*env)->GetFieldID(env, cls, "edgeType", "I"));
+        if (jiEdgeType < EDGE_TYPE_V1 || jiEdgeType > EDGE_TYPE_V2S) {
+            return 1;
+        }
+        status.edge_type = jiEdgeType;
+
+#ifndef NDEBUG
+        __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "edgeType = %d", status.edge_type);
+#endif /* #ifndef NDEBUG */
+    }
 
     // ipAddr
     {
@@ -229,7 +261,7 @@ int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t* cmd)
         }
     }
     // encKeyFile
-    {
+    if (status.edge_type == EDGE_TYPE_V2 || status.edge_type == EDGE_TYPE_V2S) {
         jstring jsEncKeyFile = (*env)->GetObjectField(env, jcmd, (*env)->GetFieldID(env, cls, "encKeyFile", "Ljava/lang/String;"));
         if (jsEncKeyFile) {
             const char* encKeyFile = (*env)->GetStringUTFChars(env, jsEncKeyFile, NULL);
@@ -267,7 +299,7 @@ int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t* cmd)
 #endif /* #ifndef NDEBUG */
     }
     // localIP
-    {
+    if (status.edge_type == EDGE_TYPE_V2S) {
         jstring jsLocalIP = (*env)->GetObjectField(env, jcmd, (*env)->GetFieldID(env, cls, "localIP", "Ljava/lang/String;"));
         JNI_CHECKNULL(jsLocalIP);
         const char* localIP = (*env)->GetStringUTFChars(env, jsLocalIP, NULL);
@@ -280,7 +312,7 @@ int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t* cmd)
 #endif /* #ifndef NDEBUG */
     }
     // holePunchInterval
-    {
+    if (status.edge_type == EDGE_TYPE_V2S) {
         jint jiHolePunchInterval = (*env)->GetIntField(env, jcmd, (*env)->GetFieldID(env, cls, "holePunchInterval", "I"));
         if (jiHolePunchInterval <= 0) {
             return 1;
@@ -292,7 +324,7 @@ int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t* cmd)
     }
     // reResoveSupernodeIP
     {
-        jboolean jbReResoveSupernodeIP= (*env)->GetBooleanField(env, jcmd, (*env)->GetFieldID(env, cls, "reResoveSupernodeIP", "Z"));
+        jboolean jbReResoveSupernodeIP = (*env)->GetBooleanField(env, jcmd, (*env)->GetFieldID(env, cls, "reResoveSupernodeIP", "Z"));
         cmd->re_resolve_supernode_ip = jbReResoveSupernodeIP ? 1 : 0;
 #ifndef NDEBUG
         __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "reResoveSupernodeIP = %d", cmd->re_resolve_supernode_ip);
@@ -309,20 +341,28 @@ int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t* cmd)
         __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "localPort = %d", cmd->local_port);
 #endif /* #ifndef NDEBUG */
     }
-    // reResoveSupernodeIP
+    // allowRouting
     {
-        jboolean jbAllowRouting= (*env)->GetBooleanField(env, jcmd, (*env)->GetFieldID(env, cls, "allowRouting", "Z"));
+        jboolean jbAllowRouting = (*env)->GetBooleanField(env, jcmd, (*env)->GetFieldID(env, cls, "allowRouting", "Z"));
         cmd->allow_routing = jbAllowRouting ? 1 : 0;
 #ifndef NDEBUG
         __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "allowRouting = %d", cmd->allow_routing);
 #endif /* #ifndef NDEBUG */
     }
     // dropMuticast
-    {
-        jboolean jbDropMuticast= (*env)->GetBooleanField(env, jcmd, (*env)->GetFieldID(env, cls, "dropMuticast", "Z"));
+    if (status.edge_type == EDGE_TYPE_V2 || status.edge_type == EDGE_TYPE_V2S) {
+        jboolean jbDropMuticast = (*env)->GetBooleanField(env, jcmd, (*env)->GetFieldID(env, cls, "dropMuticast", "Z"));
         cmd->drop_multicast = jbDropMuticast ? 1 : 0;
 #ifndef NDEBUG
         __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "dropMuticast = %d", cmd->drop_multicast);
+#endif /* #ifndef NDEBUG */
+    }
+    // httpTunnel
+    if (status.edge_type == EDGE_TYPE_V1) {
+        jboolean jbHttpTunnel = (*env)->GetBooleanField(env, jcmd, (*env)->GetFieldID(env, cls, "httpTunnel", "Z"));
+        cmd->http_tunnel = jbHttpTunnel ? 1 : 0;
+#ifndef NDEBUG
+        __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "httpTunnel = %d", cmd->http_tunnel);
 #endif /* #ifndef NDEBUG */
     }
     // traceLevel
@@ -359,6 +399,7 @@ void InitEdgeStatus(void)
     status.cmd.local_port = 0;
     status.cmd.allow_routing = 0;
     status.cmd.drop_multicast = 1;
+    status.cmd.http_tunnel = 0;
     status.cmd.trace_vlevel = 1;
     status.cmd.vpn_fd = -1;
 
@@ -369,6 +410,7 @@ void InitEdgeStatus(void)
     status.jcls_rs = NULL;
     status.start_edge = NULL;
     status.stop_edge = NULL;
+    status.report_edge_status = NULL;
 
     status.edge_type = EDGE_TYPE_NONE;
     status.running_status = EDGE_STAT_DISCONNECT;
@@ -432,7 +474,8 @@ void* EdgeRoutine(void* ignore)
     if (!status.start_edge) {
         return (void*)-1;
     }
-    int ret = status.start_edge(&status.cmd);
+
+    int ret = status.start_edge(&status);
     if (ret) {
         pthread_mutex_lock(&status.mutex);
         status.running_status = EDGE_STAT_FAILED;

@@ -34,6 +34,7 @@ typedef struct n2n_edge_cmd_st
     unsigned int local_port;
     int allow_routing;
     int drop_multicast;
+    int http_tunnel;
     int trace_vlevel;
     int vpn_fd;
 } n2n_edge_cmd_t;
@@ -63,22 +64,23 @@ typedef struct n2n_edge_status_st {
     jobject jobj_service;
     jclass jcls_status;
     jclass jcls_rs;
-    int (*start_edge)(const n2n_edge_cmd_t* cmd);
+    int (*start_edge)(struct n2n_edge_status_st* status);
     int (*stop_edge)(void);
+    void (*report_edge_status)(void);
 
     uint8_t edge_type;      // TODO add edge_type in java
     uint8_t running_status;
-} n2n_edge_status;
+} n2n_edge_status_t;
 
-n2n_edge_status status;
+n2n_edge_status_t* g_status;
 
-extern int start_edge_v1(const n2n_edge_cmd_t* cmd);
+extern int start_edge_v1(n2n_edge_status_t* status);
 extern int stop_edge_v1(void);
-extern int start_edge_v2(const n2n_edge_cmd_t* cmd);
+extern int start_edge_v2(n2n_edge_status_t* status);
 extern int stop_edge_v2(void);
-extern int start_edge_v2s(const n2n_edge_cmd_t* cmd);
+extern int start_edge_v2s(n2n_edge_status_t* status);
 extern int stop_edge_v2s(void);
-void report_edge_status(void);
+extern void report_edge_status(void);
 
 #endif /* __ANDROID_NDK__ */
 

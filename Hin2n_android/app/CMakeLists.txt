@@ -29,12 +29,32 @@ endif(CMAKE_BUILD_TYPE)
 add_definitions(-DN2N_VERSION=\"${N2N_VERSION}\" -DN2N_OSNAME=\"${N2N_OSNAME}\" -DN2N_MODIFY_VERSION=\"${N2N_MODIFY_VERSION}\" -DN2N_MODIFY_AUTHOR=\"${N2N_MODIFY_AUTHOR}\" -DUIP_CONF_BYTE_ORDER=\"${UIP_CONF_BYTE_ORDER}\")
 include_directories(src/main/cpp src/main/cpp/edge_jni src/main/cpp/slog src/main/cpp/tun2tap src/main/cpp/uip)
 
-add_library(edge SHARED
+add_library(edge_jni SHARED
                 src/main/cpp/edge_jni/edge_jni.c
+            )
+target_link_libraries(edge_jni edge_v2s)
+target_link_libraries(edge_jni edge_v2)
+target_link_libraries(edge_jni edge_v1)
+target_link_libraries(edge_jni slog)
+
+add_library(edge_v2s SHARED
                 src/main/cpp/n2n_v2s/edge.c
             )
-target_link_libraries(edge n2n_v2s)
-target_link_libraries(edge slog)
+target_link_libraries(edge_v2s n2n_v2s)
+target_link_libraries(edge_v2s slog)
+
+add_library(edge_v2 SHARED
+                src/main/cpp/n2n_v2/android/edge_android.c
+                src/main/cpp/n2n_v2/edge_utils.c
+            )
+target_link_libraries(edge_v2 n2n_v2)
+target_link_libraries(edge_v2 slog)
+
+add_library(edge_v1 SHARED
+                src/main/cpp/n2n_v1/edge.c
+            )
+target_link_libraries(edge_v1 n2n_v1)
+target_link_libraries(edge_v1 slog)
 
 add_library(n2n_v2s SHARED
                 src/main/cpp/n2n_v2s/n2n.c
@@ -50,6 +70,31 @@ add_library(n2n_v2s SHARED
             )
 target_link_libraries(n2n_v2s uip)
 target_link_libraries(n2n_v2s slog)
+
+add_library(n2n_v2 SHARED
+                src/main/cpp/n2n_v2/n2n.c
+                src/main/cpp/n2n_v2/n2n_keyfile.c
+                src/main/cpp/n2n_v2/wire.c
+                src/main/cpp/n2n_v2/minilzo.c
+                src/main/cpp/n2n_v2/twofish.c
+                src/main/cpp/n2n_v2/transform_null.c
+                src/main/cpp/n2n_v2/transform_tf.c
+                src/main/cpp/n2n_v2/transform_aes.c
+                src/main/cpp/n2n_v2/android/tuntap_android.c
+                src/main/cpp/n2n_v2/version.c
+            )
+target_link_libraries(n2n_v2 uip)
+target_link_libraries(n2n_v2 slog)
+
+add_library(n2n_v1 SHARED
+                src/main/cpp/n2n_v1/n2n.c
+                src/main/cpp/n2n_v1/minilzo.c
+                src/main/cpp/n2n_v1/twofish.c
+                src/main/cpp/n2n_v1/android/tuntap_android.c
+                src/main/cpp/n2n_v1/version.c
+            )
+target_link_libraries(n2n_v1 uip)
+target_link_libraries(n2n_v1 slog)
 
 add_library(uip SHARED
                 src/main/cpp/uip/uip.c

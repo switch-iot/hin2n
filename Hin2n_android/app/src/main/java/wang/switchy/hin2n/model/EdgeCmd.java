@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.Vector;
 
 public class EdgeCmd {
+    public int edgeType;    // 0: v1, 1: v2, 2: v2s
     public String ipAddr;
     public String ipNetmask;
     public String[] supernodes;
@@ -20,6 +21,7 @@ public class EdgeCmd {
     public int localPort;
     public boolean allowRouting;
     public boolean dropMuticast;
+    public boolean httpTunnel;
     public int traceLevel;
     public int vpnFd;
 
