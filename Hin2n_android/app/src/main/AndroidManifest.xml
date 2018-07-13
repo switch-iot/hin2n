@@ -76,6 +76,18 @@
             android:name="UMENG_CHANNEL"
             android:value="${UMENG_CHANNEL_VALUE}"/> <!-- 渠道号 -->
 
+        <meta-data
+            android:name="BUGLY_APPID"
+            android:value="${BUGLY_APPID_VALUE}"/> <!-- bugly -->
+
+        <meta-data
+            android:name="SHARE_WX_APPID"
+            android:value="${SHARE_WX_APPID_VALUE}"/> <!-- share weixin app id -->
+
+        <meta-data
+            android:name="SHARE_WX_APPSECRET"
+            android:value="${SHARE_WX_APPSECRET_VALUE}"/> <!-- share weixin app secret -->
+
     </application>
 
 

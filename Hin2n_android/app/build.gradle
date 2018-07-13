@@ -45,6 +45,30 @@ def getEnvOrConsole = { env, prompt ->
     return val
 }
 
+def getManifestValues = { id_key, variant ->
+    def val = true
+    def id = getEnvOrConsole(id_key, id_key)
+    if (id == null || id == "") {
+        gradle.println(id_key + " is not set")
+        val = false
+    } else {
+        if (variant) {
+            variant.mergedFlavor.manifestPlaceholders.put(id_key + "_VALUE", id)
+        }
+    }
+
+    return val
+}
+
+def getAllManifestValues = { variant ->
+    def v1 = getManifestValues("UMENG_APPKEY", variant)
+    def v2 = getManifestValues("BUGLY_APPID", variant)
+    def v3 = getManifestValues("SHARE_WX_APPID", variant)
+    def v4 = getManifestValues("SHARE_WX_APPSECRET", variant)
+
+    return v1 && v2
+}
+
 android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
@@ -55,7 +79,7 @@ android {
         versionCode getVersionCode()
         versionName getVersionName()
         multiDexEnabled true //突破方法数65535的限制
-        manifestPlaceholders = [UMENG_CHANNEL_VALUE: "normal", ARCH: "all", UMENG_APPKEY_VALUE: ""]
+        manifestPlaceholders = [UMENG_CHANNEL_VALUE: "normal", ARCH: "all", UMENG_APPKEY_VALUE: "", BUGLY_APPID_VALUE: "", SHARE_WX_APPID_VALUE: "", SHARE_WX_APPSECRET_VALUE: ""]
         resConfigs "en", "zh-rCN", "zh-rTW" // 多语言
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -63,10 +87,6 @@ android {
             cmake {
                 cppFlags ""
             }
-        }
-
-        ndk {
-            abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
     }
 
@@ -100,25 +120,28 @@ android {
         }
     }
 
+    gradle.taskGraph.beforeTask { Task task ->
+        if (task.name.contains("Release")) {
+            task.onlyIf {
+                return getAllManifestValues()
+            }
+        }
+    }
+
     //配置自定义打包名称
     applicationVariants.all { variant ->
-        if (variant.buildType.name == "release") {
-            def umeng_appkey = getEnvOrConsole("UMENG_APPKEY", "UMENG appkey")
-            if (umeng_appkey == null) {
-                variant.println("UMENG_APPKEY is not set")
-                return
-            }
-            variant.mergedFlavor.manifestPlaceholders += [UMENG_APPKEY_VALUE: umeng_appkey]
+        getAllManifestValues(variant)
+        if (variant.buildType.name == 'debug') {
+            variant.mergedFlavor.manifestPlaceholders.UMENG_CHANNEL_VALUE = 'umtest'
         }
 
         variant.outputs.each { output ->
             def outputFile = output.outputFile
-            def fileName = null
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
                 variant.mergedFlavor.versionName = getVersionName()
                 def channel = variant.mergedFlavor.manifestPlaceholders.UMENG_CHANNEL_VALUE
                 def arch = variant.mergedFlavor.manifestPlaceholders.ARCH
-                fileName = "${variant.mergedFlavor.versionName}_${channel}_${arch}_${variant.buildType.name}.apk"
+                def fileName = "${variant.mergedFlavor.versionName}_${channel}_${arch}_${variant.buildType.name}.apk"
                 output.outputFile = new File(output.outputFile.parent, fileName)
             }
         }
@@ -161,10 +184,6 @@ android {
             }
         }
     }
-
-//    productFlavors.all {
-//        flavor -> flavor.manifestPlaceholders += [UMENG_CHANNEL_VALUE: name]
-//    }
 
 
     externalNativeBuild {

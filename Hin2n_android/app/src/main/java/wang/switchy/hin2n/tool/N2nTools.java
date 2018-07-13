@@ -10,6 +10,13 @@ import android.util.TypedValue;
  */
 
 public class N2nTools {
+    public static final String MetaUmengAppKey = "UMENG_APPKEY";
+    public static final String MetaUmengChannel = "UMENG_CHANNEL";
+    public static final String MetaBuglyAppId = "BUGLY_APPID";
+    public static final String MetaShareWxAppId = "SHARE_WX_APPID";
+    public static final String MetaShareWxAppSecret = "SHARE_WX_APPSECRET";
+
+
     public static int dp2px(Context context, int dp) {
 
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
@@ -37,5 +44,15 @@ public class N2nTools {
         }
 
         return 0;
+    }
+
+    public static String getMetaData(Context context, String key) {
+        try {
+            return context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData.getString(key, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 }
