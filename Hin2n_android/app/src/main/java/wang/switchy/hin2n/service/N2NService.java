@@ -2,6 +2,7 @@ package wang.switchy.hin2n.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.VpnService;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 
 import wang.switchy.hin2n.R;
+import wang.switchy.hin2n.activity.MainActivity;
 import wang.switchy.hin2n.event.ConnectingEvent;
 import wang.switchy.hin2n.event.ErrorEvent;
 import wang.switchy.hin2n.event.StartEvent;
@@ -66,8 +68,6 @@ public class N2NService extends VpnService {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         Log.e("zhangbz", "N2NService onStartCommand");
-
-//        intent.getBundleExtra("");
         if (intent != null) {
             Log.e("zhangbz", "intent != null");
         } else {
@@ -75,24 +75,14 @@ public class N2NService extends VpnService {
         }
 
         Bundle setting = intent.getBundleExtra("Setting");
-//        N2NSettingModel n2nSettingInfo = setting.getParcelable("n2nSettingInfo");
         N2NSettingInfo n2nSettingInfo = setting.getParcelable("n2nSettingInfo");
 
         Builder b = new Builder();
-        Log.e("zhangbz", "n2nSettingInfo = " + n2nSettingInfo.toString());
-
-        Log.e("zhangbz", "mtu = " + n2nSettingInfo.getMtu());
         b.setMtu(n2nSettingInfo.getMtu());
-
         String ipAddress = n2nSettingInfo.getIp();
-        Log.e("zhangbz", "ipAddress = " + ipAddress + "; getIpAddrPrefixLength(n2nSettingInfo.getNetmask()) = " + getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
-
         b.addAddress(ipAddress, getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
 
-//        String[] split = ipAddress.split("\\.");//参数不能直接写成"."
-//        String route = split[0] + "." + split[1] + "." + split[2] + ".0";
         String route = getRoute(ipAddress, getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
-        Log.e("zhangbz", "route = " + route);
         b.addRoute(route, getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
 
         try {
@@ -108,13 +98,6 @@ public class N2NService extends VpnService {
             return super.onStartCommand(intent, flags, startId);
         }
 
-//        测试代码
-//        Builder b = new Builder();
-//        b.setMtu(1400);
-//        String ipAddress = "192.168.111.2";
-//        b.addAddress(ipAddress, 24);
-//        b.addRoute("192.168.111.0", 24);
-//        mParcelFileDescriptor = b.setSession("N2N_V2S")/*.setConfigureIntent(pendingIntent)*/.establish();
 
         if (mParcelFileDescriptor != null) {
             Log.e("zhangbz", "mParcelFileDescriptor != null");
@@ -127,6 +110,7 @@ public class N2NService extends VpnService {
 
 
         cmd = new EdgeCmd();
+        cmd.edgeType = n2nSettingInfo.getVersion();
         cmd.ipAddr = n2nSettingInfo.getIp();
         cmd.ipNetmask = n2nSettingInfo.getNetmask();
         cmd.supernodes = new String[2];
@@ -143,19 +127,17 @@ public class N2NService extends VpnService {
         cmd.localPort = n2nSettingInfo.getLocalPort();
         cmd.allowRouting = n2nSettingInfo.isAllowRouting();
         cmd.dropMuticast = !n2nSettingInfo.isDropMuticast();
+        cmd.httpTunnel = n2nSettingInfo.isUseHttpTunnel();
         cmd.traceLevel = n2nSettingInfo.getTraceLevel();//2;
         cmd.vpnFd = mParcelFileDescriptor.detachFd();//????????????
 
         try {
-            // TODO: 2018/4/17 需要判断返回值
-            Log.e("zhangbz", "定位！");
-            mStartResult = startEdge(cmd);
 
+            mStartResult = startEdge(cmd);
             Log.e("zhangbz", "mStartResult = " + mStartResult);
 
             if (mStartResult) {
-////                sIsRunning = true;
-//                EventBus.getDefault().post(new StartEvent());
+
             } else {
                 EventBus.getDefault().post(new ErrorEvent());
             }
@@ -183,15 +165,12 @@ public class N2NService extends VpnService {
             e.printStackTrace();
         }
 
-//        sIsRunning = false;
         EventBus.getDefault().post(new StopEvent());
-//        stopSelf();
     }
 
     @Override
     public void onRevoke() {
         super.onRevoke();
-//        Toast.makeText(INSTANCE, "N2NService onRevoke", Toast.LENGTH_SHORT).show();
         Log.e("zhangbz", "N2NService onRevoke");
         stop();
     }
@@ -200,28 +179,11 @@ public class N2NService extends VpnService {
     public void onDestroy() {
         super.onDestroy();
         Log.e("zhangbz", "N2NService onDestroy");
-//        stopEdge();
     }
 
     public native boolean startEdge(EdgeCmd cmd);
 
     public native void stopEdge();
-
-//    public native EdgeStatus getEdgeStatus();
-
-    //    public void reportEdgeStatus(EdgeStatus status) {
-//        Log.e("zhangbz", "N2NService reportEdgeStatus");
-//        if (status != null) {
-//            if (status.isRunning) {
-//                EventBus.getDefault().post(new StartEvent());
-//            } else {
-//                EventBus.getDefault().post(new StopEvent());
-//
-//            }
-//        } else {
-//            //nothing to do
-//        }
-//    }
 
     /**
      * 暂且把SUPERNODE_DISCONNECT和DISCONNECT视为同一种，后续搞清楚再说
@@ -247,7 +209,7 @@ public class N2NService extends VpnService {
                 if (mLastStatus == SUPERNODE_DISCONNECT) {
                     showOrRemoveNotification(CMD_UPDATE_NOTIFICATION);
                 }
-                
+
                 break;
             case SUPERNODE_DISCONNECT:          // Disconnect from the supernode
                 Logger.d("reportEdgeStatus SUPERNODE_DISCONNECT");
@@ -298,12 +260,19 @@ public class N2NService extends VpnService {
                 break;
 
             case CMD_ADD_NOTIFICATION:
+
+                Intent mainIntent = new Intent(this, MainActivity.class);
+                PendingIntent mainPendingIntent = PendingIntent.getActivity(this, 0, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle("Hin2n")
                         .setContentText("Disconnect from the supernode.")
                         .setFullScreenIntent(null, false)
-                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                        .setAutoCancel(true)
+                        .setContentIntent(mainPendingIntent);
 
                 Notification notification = builder.build();
                 notification.flags |=Notification.FLAG_NO_CLEAR;
@@ -321,10 +290,12 @@ public class N2NService extends VpnService {
                         .setContentTitle("Hin2n")
                         .setContentText("Connect to N2N network successfully.")
                         .setFullScreenIntent(null, false)
-                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                        .setAutoCancel(true);
 
                 Notification notification2 = builder2.build();
 //                notification2.flags |=Notification.FLAG_NO_CLEAR;
+
 
                 if (mNotificationManager == null) {
                     mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

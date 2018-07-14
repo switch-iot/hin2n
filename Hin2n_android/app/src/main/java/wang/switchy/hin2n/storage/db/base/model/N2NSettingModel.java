@@ -15,6 +15,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
 
     @Id(autoincrement = true)
     Long id;
+    int version;
     String name;
     String ip;
     String netmask;
@@ -34,6 +35,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
     int localPort;
     boolean allowRouting;
     boolean dropMuticast;
+    boolean useHttpTunnel;
     int traceLevel;
 //    int vpnFd;
 
@@ -186,13 +188,29 @@ public class N2NSettingModel /*implements Parcelable*/ {
         this.superNodeBackup = superNodeBackup;
     }
 
-    @Generated(hash = 1766066898)
-    public N2NSettingModel(Long id, String name, String ip, String netmask, String community,
-                           String password, String superNode, boolean moreSettings, String superNodeBackup,
-                           String macAddr, int mtu, String localIP, int holePunchInterval,
-                           boolean resoveSupernodeIP, int localPort, boolean allowRouting,
-                           boolean dropMuticast, int traceLevel, boolean isSelcected) {
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public boolean isUseHttpTunnel() {
+        return useHttpTunnel;
+    }
+
+    public void setUseHttpTunnel(boolean useHttpTunnel) {
+        this.useHttpTunnel = useHttpTunnel;
+    }
+
+    @Generated(hash = 1649807878)
+    public N2NSettingModel(Long id, int version, String name, String ip, String netmask, String community,
+            String password, String superNode, boolean moreSettings, String superNodeBackup, String macAddr,
+            int mtu, String localIP, int holePunchInterval, boolean resoveSupernodeIP, int localPort,
+            boolean allowRouting, boolean dropMuticast, boolean useHttpTunnel, int traceLevel, boolean isSelcected) {
         this.id = id;
+        this.version = version;
         this.name = name;
         this.ip = ip;
         this.netmask = netmask;
@@ -209,6 +227,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
         this.localPort = localPort;
         this.allowRouting = allowRouting;
         this.dropMuticast = dropMuticast;
+        this.useHttpTunnel = useHttpTunnel;
         this.traceLevel = traceLevel;
         this.isSelcected = isSelcected;
     }
@@ -229,6 +248,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
     public String toString() {
         return "N2NSettingModel{" +
                 "id=" + id +
+                ", version=" + version +
                 ", name='" + name + '\'' +
                 ", ip='" + ip + '\'' +
                 ", netmask='" + netmask + '\'' +
@@ -245,8 +265,13 @@ public class N2NSettingModel /*implements Parcelable*/ {
                 ", localPort=" + localPort +
                 ", allowRouting=" + allowRouting +
                 ", dropMuticast=" + dropMuticast +
+                ", useHttpTunnel=" + useHttpTunnel +
                 ", traceLevel=" + traceLevel +
                 ", isSelcected=" + isSelcected +
                 '}';
+    }
+
+    public boolean getUseHttpTunnel() {
+        return this.useHttpTunnel;
     }
 }

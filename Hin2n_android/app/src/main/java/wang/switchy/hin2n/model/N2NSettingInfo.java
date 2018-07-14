@@ -13,6 +13,7 @@ public class N2NSettingInfo implements Parcelable {
 
     Long id;
     String name;
+    int version;
     String ip;
     String netmask;
     String community;
@@ -32,11 +33,13 @@ public class N2NSettingInfo implements Parcelable {
     boolean allowRouting;
     boolean dropMuticast;
     int traceLevel;
+    boolean useHttpTunnel;
 
     public N2NSettingInfo(N2NSettingModel n2NSettingModel) {
 
         this.id = n2NSettingModel.getId();
         this.name = n2NSettingModel.getName();
+        this.version= n2NSettingModel.getVersion();
         this.ip = n2NSettingModel.getIp();
         this.netmask = n2NSettingModel.getNetmask();
         this.community = n2NSettingModel.getCommunity();
@@ -53,6 +56,7 @@ public class N2NSettingInfo implements Parcelable {
         this.allowRouting = n2NSettingModel.getAllowRouting();
         this.dropMuticast = n2NSettingModel.getDropMuticast();
         this.traceLevel = n2NSettingModel.getTraceLevel();
+        this.useHttpTunnel = n2NSettingModel.isUseHttpTunnel();
     }
 
     protected N2NSettingInfo(Parcel in) {
@@ -231,11 +235,28 @@ public class N2NSettingInfo implements Parcelable {
         this.traceLevel = traceLevel;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public boolean isUseHttpTunnel() {
+        return useHttpTunnel;
+    }
+
+    public void setUseHttpTunnel(boolean useHttpTunnel) {
+        this.useHttpTunnel = useHttpTunnel;
+    }
+
     @Override
     public String toString() {
         return "N2NSettingInfo{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", version=" + version +
                 ", ip='" + ip + '\'' +
                 ", netmask='" + netmask + '\'' +
                 ", community='" + community + '\'' +
@@ -252,6 +273,7 @@ public class N2NSettingInfo implements Parcelable {
                 ", allowRouting=" + allowRouting +
                 ", dropMuticast=" + dropMuticast +
                 ", traceLevel=" + traceLevel +
+                ", useHttpTunnel=" + useHttpTunnel +
                 '}';
     }
 

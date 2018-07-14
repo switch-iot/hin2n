@@ -2,4 +2,6 @@
     <string name="app_name">Hin2n</string>
     <string name="open">open</string>
     <string name="close">close</string>
+
+    <string name="facebook_app_id"></string>
 </resources>

@@ -179,7 +179,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@id/item_icon_share"
-                    android:text="share"
+                    android:text="Share"
                     android:textColor="@android:color/black"
                     android:textSize="18dp"/>
             </RelativeLayout>
@@ -209,8 +209,9 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@id/item_icon_feedback"
-                    android:text="feedback"
+                    android:text="Feedback"
                     android:textColor="@android:color/black"
+                    android:ellipsize="end"
                     android:textSize="18dp"/>
             </RelativeLayout>
             <!--</com.andexert.library.RippleView>-->
@@ -237,7 +238,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@id/item_icon_update"
-                    android:text="check update"
+                    android:text="Check update"
                     android:textColor="@android:color/black"
                     android:textSize="18dp"/>
             </RelativeLayout>
@@ -263,7 +264,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@id/item_icon_about"
-                    android:text="about"
+                    android:text="About"
                     android:textColor="@android:color/black"
                     android:textSize="18dp"/>
             </RelativeLayout>

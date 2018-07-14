@@ -34,6 +34,7 @@ public class CommonTitleTemplate extends BaseTemplate {
 
     public final ImageView mLeftImg;
     public final ImageView mRightImg;
+    private final TextView mTitleText;
 
 
     public CommonTitleTemplate(Context context, String title) {
@@ -46,12 +47,12 @@ public class CommonTitleTemplate extends BaseTemplate {
         mTitleLayout = (RelativeLayout) mPageView.findViewById(R.id.rl_title);
         mContainerLayout = (FrameLayout) mPageView.findViewById(R.id.fl_container);
 
-        TextView titleText = (TextView) mPageView.findViewById(R.id.tv_title);
+        mTitleText = (TextView) mPageView.findViewById(R.id.tv_title);
 
         mLeftImg = (ImageView) mPageView.findViewById(R.id.iv_left_img);
         mRightImg = (ImageView) mPageView.findViewById(R.id.iv_right_img);
 
-        titleText.setText(title);
+        mTitleText.setText(title);
 
     }
 
@@ -59,6 +60,10 @@ public class CommonTitleTemplate extends BaseTemplate {
     public void setContentView(View contentView) {
         RelativeLayout.LayoutParams contentViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         mContainerLayout.addView(contentView, contentViewLayoutParams);
+    }
+
+    public void setTitleText(String titleText) {
+        mTitleText.setText(titleText);
     }
 
     @Override

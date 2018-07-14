@@ -19,6 +19,9 @@
     <!--Umeng end-->
 
     <uses-permission android:name="android.permission.READ_LOGS" />
+	  
+	  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+	  
 
     <application
         android:name=".Hin2nApplication"
@@ -42,7 +45,7 @@
 
         <activity android:name=".activity.SettingDetailsActivity"
                   android:screenOrientation="portrait"/>
-        <activity android:name=".activity.AboutActivity"
+        <activity android:name=".activity.WebViewActivity"
             android:screenOrientation="portrait"/>
 
         <service android:name=".service.N2NService"
@@ -66,6 +69,42 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
+		
+		        <!--umeng share-->
+        <!--sina-->
+        <activity
+            android:name="com.umeng.socialize.media.WBShareCallBackActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            >
+        </activity>
+        <activity
+            android:name="com.sina.weibo.sdk.web.WeiboSdkWebActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            >
+
+        </activity>
+        <activity
+            android:name="com.sina.weibo.sdk.share.WbShareTransActivity"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+        </activity>
+
+        <!--wx-->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+		
 
         <!--友盟统计相关meta-data-->
         <meta-data

@@ -7,8 +7,8 @@
                     <solid android:color="#33FFFFFF"/>
                 </shape>
             </item>
-            <item android:drawable="@mipmap/title_back_normal"/>
+            <item android:drawable="@mipmap/ic_angel_left"/>
         </layer-list>
     </item>
-    <item android:drawable="@mipmap/title_back_normal" android:state_pressed="false"/>
+    <item android:drawable="@mipmap/ic_angel_left" android:state_pressed="false"/>
 </selector>
