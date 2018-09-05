@@ -64,8 +64,7 @@ public class Hin2nApplication extends MultiDexApplication {
 
     private void initShare() {
         Log.e("zhangbzshare" ,"wx : " + N2nTools.getMetaData(this, "SHARE_WX_APPID")  +"::" + N2nTools.getMetaData(this, "SHARE_WX_APPSECRET"));
-//        PlatformConfig.setWeixin(N2nTools.getMetaData(this, "SHARE_WX_APPID"), N2nTools.getMetaData(this, "SHARE_WX_APPSECRET"));
-        PlatformConfig.setWeixin("wx5cdb9d03860cb1a2", "a836be9a4c0757d69e7bf506834803c5");
+        PlatformConfig.setWeixin(N2nTools.getMetaData(this, "SHARE_WX_APPID"), N2nTools.getMetaData(this, "SHARE_WX_APPSECRET"));
     }
 
     public static Hin2nApplication getInstance(){
@@ -95,4 +94,3 @@ public class Hin2nApplication extends MultiDexApplication {
         return db;
     }
 }
-
