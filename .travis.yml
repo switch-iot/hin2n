@@ -45,10 +45,10 @@ deploy:
     api_key:
         secure: A43i7MdFw1CzdppS+SsaNYHo6+wdX7tvDxLmJqDH/16gOm6XojT9ZlCWtRBqSgBRQijmZy/AnT6q4R40bF4Lyhy94NuJl7qUxNh8BEPxpB06OKTEcrif9yYqvu5uGcrU61k1LAkFJ1HMJVVVYzg7Mn9NHngFVtmYocgnyspga9YWdN1X2j8m/dIPL6o0uYBESTz0voR/7h6h+hUn0hlIgTY7G05InsnuQ6etw0ogG5akUlBmCYGK31L4iMrp3GxM4QxOMXcM5dEVYj0hiYmYpdDLP8dDqdrxF+vmdHOTbMimH2a57pXMevrxg8sg+mWDRo/3VJwH54wHfsQMQ1YHcCIkpnQI0hmCVh/f2HCPU20WC1xEw6YjWoU7Q211yiwgVFnZh93jvblucUx3uYxhNU7Kwd5utR6J6fFQ2RC7cl4+HZyzy94AFXXxpk71piCZrZRAOw6ZpnipfgJuk7RhBptdqkxJOjTOHsA7CTAwrmrfdZu/RGiFEcsPBIDkgpyHREQcvKY1GrMp/XaWnAU+oH8Zj3EwvMp75DtSu/ZT06BV9scufgo4gY2QGE7oVDb4ksk1FZPAxiWEBAO2i/PMESTTOtKuMUm44ffEGE6CXwIFFVCfMh9m8SLzxcbVdsK3nTyQ9Tdm+OYBKt6yQ15zFt/2GdCLBEmQDvit7ee3vJs=
     file_glob: true
-    file: app/build/outputs/apk/*.apk
+    file: app/build/outputs/apk/*/release/*.apk
     skip_cleanup: true
     on:
-        repo: switch-iot/n2n_vLTS
+        repo: switch-iot/hin2n
         tags: true
         all_branches: true
 
