@@ -270,7 +270,7 @@ public class MainActivity extends BaseActivity {
 
     private void doOnClickShareItem() {
 
-        UMWeb umWeb = new UMWeb("https://github.com/switch-iot/n2n_vLTS/blob/master/README.md");
+        UMWeb umWeb = new UMWeb("https://github.com/switch-iot/hin2n/blob/master/README.md");
         umWeb.setTitle("Hin2n");
         umWeb.setThumb(new UMImage(this, R.mipmap.ic_launcher));
         umWeb.setDescription("N2N is a VPN project that supports p2p.");
