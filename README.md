@@ -1,17 +1,15 @@
-# n2n_vLTS
+# Hin2n <img height="24" src="doc/pic/logo.png">
 
 [README](README.md) | [中文文档](README_zh.md)
 
-N2N is a VPN project that supports p2p. It was originally developed and open sourced by `Luca Deri` <deri@ntop.org>, `Richard Andrews` <andrews@ntop.org> of ntop.org, and `Meyerd` <https://github.com/meyerd> continues to do optimization work. Our goal is to continuously optimize n2n based on several masters and provide `mobile version` support.
-
-## Hin2n <img height="24" src="doc/pic/logo.png">
+N2N is a VPN project that supports p2p. It was originally developed and open sourced by `Luca Deri` <deri@ntop.org>, `Richard Andrews` <andrews@ntop.org> of ntop.org, and `Meyerd` <https://github.com/meyerd> continues to do optimization work. Our goal is to provide `mobile version` support.
 
 [![gradle](https://img.shields.io/badge/gradle-2.14.1-green.svg?style=plastic)](https://docs.gradle.org/2.14.1/userguide/userguide.html)
 [![API](https://img.shields.io/badge/API-15%2B-green.svg?style=plastic)](https://android-arsenal.com/api?level=15)
-[![license](https://img.shields.io/github/license/switch-iot/n2n_vLTS.svg?style=plastic)](https://www.gnu.org/licenses/gpl-3.0)
-[![GitHub release](https://img.shields.io/github/release/switch-iot/n2n_vLTS/all.svg?style=plastic)](https://github.com/switch-iot/n2n_vLTS/releases)
-[![Github All Releases](https://img.shields.io/github/downloads/switch-iot/n2n_vLTS/total.svg?style=plastic)](https://github.com/switch-iot/n2n_vLTS/releases)
-[![Travis branch](https://img.shields.io/travis/switch-iot/n2n_vLTS/dev_android.svg?style=plastic)](https://travis-ci.org/switch-iot/n2n_vLTS)
+[![license](https://img.shields.io/github/license/switch-iot/hin2n.svg?style=plastic)](https://www.gnu.org/licenses/gpl-3.0)
+[![GitHub release](https://img.shields.io/github/release/switch-iot/hin2n/all.svg?style=plastic)](https://github.com/switch-iot/hin2n/releases)
+[![Github All Releases](https://img.shields.io/github/downloads/switch-iot/hin2n/total.svg?style=plastic)](https://github.com/switch-iot/hin2n/releases)
+[![Travis branch](https://img.shields.io/travis/switch-iot/hin2n/dev_android.svg?style=plastic)](https://travis-ci.org/switch-iot/hin2n)
 
 The original n2n supports many platforms, including windows, linux, osx, bsd, openwrt, raspberry pie, etc., except for mobile phones(non-root). Therefore, we have developed the Hin2n project.
 
@@ -20,14 +18,14 @@ The original n2n supports many platforms, including windows, linux, osx, bsd, op
 - Hin2n does not need a rooted phone
 - Hin2n only supports Android phones for now, IPhone version will be developed in the future
 - Hin2n is currently in continuous development and will gradually provide more complete versions
-- Hin2n only supports [n2n_v2s](#about-v2s-version) protocol now, other versions of n2n protocol are under development
+- Hin2n now supports all v1/v2/v2s protocols
 
 ### Hin2n latest version [CHANGELOG](Hin2n_android/CHANGELOG)
-The latest version of Hin2n is available for download at [release link](https://github.com/switch-iot/n2n_vLTS/releases).
+The latest version of Hin2n is available for download at [release link](https://github.com/switch-iot/hin2n/releases).
 
 ### Hin2n Development Plan
-View the development plan at [`Projects`](https://github.com/switch-iot/n2n_vLTS/projects).
-If you have new features and ideas, you can submit them in [`issues`](https://github.com/switch-iot/n2n_vLTS/issues), and we will arrange development plans as appropriate. Your concern is our motivation.
+View the development plan at [`Projects`](https://github.com/switch-iot/hin2n/projects).
+If you have new features and ideas, you can submit them in [`issues`](https://github.com/switch-iot/hin2n/issues), and we will arrange development plans as appropriate. Your concern is our motivation.
 
 ### Technical principle
 - VPNService
@@ -48,26 +46,25 @@ The v2s is the renaming of the v2 (also known as v2.1) developed by master Meyer
 
 ## Development and compilation
 ### Hin2n
-- git clone https://github.com/switch-iot/n2n_vLTS.git `--recurse-submodules`
+- git clone https://github.com/switch-iot/hin2n.git `--recurse-submodules`
 - Hin2n_android directory is the Hin2n project Android source directory
 - Execute `gradlew assemble` in Hin2n_android directory to compile Hin2n
-- The gradle version of the Hin2n_android project is 2.14.1. If you want to upgrade the gradle version to 4.4, copy the file under the branch `dev_android_gradle4.4` to the branch `dev_android` to overwrite the corresponding files
 - When switching branches, you need to execute `git submodule update` to synchronize the code of the submodules
 
 ### Windows environment
 The git compatible symbolic link needs to be set in the Windows environment.
 - Launch `gpedit.msc`, and add the account(s) to `Computer Configuration/Windows Setting/Security Settings/Local Policies/User Rights Assignment/Create symbolic links`
 - Or run git-cmd as an administrator user, and execute the following command
-- git clone -c `core.symlinks=true` https://github.com/switch-iot/n2n_vLTS.git `--recurse-submodules`  && cd n2n_vLTS && `link.bat`
+- git clone -c `core.symlinks=true` https://github.com/switch-iot/hin2n.git `--recurse-submodules`  && cd hin2n && `link.bat`
 
 ### About open source agreement
 The project is open sourced under the [`GPLv3`](LICENSE) agreement, and is consistent with the original open source agreement of n2n. We also hope that everyone will support and comply with the open source agreement of this project.
 
 ## Contribute to Hin2n
 Hin2n is a free and open source n2n project, and we welcome anyone to contribute to it.
-- Any problems in use can be fed back through ['issues'](https://github.com/switch-iot/n2n_vLTS/issues)
+- Any problems in use can be fed back through ['issues'](https://github.com/switch-iot/hin2n/issues)
 - Bug fixes can submit `Pull Request` to `android_dev` branch
-- If you want to add a new feature, please create an [`issues`](https://github.com/switch-iot/n2n_vLTS/issues) first to describe the new feature, as well as the implementation approach. Once a proposal is accepted, create an implementation of the new features and submit it as a pull request.
+- If you want to add a new feature, please create an [`issues`](https://github.com/switch-iot/hin2n/issues) first to describe the new feature, as well as the implementation approach. Once a proposal is accepted, create an implementation of the new features and submit it as a pull request.
 - Sorry for my poor english and improvement for this document is welcome even some typo fix.
 - Welcome to pay attention to the project and give the project a `Star`
 
@@ -79,3 +76,15 @@ Hin2n is a free and open source n2n project, and we welcome anyone to contribute
 ## QQ group
 - Hin2n QQ group： 769731491
 - N2N QQ group： 256572040
+
+## Donation
+If `Hin2n` help you a lot, you can support us by:
+
+### AliPay
+![donate-alipay](/doc/pic/donate-alipay.png)
+
+### Wechat Pay
+![donate-wechatpay](/doc/pic/donate-wechatpay.png)
+
+### Paypal
+Donate money by [paypal](https://www.paypal.me/hin2n) to my account `switch.st@gmail.com`

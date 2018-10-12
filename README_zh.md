@@ -1,17 +1,15 @@
-# n2n_vLTS
+# Hin2n <img height="24" src="doc/pic/logo.png">
 
 [README](README.md) | [中文文档](README_zh.md)
 
-n2n是一个支持内网穿透p2p的VPN项目，最初由ntop.org大神`Luca Deri` <deri@ntop.org>, `Richard Andrews` <andrews@ntop.org>开发并开源的项目，后由`meyerd`大神 <https://github.com/meyerd>继续做优化工作。我们的目的是在几位大神的基础上做持续优化并提供`手机版本`的支持。
-
-## Hin2n <img height="24" src="doc/pic/logo.png">
+n2n是一个支持内网穿透p2p的VPN项目，最初由ntop.org大神`Luca Deri` <deri@ntop.org>, `Richard Andrews` <andrews@ntop.org>开发并开源的项目，后由`meyerd`大神 <https://github.com/meyerd>继续做优化工作。我们的目的是为n2n提供`手机版本`的支持。
 
 [![gradle](https://img.shields.io/badge/gradle-2.14.1-green.svg?style=plastic)](https://docs.gradle.org/2.14.1/userguide/userguide.html)
 [![API](https://img.shields.io/badge/API-15%2B-green.svg?style=plastic)](https://android-arsenal.com/api?level=15)
-[![license](https://img.shields.io/github/license/switch-iot/n2n_vLTS.svg?style=plastic)](https://www.gnu.org/licenses/gpl-3.0)
-[![GitHub release](https://img.shields.io/github/release/switch-iot/n2n_vLTS/all.svg?style=plastic)](https://github.com/switch-iot/n2n_vLTS/releases)
-[![Github All Releases](https://img.shields.io/github/downloads/switch-iot/n2n_vLTS/total.svg?style=plastic)](https://github.com/switch-iot/n2n_vLTS/releases)
-[![Travis branch](https://img.shields.io/travis/switch-iot/n2n_vLTS/dev_android.svg?style=plastic)](https://travis-ci.org/switch-iot/n2n_vLTS)
+[![license](https://img.shields.io/github/license/switch-iot/hin2n.svg?style=plastic)](https://www.gnu.org/licenses/gpl-3.0)
+[![GitHub release](https://img.shields.io/github/release/switch-iot/hin2n/all.svg?style=plastic)](https://github.com/switch-iot/hin2n/releases)
+[![Github All Releases](https://img.shields.io/github/downloads/switch-iot/hin2n/total.svg?style=plastic)](https://github.com/switch-iot/hin2n/releases)
+[![Travis branch](https://img.shields.io/travis/switch-iot/hin2n/dev_android.svg?style=plastic)](https://travis-ci.org/switch-iot/hin2n)
 
 原版的n2n支持很多平台，包括windows，linux，osx，bsd，openwrt，raspberry pie等，唯独缺少对手机(非root)的支持。因此，我们开发了Hin2n项目。
 
@@ -19,15 +17,15 @@ n2n是一个支持内网穿透p2p的VPN项目，最初由ntop.org大神`Luca Der
 - Hin2n是支持n2n协议的手机VPN软件
 - 该APP不需要root手机
 - 该APP暂时只支持安卓手机，后续会发开IPhone版本
-- 该项目现处于持续开发阶段，仅支持基本的配置连接功能，后续会提供更完善的功能
-- 该项目现只支持[n2n_v2s](#关于v2s版本)协议，其他版本的n2n协议正在开发中
+- 该项目现处于持续开发阶段，后续会提供更完善的功能
+- 该项目现已支持全部v1/v2/v2s协议
 
 ### Hin2n最新版本 [CHANGELOG](Hin2n_android/CHANGELOG_zh)
-Hin2n最新版本可在[release地址](https://github.com/switch-iot/n2n_vLTS/releases)查看下载。
+Hin2n最新版本可在[release地址](https://github.com/switch-iot/hin2n/releases)查看下载。
 
 ### Hin2n开发计划
-详细开发计划请见[`Projects`](https://github.com/switch-iot/n2n_vLTS/projects)。
-大家如果有新需求和想法，任何意见建议均可提交在[`issues`](https://github.com/switch-iot/n2n_vLTS/issues)中，我们将会酌情安排开发计划。您的关注就是我们的动力。
+详细开发计划请见[`Projects`](https://github.com/switch-iot/hin2n/projects)。
+大家如果有新需求和想法，任何意见建议均可提交在[`issues`](https://github.com/switch-iot/hin2n/issues)中，我们将会酌情安排开发计划。您的关注就是我们的动力。
 
 ### 技术原理
 - VPNService
@@ -48,26 +46,25 @@ v2s版本是N2N交流QQ群(256572040)中对meyerd大神维护的v2版本(又称v
 
 ## 项目开发/编译说明
 ### Hin2n
-- git clone https://github.com/switch-iot/n2n_vLTS.git `--recurse-submodules`
+- git clone https://github.com/switch-iot/hin2n.git `--recurse-submodules`
 - Hin2n_android目录即是Hin2n项目安卓源码目录
 - Hin2n_android目录下执行`gradlew assemble`编译
-- Hin2n_android项目的gradle是2.14.1版本，如需4.4版本的gradle，请将分支`dev_android_gradle4.4`下的文件拷贝至分支`dev_android`下，覆盖相应的文件
 - 切换分支时，需要执行`git submodule update`来同步submodule的代码
 
 ### Windows环境
 Windows环境下需要设置git兼容符号链接。
 - 打开`gpedit.msc`，将当前账户加入设置`计算机配置/Windows 设置/安全设置/本地策略/用户权限分配/创建符号链接`中。
 - 或以管理员用户运行git-cmd，并执行下述命令
-- git clone -c `core.symlinks=true` https://github.com/switch-iot/n2n_vLTS.git `--recurse-submodules` && cd n2n_vLTS && `link.bat`
+- git clone -c `core.symlinks=true` https://github.com/switch-iot/hin2n.git `--recurse-submodules` && cd hin2n && `link.bat`
 
 ### 关于开源协议
 该项目以[`GPLv3`](LICENSE)协议进行开源，与n2n原有开源协议保持一致，也希望大家支持并遵守本项目的开源协议。
 
 ## 为Hin2n做贡献
 Hin2n是一个免费且开源的n2n项目，我们欢迎任何人为其开发和进步贡献力量。
-- 在使用过程中出现任何问题，可以通过[`issues`](https://github.com/switch-iot/n2n_vLTS/issues) 来反馈
+- 在使用过程中出现任何问题，可以通过[`issues`](https://github.com/switch-iot/hin2n/issues) 来反馈
 - Bug的修复可以直接提交`Pull Request`到`android_dev`分支
-- 如果是增加新的功能特性，请先创建一个[`issues`](https://github.com/switch-iot/n2n_vLTS/issues)并做简单描述以及大致的实现方法，提议被采纳后，就可以创建一个实现新特性的 Pull Request
+- 如果是增加新的功能特性，请先创建一个[`issues`](https://github.com/switch-iot/hin2n/issues)并做简单描述以及大致的实现方法，提议被采纳后，就可以创建一个实现新特性的 Pull Request
 - 欢迎对说明文档做出改善，帮助更多的人使用`Hin2n`，特别是英文文档
 - 如果您觉得Hin2n对您有帮助，欢迎您关注该项目，并给项目点个`Star`
 
@@ -79,3 +76,15 @@ Hin2n是一个免费且开源的n2n项目，我们欢迎任何人为其开发和
 ## 交流群
 - Hin2n交流群： 769731491(QQ群号)
 - N2N交流群： 256572040(QQ群号)
+
+## 捐助
+如果您觉得`Hin2n`对你有帮助，欢迎给予我们一定的捐助来维持项目的长期发展
+
+### 支付宝扫码捐赠
+![donate-alipay](/doc/pic/donate-alipay.png)
+
+### 微信支付捐赠
+![donate-wechatpay](/doc/pic/donate-wechatpay.png)
+
+### Paypal 捐赠
+海外用户推荐通过 [Paypal](https://www.paypal.me/hin2n) 向我的账户`switch.st@gmail.com`进行捐赠。
