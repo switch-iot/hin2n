@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="item_default_version">0</string>
+    <string name="item_default_name"></string>
+    <string name="item_default_ip"></string>
+    <string name="item_default_netmask">255.255.255.0</string>
+    <string name="item_default_community"></string>
+    <string name="item_default_password"></string>
+    <string name="item_default_supernode_v1">hin2n.wang:10082</string>
+    <string name="item_default_supernode_v2">hin2n.wang:10086</string>
+    <string name="item_default_supernode_v2s">hin2n.wang:10088</string>
+    <string name="item_default_supernode_backup"></string>
+    <string name="item_default_macaddr"></string>
+    <string name="item_default_mtu">1400</string>
+    <string name="item_default_localip"></string>
+    <string name="item_default_localip_checkbox">false</string>
+    <string name="item_default_holepunchinterval">25</string>
+    <string name="item_default_resovesupernodeip">false</string>
+    <string name="item_default_localport">0</string>
+    <string name="item_default_allowrouting">false</string>
+    <string name="item_default_dropmuticast">true</string>
+    <string name="item_default_usehttptunnel">false</string>
+    <string name="item_default_tracelevel">2</string>
+</resources>

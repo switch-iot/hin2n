@@ -45,7 +45,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         doOnCreate(savedInstanceState);
-
     }
 
     protected abstract BaseTemplate createTemplate();

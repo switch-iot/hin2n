@@ -53,7 +53,6 @@ public class CommonTitleTemplate extends BaseTemplate {
         mRightImg = (ImageView) mPageView.findViewById(R.id.iv_right_img);
 
         mTitleText.setText(title);
-
     }
 
     @Override
@@ -64,6 +63,9 @@ public class CommonTitleTemplate extends BaseTemplate {
 
     public void setTitleText(String titleText) {
         mTitleText.setText(titleText);
+    }
+    public void setTitleText(int resid) {
+        mTitleText.setText(resid);
     }
 
     @Override

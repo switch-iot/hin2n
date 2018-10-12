@@ -37,6 +37,7 @@ typedef struct n2n_edge_cmd_st
     int http_tunnel;
     int trace_vlevel;
     int vpn_fd;
+    char* logpath;
 } n2n_edge_cmd_t;
 
 enum
@@ -68,7 +69,7 @@ typedef struct n2n_edge_status_st {
     int (*stop_edge)(void);
     void (*report_edge_status)(void);
 
-    uint8_t edge_type;      // TODO add edge_type in java
+    uint8_t edge_type;
     uint8_t running_status;
 } n2n_edge_status_t;
 

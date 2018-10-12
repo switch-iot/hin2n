@@ -72,19 +72,19 @@ def getAllManifestValues = { variant ->
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    compileSdkVersion 26
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "wang.switchy.hin2n"
-        minSdkVersion 15
-        targetSdkVersion 25
+        minSdkVersion 14
+        targetSdkVersion 26
         versionCode getVersionCode()
         versionName getVersionName()
-        multiDexEnabled true //突破方法数65535的限制
+        multiDexEnabled true
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "normal", ARCH: "all", UMENG_APPKEY_VALUE: "", BUGLY_APPID_VALUE: "",
                                 SHARE_WX_APPID_VALUE: "", SHARE_WX_APPSECRET_VALUE: "",
                                 SHARE_WB_APPID_VALUE: "", SHARE_WB_APPSECRET_VALUE: ""]
-        resConfigs "en", "zh-rCN", "zh-rTW" // 多语言
+        resConfigs "en", "zh-rCN", "zh-rTW"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
@@ -94,12 +94,10 @@ android {
         }
     }
 
-    //添加我们的签名文件配置 注意：signingConfigs要写在buildTypes
     signingConfigs {
         debug {}
 
         release {
-            //为我们的release包添加签名文件配置
             storeFile file("Hin2n.jks")
             storePassword getEnvOrConsole("HIN2N_KSTOREPWD", "Keystore password")
             keyAlias "Hin2n"
@@ -109,15 +107,15 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("boolean", "API_DEBUG", "true")
-            minifyEnabled false //是否启用混淆
+            buildConfigField("boolean", "LOG_DEBUG", "true")
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
         }
 
         release {
-            buildConfigField("boolean", "API_DEBUG", "false")
-            minifyEnabled false //是否启用混淆
+            buildConfigField("boolean", "LOG_DEBUG", "false")
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             signingConfig signingConfigs.release
@@ -132,22 +130,22 @@ android {
         }
     }
 
-    //配置自定义打包名称
     applicationVariants.all { variant ->
         getAllManifestValues(variant)
         if (variant.buildType.name == 'debug') {
             variant.mergedFlavor.manifestPlaceholders.UMENG_CHANNEL_VALUE = 'umtest'
         }
 
-        variant.outputs.each { output ->
+        variant.outputs.all { output ->
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                variant.mergedFlavor.versionName = getVersionName()
+                output.versionNameOverride = getVersionName()
                 def channel = variant.mergedFlavor.manifestPlaceholders.UMENG_CHANNEL_VALUE
                 def arch = variant.mergedFlavor.manifestPlaceholders.ARCH
                 def fileName = "${variant.mergedFlavor.versionName}_${channel}_${arch}_${variant.buildType.name}.apk"
-                output.outputFile = new File(output.outputFile.parent, fileName)
+                outputFileName = fileName
             }
+
         }
     }
 
@@ -165,6 +163,14 @@ android {
         osc {
             dimension "channel"
             manifestPlaceholders += [UMENG_CHANNEL_VALUE: "osc"]
+        }
+        bugly {
+            dimension "channel"
+            manifestPlaceholders += [UMENG_CHANNEL_VALUE: "bugly"]
+        }
+        anzhi {
+            dimension "channel"
+            manifestPlaceholders += [UMENG_CHANNEL_VALUE: "anzhi"]
         }
         arm {
             dimension "arch"
@@ -189,61 +195,42 @@ android {
         }
     }
 
-
     externalNativeBuild {
         cmake {
             path "CMakeLists.txt"
         }
     }
-
 }
 
 greendao {
-    schemaVersion 1 //版本
-    daoPackage 'wang.switchy.hin2n.storage.db.base'// 一般为app包名+生成文件的文件夹名
-    targetGenDir 'src/main/java' //生成文件路径
+    schemaVersion 1
+    daoPackage 'wang.switchy.hin2n.storage.db.base'
+    targetGenDir 'src/main/java'
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:design:25.2.0'
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.+'
-    compile 'org.greenrobot:eventbus:3.1.1'
-
-    //集成调试库，能够帮助用户发现埋点错误，上线前务必删除集成调试库，避免无关信息的打印
-    compile 'com.umeng.sdk:common:latest.integration'
-    compile 'com.umeng.sdk:utdid:1.1.5.3'
-    compile 'com.umeng.sdk:analytics:latest.integration'
-
-
-    compile 'org.greenrobot:greendao:3.2.0' // add library
-//    compile 'org.greenrobot:greendao-generator:3.2.2'
-
-    compile 'com.baoyz.swipemenulistview:library:1.3.0'
-
-    compile 'com.wang.avi:library:2.1.3'
-
-//    compile 'com.orhanobut:logger:2.2.0'
-    compile 'com.orhanobut:logger:1.15'
-
-
-//    compile 'com.github.traex.rippleeffect:library:1.3'
-
-    compile 'com.tencent.bugly:crashreport_upgrade:latest.release'
-    compile 'com.tencent.bugly:nativecrashreport:latest.release'
-
-    compile files('libs/umeng-share-core-6.9.2.jar')
-    compile files('libs/umeng-share-sina-simplify-6.9.2.jar')
-    compile files('libs/umeng-share-wechat-simplify-6.9.2.jar')
-    compile files('libs/umeng-sharetool-6.9.2.jar')
-
+    implementation 'com.android.support:design:26.+'
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:26.+'
+    implementation 'org.greenrobot:eventbus:latest.integration'
+    implementation 'com.umeng.sdk:common:latest.integration'
+    implementation 'com.umeng.sdk:utdid:latest.integration'
+    implementation 'com.umeng.sdk:analytics:latest.integration'
+    implementation 'org.greenrobot:greendao:3.2.0'
+    implementation 'com.baoyz.swipemenulistview:library:1.3.0'
+    implementation 'com.wang.avi:library:2.1.3'
+    implementation 'com.orhanobut:logger:1.15'
+    implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
+    implementation 'com.tencent.bugly:nativecrashreport:latest.release'
+    implementation files('libs/umeng-share-core-6.9.2.jar')
+    implementation files('libs/umeng-share-sina-simplify-6.9.2.jar')
+    implementation files('libs/umeng-share-wechat-simplify-6.9.2.jar')
+    implementation files('libs/umeng-sharetool-6.9.2.jar')
     annotationProcessor 'com.zhy:mpermission-compiler:1.0.0'
-    compile 'com.zhy:mpermission-api:1.0.0'
-
-//    compile 'cn.pedant.sweetalert:library:1.3'
-    compile 'com.github.f0ris.sweetalert:library:1.5.1'
+    implementation 'com.zhy:mpermission-api:1.0.0'
+    implementation 'com.github.f0ris.sweetalert:library:latest.release'
 }

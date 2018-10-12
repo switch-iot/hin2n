@@ -36,10 +36,9 @@ public class N2NSettingInfo implements Parcelable {
     boolean useHttpTunnel;
 
     public N2NSettingInfo(N2NSettingModel n2NSettingModel) {
-
         this.id = n2NSettingModel.getId();
         this.name = n2NSettingModel.getName();
-        this.version= n2NSettingModel.getVersion();
+        this.version = n2NSettingModel.getVersion();
         this.ip = n2NSettingModel.getIp();
         this.netmask = n2NSettingModel.getNetmask();
         this.community = n2NSettingModel.getCommunity();
@@ -60,7 +59,9 @@ public class N2NSettingInfo implements Parcelable {
     }
 
     protected N2NSettingInfo(Parcel in) {
+        id = in.readLong();
         name = in.readString();
+        version = in.readInt();
         ip = in.readString();
         netmask = in.readString();
         community = in.readString();
@@ -77,6 +78,7 @@ public class N2NSettingInfo implements Parcelable {
         allowRouting = in.readByte() != 0;
         dropMuticast = in.readByte() != 0;
         traceLevel = in.readInt();
+        useHttpTunnel = in.readByte() != 0;
     }
 
     public static final Creator<N2NSettingInfo> CREATOR = new Creator<N2NSettingInfo>() {
@@ -284,7 +286,13 @@ public class N2NSettingInfo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        if (id == null) {
+            parcel.writeLong(new Long(-1));
+        } else {
+            parcel.writeLong(id);
+        }
         parcel.writeString(name);
+        parcel.writeInt(version);
         parcel.writeString(ip);
         parcel.writeString(netmask);
         parcel.writeString(community);
@@ -301,5 +309,6 @@ public class N2NSettingInfo implements Parcelable {
         parcel.writeByte((byte) (allowRouting ? 1 : 0));
         parcel.writeByte((byte) (dropMuticast ? 1 : 0));
         parcel.writeInt(traceLevel);
+        parcel.writeByte((byte) (useHttpTunnel ? 1 : 0));
     }
 }

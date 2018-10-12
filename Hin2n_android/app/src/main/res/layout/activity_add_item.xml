@@ -83,7 +83,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Supernode"
-                    android:text="n2n.switchy.wang:10088"/>
+                    android:text=""/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -224,7 +224,7 @@
                     android:id="@+id/check_box_local_ip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="AUTO"/>
+                    android:text="Automatically detect local IP"/>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_marginTop="5dp"

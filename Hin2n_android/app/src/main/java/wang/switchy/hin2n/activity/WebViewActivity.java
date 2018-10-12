@@ -34,10 +34,12 @@ public class WebViewActivity extends BaseActivity {
     public static final int TYPE_WEB_VIEW_ABOUT = 0;
     public static final int TYPE_WEB_VIEW_FEEDBACK = 1;
     public static final int TYPE_WEB_VIEW_SHARE = 2;
+    public static final int TYPE_WEB_VIEW_CONTACT = 3;
 
     public static final String ABOUT_URL = "https://github.com/switch-iot/n2n_vLTS/blob/master/README.md";
     public static final String SHARE_URL = "https://github.com/switch-iot/n2n_vLTS/wiki/Welcome-to-hin2n";
-    public static final String FEEDBACK_URL = "https://github.com/switch-iot/n2n_vLTS/wiki/Feedback-&-Contact-Us";
+    public static final String CONTACT_URL = "https://github.com/switch-iot/n2n_vLTS/wiki/Feedback-&-Contact-Us";
+    public static final String FEEDBACK_URL = "https://support.qq.com/products/38470";
 
     private WebView mWebView;
     private AVLoadingIndicatorView mLoadingView;
@@ -71,7 +73,8 @@ public class WebViewActivity extends BaseActivity {
 
         WebSettings webSettings = mWebView.getSettings();
 
-        webSettings.setJavaScriptEnabled(false);
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setSupportZoom(true);
@@ -132,23 +135,21 @@ public class WebViewActivity extends BaseActivity {
                 mCommonTitleTemplate.setTitleText("About");
                 mWebView.loadUrl(ABOUT_URL);
                 break;
-
             case TYPE_WEB_VIEW_FEEDBACK:
                 mCommonTitleTemplate.setTitleText("Feedback");
                 mWebView.loadUrl(FEEDBACK_URL);
-
                 break;
-
             case TYPE_WEB_VIEW_SHARE:
                 mCommonTitleTemplate.setTitleText("Share");
                 mWebView.loadUrl(SHARE_URL);
-
                 break;
-
+            case TYPE_WEB_VIEW_CONTACT:
+                mCommonTitleTemplate.setTitleText("Contact");
+                mWebView.loadUrl(CONTACT_URL);
+                break;
             default:
                 break;
         }
-
     }
 
     @Override

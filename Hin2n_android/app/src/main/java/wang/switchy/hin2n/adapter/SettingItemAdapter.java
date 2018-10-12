@@ -67,7 +67,6 @@ public class SettingItemAdapter extends BaseAdapter {
             viewHolder.imgIsSelected.setVisibility(View.VISIBLE);
         } else {
             viewHolder.imgIsSelected.setVisibility(View.INVISIBLE);
-
         }
 
         viewHolder.moreInfo.setOnClickListener(new View.OnClickListener() {
@@ -78,7 +77,6 @@ public class SettingItemAdapter extends BaseAdapter {
         });
         return convertView;
     }
-
 
     class ViewHolder {
         TextView settingName;

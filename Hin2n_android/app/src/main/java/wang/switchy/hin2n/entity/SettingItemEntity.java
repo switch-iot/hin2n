@@ -9,8 +9,6 @@ public class SettingItemEntity {
     private Long mSaveId;
     private boolean isSelected;
 
-
-
     public SettingItemEntity(String settingName, Long saveId, boolean isSelected) {
         mSettingName = settingName;
         mSaveId = saveId;

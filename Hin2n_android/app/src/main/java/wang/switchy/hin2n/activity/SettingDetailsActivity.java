@@ -33,6 +33,7 @@ import wang.switchy.hin2n.event.ErrorEvent;
 import wang.switchy.hin2n.event.StartEvent;
 import wang.switchy.hin2n.event.StopEvent;
 import wang.switchy.hin2n.model.EdgeCmd;
+import wang.switchy.hin2n.model.EdgeStatus;
 import wang.switchy.hin2n.model.N2NSettingInfo;
 import wang.switchy.hin2n.service.N2NService;
 import wang.switchy.hin2n.storage.db.base.N2NSettingModelDao;
@@ -46,6 +47,8 @@ import wang.switchy.hin2n.template.CommonTitleTemplate;
  */
 
 public class SettingDetailsActivity extends BaseActivity implements View.OnClickListener {
+
+    private static final int REQUECT_CODE_VPN = 2;
 
     public static int TYPE_SETTING_ADD = 0;
     public static int TYPE_SETTING_MODIFY = 1;
@@ -71,6 +74,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
     private TextInputLayout mLocalPort;
     private CheckBox mAllowRoutinCheckBox;
     private CheckBox mAcceptMuticastCheckBox;
+    private RelativeLayout mAcceptMuticastView;
     private Spinner mTraceLevelSpinner;
     private CheckBox mMoreSettingCheckBox;
     private RelativeLayout mMoreSettingView;
@@ -83,13 +87,13 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
     private CheckBox mLocalIpCheckBox;
     private RadioGroup mVersionGroup;
     private CheckBox mUseHttpTunnelCheckBox;
-    private RadioButton mVersonV1;
+    private RadioButton mVersionV1;
     private RadioButton mVersionV2;
     private RadioButton mVersionV2s;
 
     @Override
     protected BaseTemplate createTemplate() {
-        CommonTitleTemplate titleTemplate = new CommonTitleTemplate(mContext, "Add New Setting");
+        CommonTitleTemplate titleTemplate = new CommonTitleTemplate(mContext, getString(R.string.title_add_setting));
         titleTemplate.mLeftImg.setVisibility(View.VISIBLE);
         titleTemplate.mLeftImg.setImageResource(R.drawable.titlebar_icon_return_selector);
         titleTemplate.mLeftImg.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +107,6 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
 
     @Override
     protected void doOnCreate(Bundle savedInstanceState) {
-
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -120,7 +123,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 updateVersionGroupCheck(checkedId);
             }
         });
-        mVersonV1 = (RadioButton) findViewById(R.id.rb_v1);
+        mVersionV1 = (RadioButton) findViewById(R.id.rb_v1);
         mVersionV2 = (RadioButton) findViewById(R.id.rb_v2);
         mVersionV2s = (RadioButton) findViewById(R.id.rb_v2s);
 
@@ -154,7 +157,6 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    mLocalIP.getEditText().setText("");
                     mLocalIP.setEnabled(false);
                 } else {
                     mLocalIP.setEnabled(true);
@@ -165,24 +167,25 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         mResoveSupernodeIPCheckBox = (CheckBox) findViewById(R.id.resove_super_node_ip_check_box);
         mLocalPort = (TextInputLayout) findViewById(R.id.til_local_port);
         mAllowRoutinCheckBox = (CheckBox) findViewById(R.id.allow_routing_check_box);
+        mAcceptMuticastView = (RelativeLayout) findViewById(R.id.rl_drop_muticast);
         mAcceptMuticastCheckBox = (CheckBox) findViewById(R.id.accept_muticast_check_box);
         mUseHttpTunnelCheckBox = (CheckBox) findViewById(R.id.use_http_tunnel_check_box);
 
         mTraceLevelSpinner = (Spinner) findViewById(R.id.spinner_trace_level);
 
         mTraceLevelList = new ArrayList<>();
-        mTraceLevelList.add("ERROR");
-        mTraceLevelList.add("WARNING");
-        mTraceLevelList.add("NORMAL");
-        mTraceLevelList.add("INFO");
-        mTraceLevelList.add("DEBUG");
+        mTraceLevelList.add(getString(R.string.trace_level_error));
+        mTraceLevelList.add(getString(R.string.trace_level_warn));
+        mTraceLevelList.add(getString(R.string.trace_level_normal));
+        mTraceLevelList.add(getString(R.string.trace_level_info));
+        mTraceLevelList.add(getString(R.string.trace_level_debug));
 
         final ArrayAdapter<String> traceLevelAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mTraceLevelList);
         traceLevelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         mTraceLevelSpinner.setAdapter(traceLevelAdapter);
 
-        mTraceLevelSpinner.setSelection(1);
+        mTraceLevelSpinner.setSelection(Integer.valueOf(getString(R.string.item_default_tracelevel)) - 1);
 
         mTraceLevelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -207,31 +210,46 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
 
         if (type == TYPE_SETTING_ADD) {
             //新增配置，需要设置默认值的设置默认值
-            mVersonV1.setChecked(true);
-            mMtu.getEditText().setText("1400");
-            mHolePunchInterval.getEditText().setText("25");
-            mTraceLevelSpinner.setSelection(1);
+            ((CommonTitleTemplate) mTemplate).setTitleText(R.string.title_add_setting);
+            mSettingName.getEditText().setText(R.string.item_default_name);
+            mVersionV1.setChecked(true);
+            mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v1);
+            mCommunityTIL.getEditText().setText(R.string.item_default_community);
+            mEncryptTIL.getEditText().setText(R.string.item_default_password);
+            mIpAddressTIL.getEditText().setText(R.string.item_default_ip);
+            mSuperNodeBackup.getEditText().setText(R.string.item_default_supernode_backup);
+            mMtu.getEditText().setText(R.string.item_default_mtu);
+            mHolePunchInterval.getEditText().setText(R.string.item_default_holepunchinterval);
+            mLocalIP.getEditText().setText(R.string.item_default_localip);
+            mLocalIpCheckBox.setChecked(Boolean.valueOf(getString(R.string.item_default_localip_checkbox)));
+            mLocalPort.getEditText().setText(R.string.item_default_localport);
+            mNetMaskTIL.getEditText().setText(R.string.item_default_netmask);
+            mMacAddr.getEditText().setText(EdgeCmd.getRandomMac());
+            mResoveSupernodeIPCheckBox.setChecked(Boolean.valueOf(getString(R.string.item_default_resovesupernodeip)));
+            mAllowRoutinCheckBox.setChecked(Boolean.valueOf(getString(R.string.item_default_allowrouting)));
+            mAcceptMuticastCheckBox.setChecked(!Boolean.valueOf(getString(R.string.item_default_dropmuticast)));
+            mUseHttpTunnelCheckBox.setChecked(Boolean.valueOf(getString(R.string.item_default_usehttptunnel)));
+            mTraceLevelSpinner.setSelection(Integer.valueOf(getString(R.string.item_default_tracelevel)) - 1);
+            mMoreSettingCheckBox.setChecked(false);
 
             mSaveBtn.setVisibility(View.VISIBLE);
             mButtons.setVisibility(View.GONE);
         } else if (type == TYPE_SETTING_MODIFY) {
             // 从数据库读取存储
-
+            ((CommonTitleTemplate) mTemplate).setTitleText(R.string.title_update_setting);
             mSaveId = intent.getLongExtra("saveId", 0);
             mN2NSettingModel = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load(mSaveId);
             mSettingName.getEditText().setText(mN2NSettingModel.getName());
             switch (mN2NSettingModel.getVersion()) {
                 case 0:
-                    mVersonV1.setChecked(true);
+                    mVersionV1.setChecked(true);
                     break;
-
                 case 1:
                     mVersionV2.setChecked(true);
                     break;
                 case 2:
                     mVersionV2s.setChecked(true);
                     break;
-
                 default:
                     break;
             }
@@ -256,23 +274,16 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             mResoveSupernodeIPCheckBox.setChecked(mN2NSettingModel.getResoveSupernodeIP());
             mLocalPort.getEditText().setText(String.valueOf(mN2NSettingModel.getLocalPort()));
             mAllowRoutinCheckBox.setChecked(mN2NSettingModel.getAllowRouting());
-            mAcceptMuticastCheckBox.setChecked(mN2NSettingModel.getDropMuticast());
+            mAcceptMuticastCheckBox.setChecked(!mN2NSettingModel.getDropMuticast());
             mUseHttpTunnelCheckBox.setChecked(mN2NSettingModel.getUseHttpTunnel());
             mTraceLevelSpinner.setSelection(Integer.valueOf(mN2NSettingModel.getTraceLevel()));
-
-            if (mN2NSettingModel.getMoreSettings()) {
-                mMoreSettingCheckBox.setChecked(true);
-                mMoreSettingView.setVisibility(View.VISIBLE);
-            } else {
-                mMoreSettingCheckBox.setChecked(false);
-            }
+            mMoreSettingCheckBox.setChecked(false);
 
             mButtons.setVisibility(View.VISIBLE);
             mSaveBtn.setVisibility(View.GONE);
         }
 
         updateVersionGroupCheck(mVersionGroup.getCheckedRadioButtonId());
-
     }
 
     @Override
@@ -283,14 +294,11 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("zhangbz", "onActivityResult requestCode = " + requestCode + "; resultCode = " + resultCode);
-        if (requestCode == 100 && resultCode == -1) {//RESULT_OK
 
+        if (requestCode == REQUECT_CODE_VPN && resultCode == RESULT_OK) {
             Intent intent = new Intent(SettingDetailsActivity.this, N2NService.class);
-
             Bundle bundle = new Bundle();
             N2NSettingInfo n2NSettingInfo = new N2NSettingInfo(mN2NSettingModel);
-
             bundle.putParcelable("n2nSettingInfo", n2NSettingInfo);
             intent.putExtra("Setting", bundle);
 
@@ -301,37 +309,57 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
     private void updateVersionGroupCheck(int checkedId) {
         switch (checkedId) {
             case R.id.rb_v1:
-//                mUseHttpTunnelCheckBox.setVisibility(View.VISIBLE);
+                mUseHttpTunnelCheckBox.setVisibility(View.GONE);
                 mSuperNodeBackup.setVisibility(View.GONE);
-                mAcceptMuticastCheckBox.setVisibility(View.GONE);
+                mAcceptMuticastView.setVisibility(View.GONE);
                 mHolePunchInterval.setVisibility(View.GONE);
                 mLocalIP.setVisibility(View.GONE);
+                mLocalIpCheckBox.setVisibility(View.GONE);
+                if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
+                    mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v1);
+                }
                 break;
-
             case R.id.rb_v2:
                 mUseHttpTunnelCheckBox.setVisibility(View.GONE);
                 mSuperNodeBackup.setVisibility(View.VISIBLE);
-                mAcceptMuticastCheckBox.setVisibility(View.VISIBLE);
+                mAcceptMuticastView.setVisibility(View.VISIBLE);
                 mHolePunchInterval.setVisibility(View.GONE);
                 mLocalIP.setVisibility(View.GONE);
+                mLocalIpCheckBox.setVisibility(View.GONE);
+                if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
+                    mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v2);
+                }
                 break;
             case R.id.rb_v2s:
                 mUseHttpTunnelCheckBox.setVisibility(View.GONE);
                 mSuperNodeBackup.setVisibility(View.VISIBLE);
-                mAcceptMuticastCheckBox.setVisibility(View.VISIBLE);
+                mAcceptMuticastView.setVisibility(View.VISIBLE);
                 mHolePunchInterval.setVisibility(View.VISIBLE);
                 mLocalIP.setVisibility(View.VISIBLE);
+                mLocalIpCheckBox.setVisibility(View.VISIBLE);
+                if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
+                    mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v2s);
+                }
                 break;
             default:
                 break;
         }
     }
 
+    private Boolean isDefaultSupernode(String supernode) {
+        if (supernode == null || supernode.isEmpty() ||
+                supernode.equals(getString(R.string.item_default_supernode_v1)) ||
+                supernode.equals(getString(R.string.item_default_supernode_v2)) ||
+                supernode.equals(getString(R.string.item_default_supernode_v2s))) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_save:
-
                 if (!checkValues()) {
                     return;
                 }
@@ -343,62 +371,51 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 while (n2NSettingModelDao.queryBuilder().where(N2NSettingModelDao.Properties.Name.eq(settingName)).unique() != null) {
                     i++;
                     settingName = setingNameTmp + "(" + i + ")";
-
                 }
-                Long id;
-//                if (mMoreSettingCheckBox.isChecked()) {
-//                    Log.e("0511", "定位2");
 
-                mN2NSettingModel = new N2NSettingModel(null, getN2nVersion(), settingName, mIpAddressTIL.getEditText().getText().toString(),
-                        TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString(),
+                boolean hasSelected = false;
+                if (n2NSettingModelDao.queryBuilder().where(N2NSettingModelDao.Properties.IsSelcected.eq(true)).unique() != null) {
+                    hasSelected = true;
+                }
+
+                mN2NSettingModel = new N2NSettingModel(null, getN2nVersion(), settingName,
+                        mIpAddressTIL.getEditText().getText().toString(), mNetMaskTIL.getEditText().getText().toString(),
                         mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
-                        mSuperNodeTIL.getEditText().getText().toString(), mMoreSettingCheckBox.isChecked(), mSuperNodeBackup.getEditText().getText().toString(),
-                        TextUtils.isEmpty(mMacAddr.getEditText().getText().toString()) ? EdgeCmd.getRandomMac() : mMacAddr.getEditText().getText().toString(),
-                        TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIpCheckBox.isChecked() ? "auto" : mLocalIP.getEditText().getText().toString(),
-                        TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) ? 25 : Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()),
-                        mResoveSupernodeIPCheckBox.isChecked(), TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) ? 0 : Integer.valueOf(mLocalPort.getEditText().getText().toString()),
-                        mAllowRoutinCheckBox.isChecked(), mAcceptMuticastCheckBox.isChecked(), mUseHttpTunnelCheckBox.isChecked(), mTraceLevelSpinner.getSelectedItemPosition()/*TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ?  1:Integer.valueOf(mTraceLevel.getEditText().getText().toString())*/, false);
-                id = n2NSettingModelDao.insert(mN2NSettingModel);
+                        mSuperNodeTIL.getEditText().getText().toString(), mMoreSettingCheckBox.isChecked(),
+                        mSuperNodeBackup.getEditText().getText().toString(), mMacAddr.getEditText().getText().toString(),
+                        Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIpCheckBox.isChecked() ? "auto" : mLocalIP.getEditText().getText().toString(),
+                        Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()), mResoveSupernodeIPCheckBox.isChecked(),
+                        Integer.valueOf(mLocalPort.getEditText().getText().toString()), mAllowRoutinCheckBox.isChecked(),
+                        !mAcceptMuticastCheckBox.isChecked(), mUseHttpTunnelCheckBox.isChecked(),
+                        mTraceLevelSpinner.getSelectedItemPosition(), !hasSelected);
+                n2NSettingModelDao.insert(mN2NSettingModel);
 
-//                } else {
-//                    Log.e("0511", "定位2");
-//
-//                    mN2NSettingModel = new N2NSettingModel(null, settingName, mIpAddressTIL.getEditText().getText().toString(),
-//                            TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString(),
-//                            mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
-//                            mSuperNodeTIL.getEditText().getText().toString(), false, "", EdgeCmd.getRandomMac(), 1400, "", 25, false, 0, false, false, 1, false);
-//
-//                    id = n2NSettingModelDao.insert(mN2NSettingModel);
-//                    Log.e("0511", "定位3");
-//
-//                }
-
+                if (!hasSelected) {
+                    mN2NSettingModel = n2NSettingModelDao.queryBuilder().where(N2NSettingModelDao.Properties.IsSelcected.eq(true)).unique();
+                    mHin2nEdit.putLong("current_setting_id", mN2NSettingModel.getId());
+                    mHin2nEdit.commit();
+                }
 
                 new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Add Succeed!")
+                        .setTitleText(getString(R.string.dialog_add_succeed))
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sweetAlertDialog) {
                                 finish();
+                                sweetAlertDialog.dismiss();
                             }
-                        })
-                        .show();
-
-
+                        }).show();
                 break;
-
             case R.id.btn_modify:
                 if (!checkValues()) {
                     return;
                 }
 
-                Log.e("0511", "定位1");
                 N2NSettingModelDao n2NSettingModelDao1 = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
                 String settingName1 = mSettingName.getEditText().getText().toString();
                 String setingNameTmp1 = settingName1;//原始字符串
                 int i1 = 0;
                 N2NSettingModel n2NSettingModelTmp = n2NSettingModelDao1.queryBuilder().where(N2NSettingModelDao.Properties.Name.eq(settingName1)).unique();
-
                 while (n2NSettingModelTmp != null) {
                     if (n2NSettingModelTmp.getId() == mSaveId) {
                         break;
@@ -406,52 +423,35 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
 
                     i1++;
                     settingName1 = setingNameTmp1 + "(" + i1 + ")";
-
                     n2NSettingModelTmp = n2NSettingModelDao1.queryBuilder().where(N2NSettingModelDao.Properties.Name.eq(settingName1)).unique();
                 }
 
-//                if (mMoreSettingCheckBox.isChecked()) {
-//                    Log.e("0511", "定位2");
-
-                mN2NSettingModel = new N2NSettingModel(mSaveId, getN2nVersion(), settingName1, mIpAddressTIL.getEditText().getText().toString(),
-                        TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString(),
+                mN2NSettingModel = new N2NSettingModel(mSaveId, getN2nVersion(), settingName1,
+                        mIpAddressTIL.getEditText().getText().toString(), mNetMaskTIL.getEditText().getText().toString(),
                         mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
-                        mSuperNodeTIL.getEditText().getText().toString(), mMoreSettingCheckBox.isChecked(), mSuperNodeBackup.getEditText().getText().toString(),
-                        TextUtils.isEmpty(mMacAddr.getEditText().getText().toString()) ? EdgeCmd.getRandomMac() : mMacAddr.getEditText().getText().toString(),
-                        TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIpCheckBox.isChecked() ? "auto" : mLocalIP.getEditText().getText().toString(),
-                        TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) ? 25 : Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()),
-                        mResoveSupernodeIPCheckBox.isChecked(), TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) ? 0 : Integer.valueOf(mLocalPort.getEditText().getText().toString()),
-                        mAllowRoutinCheckBox.isChecked(), mAcceptMuticastCheckBox.isChecked(), mUseHttpTunnelCheckBox.isChecked(), mTraceLevelSpinner.getSelectedItemPosition()/*TextUtils.isEmpty(mTraceLevel.getEditText().getText().toString()) ?  1 : Integer.valueOf(mTraceLevel.getEditText().getText().toString())*/, mN2NSettingModel.getIsSelcected());
+                        mSuperNodeTIL.getEditText().getText().toString(), mMoreSettingCheckBox.isChecked(),
+                        mSuperNodeBackup.getEditText().getText().toString(), mMacAddr.getEditText().getText().toString(),
+                        Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIpCheckBox.isChecked() ? "auto" : mLocalIP.getEditText().getText().toString(),
+                        Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()), mResoveSupernodeIPCheckBox.isChecked(),
+                        Integer.valueOf(mLocalPort.getEditText().getText().toString()), mAllowRoutinCheckBox.isChecked(),
+                        !mAcceptMuticastCheckBox.isChecked(), mUseHttpTunnelCheckBox.isChecked(),
+                        mTraceLevelSpinner.getSelectedItemPosition(), mN2NSettingModel.getIsSelcected());
                 n2NSettingModelDao1.update(mN2NSettingModel);
-//                } else {
-//                    Log.e("0511", "定位2");
-//
-//                    mN2NSettingModel = new N2NSettingModel(mSaveId, settingName1, mIpAddressTIL.getEditText().getText().toString(),
-//                            TextUtils.isEmpty(mNetMaskTIL.getEditText().getText()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString(),
-//                            mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
-//                            mSuperNodeTIL.getEditText().getText().toString(), false, mSuperNodeBackup.getEditText().getText().toString(), TextUtils.isEmpty(mMacAddr.getEditText().getText().toString()) ? EdgeCmd.getRandomMac() : mMacAddr.getEditText().getText().toString(),
-//                            TextUtils.isEmpty(mMtu.getEditText().getText().toString()) ? 1400 : Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIpCheckBox.isChecked() ? "auto" : mLocalIP.getEditText().getText().toString(), 25, false, 0, false, false, 1, mN2NSettingModel.getIsSelcected());
-//
-//                    n2NSettingModelDao1.update(mN2NSettingModel);
-//                    Log.e("0511", "定位3");
-//
-//                }
 
-                if (N2NService.INSTANCE != null && N2NService.INSTANCE.isRunning) {
+                if (N2NService.INSTANCE != null &&
+                        N2NService.INSTANCE.getCurrentStatus() != EdgeStatus.RunningStatus.DISCONNECT &&
+                        N2NService.INSTANCE.getCurrentStatus() != EdgeStatus.RunningStatus.FAILED) {
                     Long currentSettingId = mHin2nSp.getLong("current_setting_id", -1);
-
                     if (currentSettingId == mSaveId) {
-                        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(SettingDetailsActivity.this, SweetAlertDialog.WARNING_TYPE);
-                        sweetAlertDialog
-                                .setTitleText("Update the setting ?")
-//                                .setContentText("Won't be able to recover this file!")
-                                .setCancelText("No")
-                                .setConfirmText("Yes")
+                        new SweetAlertDialog(SettingDetailsActivity.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText(getString(R.string.dialog_update_request))
+                                .setCancelText(getString(R.string.dialog_no))
+                                .setConfirmText(getString(R.string.dialog_yes))
                                 .showCancelButton(true)
                                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                     @Override
-                                    public void onClick(SweetAlertDialog sDialog) {
-                                        sDialog.cancel();
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.cancel();
                                     }
                                 })
                                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -460,46 +460,40 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                                         N2NService.INSTANCE.stop();
 
                                         Intent vpnPrepareIntent = VpnService.prepare(SettingDetailsActivity.this);
-
                                         if (vpnPrepareIntent != null) {
-                                            startActivityForResult(vpnPrepareIntent, 100);
+                                            startActivityForResult(vpnPrepareIntent, REQUECT_CODE_VPN);
                                         } else {
-                                            onActivityResult(100, -1, null);
-
+                                            onActivityResult(REQUECT_CODE_VPN, RESULT_OK, null);
                                         }
 
-                                        sweetAlertDialog.cancel();
-
-//                                        finish();
+                                        sweetAlertDialog.dismiss();
                                     }
                                 })
                                 .show();
                     } else {
                         new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
-                                .setTitleText("Save Succeed!")
+                                .setTitleText(getString(R.string.dialog_save_succeed))
                                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                     @Override
                                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                                         finish();
+                                        sweetAlertDialog.dismiss();
                                     }
-                                })
-                                .show();
+                                }).show();
                     }
                 } else {
                     new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
-                            .setTitleText("Save Succeed!")
+                            .setTitleText(getString(R.string.dialog_save_succeed))
                             .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                 @Override
                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
                                     finish();
+                                    sweetAlertDialog.dismiss();
                                 }
-                            })
-                            .show();
+                            }).show();
                 }
-
                 break;
             default:
-
                 break;
         }
     }
@@ -513,35 +507,46 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         if (TextUtils.isEmpty(mSettingName.getEditText().getText())
                 || TextUtils.isEmpty(mIpAddressTIL.getEditText().getText())
                 || TextUtils.isEmpty(mCommunityTIL.getEditText().getText())
-//                || TextUtils.isEmpty(mEncryptTIL.getEditText().getText())//密码可以为空
                 || TextUtils.isEmpty(mSuperNodeTIL.getEditText().getText())) {
+            Boolean bReq = false;
+            if (TextUtils.isEmpty(mSettingName.getEditText().getText())) {
+                mSettingName.setError(mSettingName.getHint() + " is required");
+                if (!bReq) {
+                    mSettingName.getEditText().requestFocus();
+                    bReq = true;
+                }
+            } else {
+                mSettingName.setErrorEnabled(false);
+            }
 
             if (TextUtils.isEmpty(mSuperNodeTIL.getEditText().getText())) {
-                mSuperNodeTIL.setError("Required");
-                mSuperNodeTIL.getEditText().requestFocus();
+                mSuperNodeTIL.setError(mSuperNodeTIL.getHint() + " is required");
+                if (!bReq) {
+                    mSuperNodeTIL.getEditText().requestFocus();
+                    bReq = true;
+                }
             } else {
                 mSuperNodeTIL.setErrorEnabled(false);
             }
 
             if (TextUtils.isEmpty(mCommunityTIL.getEditText().getText())) {
-                mCommunityTIL.setError("Required");
-                mCommunityTIL.getEditText().requestFocus();
+                mCommunityTIL.setError(mCommunityTIL.getHint() + " is required");
+                if (!bReq) {
+                    mCommunityTIL.getEditText().requestFocus();
+                    bReq = true;
+                }
             } else {
                 mCommunityTIL.setErrorEnabled(false);
             }
 
             if (TextUtils.isEmpty(mIpAddressTIL.getEditText().getText())) {
-                mIpAddressTIL.setError("Required");
-                mIpAddressTIL.getEditText().requestFocus();
+                mIpAddressTIL.setError(mIpAddressTIL.getHint() + " is required");
+                if (!bReq) {
+                    mIpAddressTIL.getEditText().requestFocus();
+                    bReq = true;
+                }
             } else {
                 mIpAddressTIL.setErrorEnabled(false);
-            }
-
-            if (TextUtils.isEmpty(mSettingName.getEditText().getText())) {
-                mSettingName.setError("Required");
-                mSettingName.getEditText().requestFocus();
-            } else {
-                mSettingName.setErrorEnabled(false);
             }
 
             return false;
@@ -550,43 +555,31 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         /**
          * 基础配置参数检查
          */
-
         if (!EdgeCmd.checkSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
-            mSuperNodeTIL.setError("Supernode Error!");
+            mSuperNodeTIL.setError(mSuperNodeTIL.getHint() + " format is incorrect");
             mSuperNodeTIL.getEditText().requestFocus();
             return false;
-
         } else {
             mSuperNodeTIL.setErrorEnabled(false);
-
         }
-
         if (!EdgeCmd.checkCommunity(mCommunityTIL.getEditText().getText().toString())) {
-            mCommunityTIL.setError("Community Error!");
+            mCommunityTIL.setError(mCommunityTIL.getHint() + " format is incorrect");
             mCommunityTIL.getEditText().requestFocus();
             return false;
-
         } else {
             mCommunityTIL.setErrorEnabled(false);
-
         }
-
         if (!EdgeCmd.checkEncKey(mEncryptTIL.getEditText().getText().toString())) {
-            mEncryptTIL.setError("Password Error!");
+            mEncryptTIL.setError(mEncryptTIL.getHint() + " format is incorrect");
             mEncryptTIL.getEditText().requestFocus();
             return false;
-
         } else {
             mEncryptTIL.setErrorEnabled(false);
-
         }
-
         if (!EdgeCmd.checkIPV4(mIpAddressTIL.getEditText().getText().toString())) {
-
-            mIpAddressTIL.setError("IP Address Error!");
+            mIpAddressTIL.setError(mIpAddressTIL.getHint() + " format is incorrect");
             mIpAddressTIL.getEditText().requestFocus();
             return false;
-
         } else {
             mIpAddressTIL.setErrorEnabled(false);
         }
@@ -594,117 +587,79 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         /**
          * 高级配置参数检查
          */
-
-//        if (mMoreSettingCheckBox.isChecked()) {
-
-        Log.e("0511", "TextUtils.isEmpty(mSuperNodeBackup.getEditText().getText().toString()) = " + TextUtils.isEmpty(mSuperNodeBackup.getEditText().getText().toString()));
-        if (!TextUtils.isEmpty(mSuperNodeBackup.getEditText().getText().toString()) && !EdgeCmd.checkSupernode(mSuperNodeBackup.getEditText().getText().toString())) {
-            mSuperNodeBackup.setError("Supernode Back Error!");
+        int ver = getN2nVersion();
+        // backup supernode => v2, v2s
+        if ((ver == 1 || ver == 2) && !TextUtils.isEmpty(mSuperNodeBackup.getEditText().getText().toString()) && !EdgeCmd.checkSupernode(mSuperNodeBackup.getEditText().getText().toString())) {
+            mSuperNodeBackup.setError(mSuperNodeBackup.getHint() + " format is incorrect");
             mSuperNodeBackup.getEditText().requestFocus();
-
-            if (!mMoreSettingCheckBox.isChecked()) {
-                mMoreSettingCheckBox.setChecked(true);
-                mMoreSettingView.setVisibility(View.VISIBLE);
-            }
-
+            mMoreSettingCheckBox.setChecked(true);
+            mMoreSettingView.setVisibility(View.VISIBLE);
             return false;
         } else {
             mSuperNodeBackup.setErrorEnabled(false);
-
         }
-
-        if (!TextUtils.isEmpty(mMtu.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mMtu.getEditText().getText().toString()), 46, 1500)) {
-            mMtu.setError("Mtu Error!");
+        // mtu => v1, v2, v2s
+        if (!TextUtils.isEmpty(mMtu.getEditText().getText().toString()) && !EdgeCmd.checkMtu(Integer.valueOf(mMtu.getEditText().getText().toString()))) {
+            mMtu.setError(mMtu.getHint() + " format is incorrect");
             mMtu.getEditText().requestFocus();
-
-            if (!mMoreSettingCheckBox.isChecked()) {
-                mMoreSettingCheckBox.setChecked(true);
-                mMoreSettingView.setVisibility(View.VISIBLE);
-            }
-
+            mMoreSettingCheckBox.setChecked(true);
+            mMoreSettingView.setVisibility(View.VISIBLE);
             return false;
-
         } else {
             mMtu.setErrorEnabled(false);
-
         }
-
-        if (!TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()), 10, 120)) {
-            mHolePunchInterval.setError("Hole Punch Interval Error!");
+        // holePunchInterval => v2s
+        if (ver == 2 && !TextUtils.isEmpty(mHolePunchInterval.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mHolePunchInterval.getEditText().getText().toString()), 10, 120)) {
+            mHolePunchInterval.setError(mHolePunchInterval.getHint() + " format is incorrect");
             mHolePunchInterval.getEditText().requestFocus();
-
-            if (!mMoreSettingCheckBox.isChecked()) {
-                mMoreSettingCheckBox.setChecked(true);
-                mMoreSettingView.setVisibility(View.VISIBLE);
-            }
-
+            mMoreSettingCheckBox.setChecked(true);
+            mMoreSettingView.setVisibility(View.VISIBLE);
             return false;
         } else {
             mHolePunchInterval.setErrorEnabled(false);
-
         }
-
-        if (!mLocalIpCheckBox.isChecked()) {
+        // localIP => v2s
+        if (ver == 2 && !mLocalIpCheckBox.isChecked()) {
             if (!TextUtils.isEmpty(mLocalIP.getEditText().getText().toString()) && !EdgeCmd.checkIPV4(mLocalIP.getEditText().getText().toString())) {
-                mLocalIP.setError("Local IP Error!");
+                mLocalIP.setError(mLocalIP.getHint() + " format is incorrect");
                 mLocalIP.getEditText().requestFocus();
-
-                if (!mMoreSettingCheckBox.isChecked()) {
-                    mMoreSettingCheckBox.setChecked(true);
-                    mMoreSettingView.setVisibility(View.VISIBLE);
-                }
-
+                mMoreSettingCheckBox.setChecked(true);
+                mMoreSettingView.setVisibility(View.VISIBLE);
                 return false;
-
             } else {
                 mLocalIP.setErrorEnabled(false);
-
             }
         }
-
+        // localPort => v1, v2, v2s
         if (!TextUtils.isEmpty(mLocalPort.getEditText().getText().toString()) && !EdgeCmd.checkInt(Integer.valueOf(mLocalPort.getEditText().getText().toString()), 0, 65535)) {
-            mLocalPort.setError("Local Port Error!");
+            mLocalPort.setError(mLocalPort.getHint() + " format is incorrect");
             mLocalPort.getEditText().requestFocus();
-
-            if (!mMoreSettingCheckBox.isChecked()) {
-                mMoreSettingCheckBox.setChecked(true);
-                mMoreSettingView.setVisibility(View.VISIBLE);
-            }
-
+            mMoreSettingCheckBox.setChecked(true);
+            mMoreSettingView.setVisibility(View.VISIBLE);
             return false;
-
         } else {
             mLocalPort.setErrorEnabled(false);
-
         }
-
+        // netmask => v1, v2, v2s
         if (!EdgeCmd.checkIPV4Mask(TextUtils.isEmpty(mNetMaskTIL.getEditText().getText().toString()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString())) {
-            mNetMaskTIL.setError("NetMask Error!");
+            mNetMaskTIL.setError(mNetMaskTIL.getHint() + " format is incorrect");
             mNetMaskTIL.getEditText().requestFocus();
-
+            mMoreSettingCheckBox.setChecked(true);
+            mMoreSettingView.setVisibility(View.VISIBLE);
             return false;
-
         } else {
             mNetMaskTIL.setErrorEnabled(false);
-
         }
-
+        // macAddr => v1, v2, v2s
         if (!TextUtils.isEmpty(mMacAddr.getEditText().getText().toString()) && !EdgeCmd.checkMacAddr(mMacAddr.getEditText().getText().toString())) {
-            mMacAddr.setError("Mac Address Error!");
+            mMacAddr.setError(mMacAddr.getHint() + " format is incorrect");
             mMacAddr.getEditText().requestFocus();
-
-            if (!mMoreSettingCheckBox.isChecked()) {
-                mMoreSettingCheckBox.setChecked(true);
-                mMoreSettingView.setVisibility(View.VISIBLE);
-            }
-
+            mMoreSettingCheckBox.setChecked(true);
+            mMoreSettingView.setVisibility(View.VISIBLE);
             return false;
-
         } else {
             mMacAddr.setErrorEnabled(false);
-
         }
-//        }
 
         return true;
     }
@@ -722,40 +677,30 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         switch (mVersionGroup.getCheckedRadioButtonId()) {
             case R.id.rb_v1:
                 return 0;
-
-
             case R.id.rb_v2:
                 return 1;
-
-
             case R.id.rb_v2s:
                 return 2;
-
             default:
                 return -1;
-
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStartEvent(StartEvent event) {
         new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
-                .setTitleText("Update Succeed!")
+                .setTitleText(getString(R.string.dialog_update_succeed))
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         finish();
+                        sweetAlertDialog.dismiss();
                     }
-                })
-                .show();
-
-        Log.e("zhangbz", "SetttingDetailsActivity onStartEvent");
+                }).show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStopEvent(StopEvent event) {
-        Log.e("zhangbz", "SetttingDetailsActivity onStopEvent");
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -764,8 +709,5 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 .setTitleText("Oops...")
                 .setContentText("Something went wrong!")
                 .show();
-
-        Log.e("zhangbz", "SetttingDetailsActivity onErrorEvent");
-//        Toast.makeText(mContext, "~_~Error~_~", Toast.LENGTH_SHORT).show();
     }
 }

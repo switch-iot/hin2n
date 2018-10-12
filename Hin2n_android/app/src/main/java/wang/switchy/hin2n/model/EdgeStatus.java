@@ -13,7 +13,5 @@ public class EdgeStatus {
         FAILED                          // Fail to connect to N2N network
     }
 
-    public boolean isRunning;           // TODO delete
     public RunningStatus runningStatus;
-
 }

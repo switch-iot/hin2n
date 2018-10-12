@@ -37,7 +37,7 @@
             android:layout_below="@id/iv_connect_btn"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
-            android:text="Note : Disconnect from the supernode."
+            android:text="Note: Disconnect from the supernode."
             android:visibility="gone"/>
 
         <RelativeLayout
@@ -72,7 +72,7 @@
                     android:layout_marginLeft="10dp"
                     android:paddingBottom="10dp"
                     android:paddingTop="10dp"
-                    android:text="--null--"
+                    android:text="--choose setting--"
                     android:textSize="18dp"/>
 
 
@@ -163,7 +163,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@drawable/menu_item_background"
-                android:padding="10dp">
+                android:paddingLeft="10dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp">
 
                 <ImageView
                     android:id="@+id/item_icon_share"
@@ -189,11 +191,44 @@
             <!--android:layout_height="wrap_content"-->
             <!--rv_centered="true">-->
             <RelativeLayout
+                android:id="@+id/rl_contact"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/menu_item_background"
+                android:paddingLeft="10dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp">
+
+                <ImageView
+                    android:id="@+id/item_icon_contact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/icon_contact"
+                    />
+
+                <TextView
+                    android:id="@+id/iv_contact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/item_icon_contact"
+                    android:text="Contact us"
+                    android:textColor="@android:color/black"
+                    android:ellipsize="end"
+                    android:textSize="18dp"/>
+            </RelativeLayout>
+            <!--</com.andexert.library.RippleView>-->
+
+            <RelativeLayout
                 android:id="@+id/rl_feedback"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@drawable/menu_item_background"
-                android:padding="10dp">
+                android:paddingLeft="10dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp">
 
                 <ImageView
                     android:id="@+id/item_icon_feedback"
@@ -214,7 +249,6 @@
                     android:ellipsize="end"
                     android:textSize="18dp"/>
             </RelativeLayout>
-            <!--</com.andexert.library.RippleView>-->
 
 
             <RelativeLayout
@@ -222,7 +256,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@drawable/menu_item_background"
-                android:padding="10dp">
+                android:paddingLeft="10dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp">
 
                 <ImageView
                     android:id="@+id/item_icon_update"
@@ -248,7 +284,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@drawable/menu_item_background"
-                android:padding="10dp">
+                android:paddingLeft="10dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp">
 
                 <ImageView
                     android:id="@+id/item_icon_about"

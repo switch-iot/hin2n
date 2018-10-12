@@ -37,9 +37,6 @@ public class N2NSettingModel /*implements Parcelable*/ {
     boolean dropMuticast;
     boolean useHttpTunnel;
     int traceLevel;
-//    int vpnFd;
-
-
     boolean isSelcected;
 
 

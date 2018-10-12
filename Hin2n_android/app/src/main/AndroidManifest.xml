@@ -1,54 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="wang.switchy.hin2n">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="wang.switchy.hin2n">
 
-    <!--Umeng start-->
-    <!-- 必须的权限 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- 推荐的权限 -->
-    <!-- 添加如下权限，以便使用更多的第三方SDK和更精准的统计数据 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <!--Umeng end-->
-
-    <uses-permission android:name="android.permission.READ_LOGS" />
-	  
-	  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-	  
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".Hin2nApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        tools:replace="android:icon"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:icon">
+        <activity
+            android:name=".activity.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.ListActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.ListActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".activity.SettingDetailsActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.WebViewActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.SettingDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.WebViewActivity"
+            android:screenOrientation="portrait" />
 
-        <service android:name=".service.N2NService"
+        <service
+            android:name=".service.N2NService"
             android:permission="android.permission.BIND_VPN_SERVICE">
             <intent-filter>
                 <action android:name="android.net.VpnService" />
@@ -67,35 +64,29 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
-		
-		        <!--umeng share-->
+
+        <!--umeng share-->
         <!--sina-->
         <activity
             android:name="com.umeng.socialize.media.WBShareCallBackActivity"
             android:configChanges="keyboardHidden|orientation"
             android:exported="false"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            >
-        </activity>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
         <activity
             android:name="com.sina.weibo.sdk.web.WeiboSdkWebActivity"
             android:configChanges="keyboardHidden|orientation"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize"
-            >
-
-        </activity>
+            android:windowSoftInputMode="adjustResize"></activity>
         <activity
             android:name="com.sina.weibo.sdk.share.WbShareTransActivity"
             android:launchMode="singleTask"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
             <intent-filter>
-                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
 
         <!--wx-->
@@ -103,29 +94,29 @@
             android:name=".wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-		
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
 
         <!--友盟统计相关meta-data-->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="${UMENG_APPKEY_VALUE}"/> <!--友盟 AppKey-->
+            android:value="${UMENG_APPKEY_VALUE}" /> <!--友盟 AppKey-->
 
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="${UMENG_CHANNEL_VALUE}"/> <!-- 渠道号 -->
+            android:value="${UMENG_CHANNEL_VALUE}" /> <!-- 渠道号 -->
 
         <meta-data
             android:name="BUGLY_APPID"
-            android:value="${BUGLY_APPID_VALUE}"/> <!-- bugly -->
+            android:value="${BUGLY_APPID_VALUE}" /> <!-- bugly -->
 
         <meta-data
             android:name="SHARE_WX_APPID"
-            android:value="${SHARE_WX_APPID_VALUE}"/> <!-- share weixin app id -->
+            android:value="${SHARE_WX_APPID_VALUE}" /> <!-- share weixin app id -->
 
         <meta-data
             android:name="SHARE_WX_APPSECRET"
-            android:value="${SHARE_WX_APPSECRET_VALUE}"/> <!-- share weixin app secret -->
+            android:value="${SHARE_WX_APPSECRET_VALUE}" /> <!-- share weixin app secret -->
 
     </application>
 

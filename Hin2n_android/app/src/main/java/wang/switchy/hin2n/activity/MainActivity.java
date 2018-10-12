@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +44,7 @@ import wang.switchy.hin2n.event.ErrorEvent;
 import wang.switchy.hin2n.event.StartEvent;
 import wang.switchy.hin2n.event.StopEvent;
 import wang.switchy.hin2n.event.SupernodeDisconnectEvent;
+import wang.switchy.hin2n.model.EdgeStatus;
 import wang.switchy.hin2n.model.N2NSettingInfo;
 import wang.switchy.hin2n.service.N2NService;
 import wang.switchy.hin2n.storage.db.base.model.N2NSettingModel;
@@ -58,17 +58,17 @@ public class MainActivity extends BaseActivity {
     private RelativeLayout mCurrentSettingItem;
     private TextView mCurrentSettingName;
     private ImageView mConnectBtn;
-    //    private AVLoadingIndicatorView mLoadingView;
     private TextView mSupernodeDisconnectNote;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private LinearLayout mLeftMenu;
 
-    private static final int REQUECT_CODE_SDCARD = 2;
+    private static final int REQUECT_CODE_SDCARD = 1;
+    private static final int REQUECT_CODE_VPN = 2;
 
     @Override
     protected BaseTemplate createTemplate() {
-        CommonTitleTemplate titleTemplate = new CommonTitleTemplate(this, "Hin2n");
+        CommonTitleTemplate titleTemplate = new CommonTitleTemplate(this, getString(R.string.app_name));
         titleTemplate.mRightImg.setImageResource(R.mipmap.ic_add);
         titleTemplate.mRightImg.setVisibility(View.VISIBLE);
         titleTemplate.mRightImg.setOnClickListener(new View.OnClickListener() {
@@ -80,12 +80,8 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-
-//        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) titleTemplate.mLeftImg.getLayoutParams();
-//        layoutParams.leftMargin = N2nTools.dp2px(this, 10);
-//        titleTemplate.mLeftImg.setLayoutParams(layoutParams);
-
         titleTemplate.mLeftImg.setImageResource(R.mipmap.ic_menu);
+        titleTemplate.mLeftImg.setVisibility(View.VISIBLE);
         titleTemplate.mLeftImg.setVisibility(View.VISIBLE);
         titleTemplate.mLeftImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,41 +127,36 @@ public class MainActivity extends BaseActivity {
         mConnectBtn = (ImageView) findViewById(R.id.iv_connect_btn);
 
         if (N2NService.INSTANCE == null) {
-
             mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
         } else {
-            if (N2NService.INSTANCE.isRunning) {
+            EdgeStatus.RunningStatus status = N2NService.INSTANCE.getCurrentStatus();
+            if (status == EdgeStatus.RunningStatus.CONNECTED) {
                 mConnectBtn.setImageResource(R.mipmap.ic_state_connect);
-
+            } else if (status == EdgeStatus.RunningStatus.SUPERNODE_DISCONNECT) {
+                mConnectBtn.setImageResource(R.mipmap.ic_state_supernode_diconnect);
             } else {
                 mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
-
             }
         }
 
         mConnectBtn.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
-
-                if (mCurrentSettingName.getText().equals("--null--")) {
-                    Toast.makeText(mContext, "null setting", Toast.LENGTH_SHORT).show();
+                if (mCurrentSettingName.getText().equals(getResources().getString(R.string.no_setting))) {
+                    Toast.makeText(mContext, "no setting selected", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (N2NService.INSTANCE != null && N2NService.INSTANCE.isRunning) {
+                EdgeStatus.RunningStatus status = N2NService.INSTANCE == null ? EdgeStatus.RunningStatus.DISCONNECT : N2NService.INSTANCE.getCurrentStatus();
+                if (N2NService.INSTANCE != null && status != EdgeStatus.RunningStatus.DISCONNECT && status != EdgeStatus.RunningStatus.FAILED) {
                     N2NService.INSTANCE.stop();
                 } else {
-
                     Intent vpnPrepareIntent = VpnService.prepare(MainActivity.this);
-
                     if (vpnPrepareIntent != null) {
-                        startActivityForResult(vpnPrepareIntent, 100);
+                        startActivityForResult(vpnPrepareIntent, REQUECT_CODE_VPN);
                     } else {
-                        onActivityResult(100, -1, null);
-
+                        onActivityResult(REQUECT_CODE_VPN, RESULT_OK, null);
                     }
-
                 }
             }
         });
@@ -177,18 +168,18 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, ListActivity.class));
-
             }
         });
 
         mCurrentSettingName = (TextView) findViewById(R.id.tv_current_setting_name);
+        mCurrentSettingName.setText(R.string.no_setting);
 
         initLeftMenu();
 
-        if (!MPermissions.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUECT_CODE_SDCARD)) {
-            MPermissions.requestPermissions(MainActivity.this, REQUECT_CODE_SDCARD, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-
+        // TODO 高版本日志权限
+//        if (!MPermissions.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUECT_CODE_SDCARD)) {
+//            MPermissions.requestPermissions(MainActivity.this, REQUECT_CODE_SDCARD, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//        }
     }
 
     private void initLeftMenu() {
@@ -232,19 +223,28 @@ public class MainActivity extends BaseActivity {
 
             }
         });
+        shareItem.setVisibility(View.GONE);     // @TODO 暂时不显示
 
-//        shareItem.setVisibility(View.GONE);
-
-        RelativeLayout feedbackItem = (RelativeLayout) findViewById(R.id.rl_feedback);
-        feedbackItem.setOnClickListener(new View.OnClickListener() {
+        RelativeLayout contactItem = (RelativeLayout) findViewById(R.id.rl_contact);
+        contactItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean b = joinQQGroup("5QSK63d7uDivxPW2oCpWHyi7FmE4sAzo");
                 if (!b) {
                     Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
-                    intent.putExtra(WebViewActivity.WEB_VIEW_TYPE, WebViewActivity.TYPE_WEB_VIEW_FEEDBACK);
+                    intent.putExtra(WebViewActivity.WEB_VIEW_TYPE, WebViewActivity.TYPE_WEB_VIEW_CONTACT);
                     startActivity(intent);
                 }
+            }
+        });
+
+        RelativeLayout feedbackItem = (RelativeLayout) findViewById(R.id.rl_feedback);
+        feedbackItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
+                intent.putExtra(WebViewActivity.WEB_VIEW_TYPE, WebViewActivity.TYPE_WEB_VIEW_FEEDBACK);
+                startActivity(intent);
             }
         });
 
@@ -272,7 +272,7 @@ public class MainActivity extends BaseActivity {
 
         UMWeb umWeb = new UMWeb("https://github.com/switch-iot/n2n_vLTS/blob/master/README.md");
         umWeb.setTitle("Hin2n");
-        umWeb.setThumb(new UMImage(this, R.drawable.ic_launcher));
+        umWeb.setThumb(new UMImage(this, R.mipmap.ic_launcher));
         umWeb.setDescription("N2N is a VPN project that supports p2p.");
 
         new ShareAction(MainActivity.this)
@@ -337,13 +337,10 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+        //UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 100 && resultCode == -1) {//RESULT_OK
-
+        if (requestCode == REQUECT_CODE_VPN && resultCode == RESULT_OK) {
             Intent intent = new Intent(MainActivity.this, N2NService.class);
-
-
             Bundle bundle = new Bundle();
             N2NSettingInfo n2NSettingInfo = new N2NSettingInfo(mCurrentSettingInfo);
             bundle.putParcelable("n2nSettingInfo", n2NSettingInfo);
@@ -356,35 +353,43 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("zhangbz", "MainActivity onResume");
 
         SharedPreferences n2nSp = getSharedPreferences("Hin2n", MODE_PRIVATE);
         Long currentSettingId = n2nSp.getLong("current_setting_id", -1);
-
         if (currentSettingId != -1) {
             mCurrentSettingInfo = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load((long) currentSettingId);
             if (mCurrentSettingInfo != null) {
                 mCurrentSettingName.setText(mCurrentSettingInfo.getName());
             } else {
-                mCurrentSettingName.setText("--null--");
-
+                mCurrentSettingName.setText(R.string.no_setting);
             }
 
-
+            mConnectBtn.setVisibility(View.VISIBLE);
+            mSupernodeDisconnectNote.setVisibility(View.GONE);
+            if (N2NService.INSTANCE == null) {
+                mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
+            } else {
+                EdgeStatus.RunningStatus status = N2NService.INSTANCE.getCurrentStatus();
+                if (status == EdgeStatus.RunningStatus.CONNECTED) {
+                    mConnectBtn.setImageResource(R.mipmap.ic_state_connect);
+                } else if (status == EdgeStatus.RunningStatus.SUPERNODE_DISCONNECT) {
+                    mConnectBtn.setImageResource(R.mipmap.ic_state_supernode_diconnect);
+                    mSupernodeDisconnectNote.setVisibility(View.VISIBLE);
+                } else {
+                    mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
+                }
+            }
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.e("zhangbz", "MainActivity onPause");
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.e("zhangbz", "MainActivity onDestroy");
 
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
@@ -394,41 +399,39 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStartEvent(StartEvent event) {
-//        mLoadingView.setVisibility(View.GONE);
         mConnectBtn.setVisibility(View.VISIBLE);
         mConnectBtn.setImageResource(R.mipmap.ic_state_connect);
         mSupernodeDisconnectNote.setVisibility(View.GONE);
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStopEvent(StopEvent event) {
-//        mLoadingView.setVisibility(View.GONE);
         mConnectBtn.setVisibility(View.VISIBLE);
         mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
         mSupernodeDisconnectNote.setVisibility(View.GONE);
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onErrorEvent(ErrorEvent event) {
+        mConnectBtn.setVisibility(View.VISIBLE);
         mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
+        mSupernodeDisconnectNote.setVisibility(View.GONE);
 
-        Toast.makeText(mContext, "~_~Error~_~", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, getString(R.string.toast_connect_failed), Toast.LENGTH_SHORT).show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onConnectingEvent(ConnectingEvent event) {
         mConnectBtn.setVisibility(View.GONE);
-//        mLoadingView.setVisibility(View.VISIBLE);
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSupernodeDisconnectEvent(SupernodeDisconnectEvent event) {
-//        mLoadingView.setVisibility(View.GONE);
+        mConnectBtn.setVisibility(View.VISIBLE);
         mConnectBtn.setImageResource(R.mipmap.ic_state_supernode_diconnect);
         mSupernodeDisconnectNote.setVisibility(View.VISIBLE);
+
+        Toast.makeText(mContext, getString(R.string.toast_disconnect_and_retry), Toast.LENGTH_SHORT).show();
     }
 
     /****************
@@ -510,8 +513,5 @@ public class MainActivity extends BaseActivity {
                     }
                 })
                 .show();
-
-
     }
-
 }
