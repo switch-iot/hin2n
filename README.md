@@ -81,10 +81,10 @@ Hin2n is a free and open source n2n project, and we welcome anyone to contribute
 If `Hin2n` help you a lot, you can support us by:
 
 ### AliPay
-![donate-alipay](/doc/pic/donate-alipay.png)
+<img height="100" src="doc/pic/donate-alipay.png" alt="donate-alipay">
 
 ### Wechat Pay
-![donate-wechatpay](/doc/pic/donate-wechatpay.png)
+<img height="100" src="doc/pic/donate-wechatpay.png" alt="donate-wechatpay">
 
 ### Paypal
 Donate money by [paypal](https://www.paypal.me/hin2n) to my account `switch.st@gmail.com`
