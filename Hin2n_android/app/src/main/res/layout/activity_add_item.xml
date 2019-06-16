@@ -242,11 +242,26 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
-                    android:id="@+id/til_net_mask"
+                    android:id="@+id/til_gateway_ip"
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/til_local_port">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/tie_gateway_ip"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Gateway IP address"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/til_net_mask"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/til_gateway_ip">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/tie_net_mask"

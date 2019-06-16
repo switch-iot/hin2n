@@ -38,7 +38,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
     boolean useHttpTunnel;
     int traceLevel;
     boolean isSelcected;
-
+    String gatewayIp;
 
 
     public String getSuperNode() {
@@ -201,11 +201,19 @@ public class N2NSettingModel /*implements Parcelable*/ {
         this.useHttpTunnel = useHttpTunnel;
     }
 
-    @Generated(hash = 1649807878)
-    public N2NSettingModel(Long id, int version, String name, String ip, String netmask, String community,
-            String password, String superNode, boolean moreSettings, String superNodeBackup, String macAddr,
-            int mtu, String localIP, int holePunchInterval, boolean resoveSupernodeIP, int localPort,
-            boolean allowRouting, boolean dropMuticast, boolean useHttpTunnel, int traceLevel, boolean isSelcected) {
+    public String getGatewayIp() {
+        return this.gatewayIp;
+    }
+
+    public void setGatewayIp(String gatewayIp) {
+        this.gatewayIp = gatewayIp;
+    }
+
+    @Generated(hash = 527276015)
+    public N2NSettingModel(Long id, int version, String name, String ip, String netmask, String community, String password,
+            String superNode, boolean moreSettings, String superNodeBackup, String macAddr, int mtu, String localIP,
+            int holePunchInterval, boolean resoveSupernodeIP, int localPort, boolean allowRouting, boolean dropMuticast,
+            boolean useHttpTunnel, int traceLevel, boolean isSelcected, String gatewayIp) {
         this.id = id;
         this.version = version;
         this.name = name;
@@ -227,6 +235,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
         this.useHttpTunnel = useHttpTunnel;
         this.traceLevel = traceLevel;
         this.isSelcected = isSelcected;
+        this.gatewayIp = gatewayIp;
     }
 
     @Generated(hash = 998225630)
@@ -265,6 +274,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
                 ", useHttpTunnel=" + useHttpTunnel +
                 ", traceLevel=" + traceLevel +
                 ", isSelcected=" + isSelcected +
+                ", gatewayIp=" + gatewayIp +
                 '}';
     }
 

@@ -22,12 +22,13 @@ public class EdgeCmd {
     public boolean httpTunnel;
     public int traceLevel;
     public int vpnFd;
+    public String gatewayIp;
     public String logPath;
 
     public EdgeCmd(int edgeType, String ipAddr, String ipNetmask, String[] supernodes, String community,
                    String encKey, String encKeyFile, String macAddr, int mtu, String localIP, int holePunchInterval,
                    boolean reResoveSupernodeIP, int localPort, boolean allowRouting, boolean dropMuticast,
-                   boolean httpTunnel, int traceLevel, int vpnFd, String logPath) {
+                   boolean httpTunnel, int traceLevel, int vpnFd, String logPath, String gatewayIp) {
         this.edgeType = edgeType;
         this.ipAddr = ipAddr;
         this.ipNetmask = ipNetmask;
@@ -47,6 +48,7 @@ public class EdgeCmd {
         this.traceLevel = traceLevel;
         this.vpnFd = vpnFd;
         this.logPath = logPath;
+        this.gatewayIp = gatewayIp;
     }
 
     public EdgeCmd(N2NSettingInfo n2NSettingInfo, int vpnFd, String logPath){
@@ -71,6 +73,7 @@ public class EdgeCmd {
         this.traceLevel = n2NSettingInfo.getTraceLevel();
         this.vpnFd = vpnFd;
         this.logPath = logPath;
+        this.gatewayIp = n2NSettingInfo.getGatewayIp();
     }
 
     public boolean checkValues(Vector<String> invalids) {
@@ -117,6 +120,9 @@ public class EdgeCmd {
         }
         if (!checkInt(vpnFd, 0, 65535)) {
             invalids.add("traceLevel");
+        }
+        if (!gatewayIp.isEmpty() && !checkIPV4(gatewayIp)) {
+            invalids.add("gatewayIp");
         }
 
         return invalids.size() == 0;

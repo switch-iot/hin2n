@@ -393,6 +393,22 @@ int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t *cmd) {
                             cmd->drop_multicast);
 #endif /* #ifndef NDEBUG */
     }
+    // gatewayIp
+    {
+        jstring jbGatewayIp = (*env)->GetObjectField(env, jcmd, (*env)->GetFieldID(env, cls, "gatewayIp",
+                                                                                "Ljava/lang/String;"));
+        JNI_CHECKNULL(jbGatewayIp);
+        const char *ipAddr = (*env)->GetStringUTFChars(env, jbGatewayIp, NULL);
+        if (!ipAddr) {
+            (*env)->ReleaseStringUTFChars(env, jbGatewayIp, ipAddr);
+            return 1;
+        }
+        strncpy(cmd->gateway_ip, ipAddr, EDGE_CMD_IPSTR_SIZE);
+        (*env)->ReleaseStringUTFChars(env, jbGatewayIp, ipAddr);
+#ifndef NDEBUG
+        __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "gatewayIp = %s", cmd->gateway_ip);
+#endif /* #ifndef NDEBUG */
+    }
     // httpTunnel
     if (status.edge_type == EDGE_TYPE_V1) {
         jboolean jbHttpTunnel = (*env)->GetBooleanField(env, jcmd,

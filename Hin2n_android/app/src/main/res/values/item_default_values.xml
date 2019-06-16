@@ -21,4 +21,5 @@
     <string name="item_default_dropmuticast">true</string>
     <string name="item_default_usehttptunnel">false</string>
     <string name="item_default_tracelevel">2</string>
+    <string name="item_default_gateway_ip"></string>
 </resources>

@@ -34,6 +34,7 @@ public class N2NSettingInfo implements Parcelable {
     boolean dropMuticast;
     int traceLevel;
     boolean useHttpTunnel;
+    String gatewayIp;
 
     public N2NSettingInfo(N2NSettingModel n2NSettingModel) {
         this.id = n2NSettingModel.getId();
@@ -56,6 +57,7 @@ public class N2NSettingInfo implements Parcelable {
         this.dropMuticast = n2NSettingModel.getDropMuticast();
         this.traceLevel = n2NSettingModel.getTraceLevel();
         this.useHttpTunnel = n2NSettingModel.isUseHttpTunnel();
+        this.gatewayIp = n2NSettingModel.getGatewayIp();
     }
 
     protected N2NSettingInfo(Parcel in) {
@@ -79,6 +81,7 @@ public class N2NSettingInfo implements Parcelable {
         dropMuticast = in.readByte() != 0;
         traceLevel = in.readInt();
         useHttpTunnel = in.readByte() != 0;
+        gatewayIp = in.readString();
     }
 
     public static final Creator<N2NSettingInfo> CREATOR = new Creator<N2NSettingInfo>() {
@@ -253,6 +256,10 @@ public class N2NSettingInfo implements Parcelable {
         this.useHttpTunnel = useHttpTunnel;
     }
 
+    public String getGatewayIp() {
+        return gatewayIp;
+    }
+
     @Override
     public String toString() {
         return "N2NSettingInfo{" +
@@ -276,6 +283,7 @@ public class N2NSettingInfo implements Parcelable {
                 ", dropMuticast=" + dropMuticast +
                 ", traceLevel=" + traceLevel +
                 ", useHttpTunnel=" + useHttpTunnel +
+                ", gatewayIp=" + gatewayIp +
                 '}';
     }
 
@@ -310,5 +318,6 @@ public class N2NSettingInfo implements Parcelable {
         parcel.writeByte((byte) (dropMuticast ? 1 : 0));
         parcel.writeInt(traceLevel);
         parcel.writeByte((byte) (useHttpTunnel ? 1 : 0));
+        parcel.writeString(gatewayIp);
     }
 }
