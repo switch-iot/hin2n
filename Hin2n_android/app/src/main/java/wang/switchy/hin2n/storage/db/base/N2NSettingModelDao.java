@@ -45,6 +45,7 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
         public final static Property UseHttpTunnel = new Property(18, boolean.class, "useHttpTunnel", false, "USE_HTTP_TUNNEL");
         public final static Property TraceLevel = new Property(19, int.class, "traceLevel", false, "TRACE_LEVEL");
         public final static Property IsSelcected = new Property(20, boolean.class, "isSelcected", false, "IS_SELCECTED");
+        public final static Property GatewayIp = new Property(21, String.class, "gatewayIp", false, "GATEWAY_IP");
     }
 
 
@@ -80,7 +81,8 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
                 "\"DROP_MUTICAST\" INTEGER NOT NULL ," + // 17: dropMuticast
                 "\"USE_HTTP_TUNNEL\" INTEGER NOT NULL ," + // 18: useHttpTunnel
                 "\"TRACE_LEVEL\" INTEGER NOT NULL ," + // 19: traceLevel
-                "\"IS_SELCECTED\" INTEGER NOT NULL );"); // 20: isSelcected
+                "\"IS_SELCECTED\" INTEGER NOT NULL ," + // 20: isSelcected
+                "\"GATEWAY_IP\" TEXT);"); // 21: gatewayIp
     }
 
     /** Drops the underlying database table. */
@@ -153,6 +155,11 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
         stmt.bindLong(19, entity.getUseHttpTunnel() ? 1L: 0L);
         stmt.bindLong(20, entity.getTraceLevel());
         stmt.bindLong(21, entity.getIsSelcected() ? 1L: 0L);
+ 
+        String gatewayIp = entity.getGatewayIp();
+        if (gatewayIp != null) {
+            stmt.bindString(22, gatewayIp);
+        }
     }
 
     @Override
@@ -219,6 +226,11 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
         stmt.bindLong(19, entity.getUseHttpTunnel() ? 1L: 0L);
         stmt.bindLong(20, entity.getTraceLevel());
         stmt.bindLong(21, entity.getIsSelcected() ? 1L: 0L);
+ 
+        String gatewayIp = entity.getGatewayIp();
+        if (gatewayIp != null) {
+            stmt.bindString(22, gatewayIp);
+        }
     }
 
     @Override
@@ -249,7 +261,8 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
             cursor.getShort(offset + 17) != 0, // dropMuticast
             cursor.getShort(offset + 18) != 0, // useHttpTunnel
             cursor.getInt(offset + 19), // traceLevel
-            cursor.getShort(offset + 20) != 0 // isSelcected
+            cursor.getShort(offset + 20) != 0, // isSelcected
+            cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21) // gatewayIp
         );
         return entity;
     }
@@ -277,6 +290,7 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
         entity.setUseHttpTunnel(cursor.getShort(offset + 18) != 0);
         entity.setTraceLevel(cursor.getInt(offset + 19));
         entity.setIsSelcected(cursor.getShort(offset + 20) != 0);
+        entity.setGatewayIp(cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21));
      }
     
     @Override
