@@ -29,6 +29,7 @@ typedef struct n2n_edge_cmd_st
     char mac_addr[EDGE_CMD_MACNAMSIZ];
     unsigned int mtu;
     char local_ip[EDGE_CMD_IPSTR_SIZE];
+    char gateway_ip[EDGE_CMD_IPSTR_SIZE];
     unsigned int holepunch_interval;
     int re_resolve_supernode_ip;
     unsigned int local_port;

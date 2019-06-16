@@ -81,6 +81,9 @@ public class N2NService extends VpnService {
                 .addAddress(n2nSettingInfo.getIp(), getIpAddrPrefixLength(n2nSettingInfo.getNetmask()))
                 .addRoute(getRoute(n2nSettingInfo.getIp(), getIpAddrPrefixLength(n2nSettingInfo.getNetmask())), getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
 
+        if(!n2nSettingInfo.getGatewayIp().isEmpty())
+            builder.addRoute("0.0.0.0", 1);
+
         String session = getResources().getStringArray(R.array.vpn_session_name)[n2nSettingInfo.getVersion()];
         try {
             mParcelFileDescriptor = builder.setSession(session).establish();
