@@ -82,7 +82,7 @@ public class N2NService extends VpnService {
                 .addRoute(getRoute(n2nSettingInfo.getIp(), getIpAddrPrefixLength(n2nSettingInfo.getNetmask())), getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
 
         if(!n2nSettingInfo.getGatewayIp().isEmpty())
-            builder.addRoute("0.0.0.0", 1);
+            builder.addRoute("0.0.0.0", n2nSettingInfo.getVersion() == 1 ? 0 : 1);
 
         String session = getResources().getStringArray(R.array.vpn_session_name)[n2nSettingInfo.getVersion()];
         try {
@@ -180,6 +180,13 @@ public class N2NService extends VpnService {
                 break;
             default:
                 break;
+        }
+
+        if (status.udpSock < 0 || status.udpMgmtSock < 0) {
+            Log.e("Hin2n", "Invalid client socket!");
+        } else {
+            protect(status.udpSock);
+            protect(status.udpMgmtSock);
         }
     }
 

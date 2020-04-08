@@ -72,6 +72,8 @@ typedef struct n2n_edge_status_st {
 
     uint8_t edge_type;
     uint8_t running_status;
+    int udp_sock;
+    int udp_mgmt_sock;
 } n2n_edge_status_t;
 
 n2n_edge_status_t* g_status;

@@ -14,4 +14,7 @@ public class EdgeStatus {
     }
 
     public RunningStatus runningStatus;
+
+    public int udpSock;
+    public int udpMgmtSock;
 }

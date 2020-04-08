@@ -481,6 +481,8 @@ void InitEdgeStatus(void) {
 
     status.edge_type = EDGE_TYPE_NONE;
     status.running_status = EDGE_STAT_DISCONNECT;
+    status.udp_sock = -1;
+    status.udp_mgmt_sock = -1;
 }
 
 void ResetEdgeStatus(JNIEnv *env, uint8_t cleanup) {
@@ -625,6 +627,22 @@ void report_edge_status(void) {
         return;
     }
     (*env)->SetObjectField(env, jStatus, fid, jRunningStatus);
+    fid = (*env)->GetFieldID(env, status.jcls_status, "udpSock",
+                             "I");
+    if (!fid) {
+        (*env)->DeleteLocalRef(env, jRunningStatus);
+        (*env)->DeleteLocalRef(env, jStatus);
+        return;
+    }
+    (*env)->SetIntField(env, jStatus, fid, status.udp_sock);
+        fid = (*env)->GetFieldID(env, status.jcls_status, "udpMgmtSock",
+                             "I");
+    if (!fid) {
+        (*env)->DeleteLocalRef(env, jRunningStatus);
+        (*env)->DeleteLocalRef(env, jStatus);
+        return;
+    }
+    (*env)->SetIntField(env, jStatus, fid, status.udp_mgmt_sock);
 
 
     jclass cls = (*env)->GetObjectClass(env, status.jobj_service);
