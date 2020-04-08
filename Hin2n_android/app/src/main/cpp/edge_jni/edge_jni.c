@@ -393,6 +393,22 @@ int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t *cmd) {
                             cmd->drop_multicast);
 #endif /* #ifndef NDEBUG */
     }
+    // gatewayIp
+    {
+        jstring jbGatewayIp = (*env)->GetObjectField(env, jcmd, (*env)->GetFieldID(env, cls, "gatewayIp",
+                                                                                "Ljava/lang/String;"));
+        JNI_CHECKNULL(jbGatewayIp);
+        const char *ipAddr = (*env)->GetStringUTFChars(env, jbGatewayIp, NULL);
+        if (!ipAddr) {
+            (*env)->ReleaseStringUTFChars(env, jbGatewayIp, ipAddr);
+            return 1;
+        }
+        strncpy(cmd->gateway_ip, ipAddr, EDGE_CMD_IPSTR_SIZE);
+        (*env)->ReleaseStringUTFChars(env, jbGatewayIp, ipAddr);
+#ifndef NDEBUG
+        __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "gatewayIp = %s", cmd->gateway_ip);
+#endif /* #ifndef NDEBUG */
+    }
     // httpTunnel
     if (status.edge_type == EDGE_TYPE_V1) {
         jboolean jbHttpTunnel = (*env)->GetBooleanField(env, jcmd,
@@ -465,6 +481,8 @@ void InitEdgeStatus(void) {
 
     status.edge_type = EDGE_TYPE_NONE;
     status.running_status = EDGE_STAT_DISCONNECT;
+    status.udp_sock = -1;
+    status.udp_mgmt_sock = -1;
 }
 
 void ResetEdgeStatus(JNIEnv *env, uint8_t cleanup) {
@@ -609,6 +627,22 @@ void report_edge_status(void) {
         return;
     }
     (*env)->SetObjectField(env, jStatus, fid, jRunningStatus);
+    fid = (*env)->GetFieldID(env, status.jcls_status, "udpSock",
+                             "I");
+    if (!fid) {
+        (*env)->DeleteLocalRef(env, jRunningStatus);
+        (*env)->DeleteLocalRef(env, jStatus);
+        return;
+    }
+    (*env)->SetIntField(env, jStatus, fid, status.udp_sock);
+        fid = (*env)->GetFieldID(env, status.jcls_status, "udpMgmtSock",
+                             "I");
+    if (!fid) {
+        (*env)->DeleteLocalRef(env, jRunningStatus);
+        (*env)->DeleteLocalRef(env, jStatus);
+        return;
+    }
+    (*env)->SetIntField(env, jStatus, fid, status.udp_mgmt_sock);
 
 
     jclass cls = (*env)->GetObjectClass(env, status.jobj_service);
