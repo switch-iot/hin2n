@@ -62,7 +62,6 @@ add_library(edge_v2 SHARED
             src/main/cpp/n2n_v2/random_numbers.c
 
             src/main/cpp/n2n_v2/android/tuntap_android.c
-            src/main/cpp/n2n_v2/android/edge_android.c
         )
 
 target_link_libraries(edge_v2 uip)
