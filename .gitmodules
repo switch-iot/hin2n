@@ -1,6 +1,6 @@
 [submodule "n2n_ntop"]
 	path = bundles/n2n_ntop
-	url = https://github.com/switch-iot/n2n_ntop.git
+	url = https://github.com/ntop/n2n.git
 [submodule "n2n_meyerd"]
 	path = bundles/n2n_meyerd
 	url = https://github.com/switch-iot/n2n.git
