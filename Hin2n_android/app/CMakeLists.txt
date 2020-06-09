@@ -46,8 +46,19 @@ target_link_libraries(edge_v2s slog)
 add_library(edge_v2 SHARED
                 src/main/cpp/n2n_v2/android/edge_android.c
                 src/main/cpp/n2n_v2/edge_utils.c
+
+                src/main/cpp/n2n_v2/n2n.c
+                src/main/cpp/n2n_v2/n2n_keyfile.c
+                src/main/cpp/n2n_v2/wire.c
+                src/main/cpp/n2n_v2/minilzo.c
+                src/main/cpp/n2n_v2/twofish.c
+                src/main/cpp/n2n_v2/transform_null.c
+                src/main/cpp/n2n_v2/transform_tf.c
+                src/main/cpp/n2n_v2/transform_aes.c
+                src/main/cpp/n2n_v2/android/tuntap_android.c
+                src/main/cpp/n2n_v2/version.c
             )
-target_link_libraries(edge_v2 n2n_v2)
+target_link_libraries(edge_v2 uip)
 target_link_libraries(edge_v2 slog)
 
 add_library(edge_v1 SHARED
@@ -70,21 +81,6 @@ add_library(n2n_v2s SHARED
             )
 target_link_libraries(n2n_v2s uip)
 target_link_libraries(n2n_v2s slog)
-
-add_library(n2n_v2 SHARED
-                src/main/cpp/n2n_v2/n2n.c
-                src/main/cpp/n2n_v2/n2n_keyfile.c
-                src/main/cpp/n2n_v2/wire.c
-                src/main/cpp/n2n_v2/minilzo.c
-                src/main/cpp/n2n_v2/twofish.c
-                src/main/cpp/n2n_v2/transform_null.c
-                src/main/cpp/n2n_v2/transform_tf.c
-                src/main/cpp/n2n_v2/transform_aes.c
-                src/main/cpp/n2n_v2/android/tuntap_android.c
-                src/main/cpp/n2n_v2/version.c
-            )
-target_link_libraries(n2n_v2 uip)
-target_link_libraries(n2n_v2 slog)
 
 add_library(n2n_v1 SHARED
                 src/main/cpp/n2n_v1/n2n.c
