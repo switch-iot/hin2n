@@ -29,6 +29,7 @@ typedef struct n2n_edge_cmd_st
     char mac_addr[EDGE_CMD_MACNAMSIZ];
     unsigned int mtu;
     char local_ip[EDGE_CMD_IPSTR_SIZE];
+    char gateway_ip[EDGE_CMD_IPSTR_SIZE];
     unsigned int holepunch_interval;
     int re_resolve_supernode_ip;
     unsigned int local_port;
@@ -73,7 +74,7 @@ typedef struct n2n_edge_status_st {
     uint8_t running_status;
 } n2n_edge_status_t;
 
-n2n_edge_status_t* g_status;
+extern n2n_edge_status_t* g_status;
 
 extern int start_edge_v1(n2n_edge_status_t* status);
 extern int stop_edge_v1(void);
