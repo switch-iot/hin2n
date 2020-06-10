@@ -90,6 +90,7 @@ android {
         externalNativeBuild {
             cmake {
                 cppFlags ""
+                cFlags "-D__ANDROID_NDK__"
             }
         }
     }
