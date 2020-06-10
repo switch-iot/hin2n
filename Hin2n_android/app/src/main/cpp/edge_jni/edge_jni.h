@@ -2,8 +2,8 @@
 // Created by switchwang(https://github.com/switch-st) on 2018-04-13.
 //
 
-#ifndef _EDGE_ANDROID_H_
-#define _EDGE_ANDROID_H_
+#ifndef _EDGE_JNI_H_
+#define _EDGE_JNI_H_
 
 #ifdef __ANDROID_NDK__
 
