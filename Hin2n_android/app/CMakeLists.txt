@@ -51,19 +51,24 @@ target_link_libraries(edge_v2s slog)
 
 # -- ntop n2n
 add_library(edge_v2 SHARED
-            src/main/cpp/n2n_v2/n2n.c
-            src/main/cpp/n2n_v2/edge_utils.c
-            src/main/cpp/n2n_v2/wire.c
-            src/main/cpp/n2n_v2/minilzo.c
-            src/main/cpp/n2n_v2/twofish.c
-            src/main/cpp/n2n_v2/transform_null.c
-            src/main/cpp/n2n_v2/transform_tf.c
-            src/main/cpp/n2n_v2/transform_aes.c
-            src/main/cpp/n2n_v2/random_numbers.c
+            src/main/cpp/n2n_v2/src/n2n.c
+            src/main/cpp/n2n_v2/src/edge_utils.c
+            src/main/cpp/n2n_v2/src/wire.c
+            src/main/cpp/n2n_v2/src/minilzo.c
+            src/main/cpp/n2n_v2/src/twofish.c
+            src/main/cpp/n2n_v2/src/speck.c
+            src/main/cpp/n2n_v2/src/pearson.c
+            src/main/cpp/n2n_v2/src/header_encryption.c
+            src/main/cpp/n2n_v2/src/transform_null.c
+            src/main/cpp/n2n_v2/src/transform_tf.c
+            src/main/cpp/n2n_v2/src/transform_aes.c
+            src/main/cpp/n2n_v2/src/transform_speck.c
+            src/main/cpp/n2n_v2/src/transform_cc20.c
+            src/main/cpp/n2n_v2/src/random_numbers.c
 
             src/main/cpp/n2n_v2/android/tuntap_android.c
         )
-
+target_include_directories(edge_v2 PUBLIC src/main/cpp/n2n_v2/include)
 target_link_libraries(edge_v2 uip)
 target_link_libraries(edge_v2 log)
 #target_link_libraries(edge_v2 ${OPENSSL_LIBRARIES})
