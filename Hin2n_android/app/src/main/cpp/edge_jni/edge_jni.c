@@ -409,6 +409,22 @@ int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t *cmd) {
         __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "gatewayIp = %s", cmd->gateway_ip);
 #endif /* #ifndef NDEBUG */
     }
+    // encryptionMode
+    {
+        jstring jEncryptionMode = (*env)->GetObjectField(env, jcmd, (*env)->GetFieldID(env, cls, "encryptionMode",
+                                                                                      "Ljava/lang/String;"));
+        JNI_CHECKNULL(jEncryptionMode);
+        const char *encMode = (*env)->GetStringUTFChars(env, jEncryptionMode, NULL);
+        if (!encMode) {
+            (*env)->ReleaseStringUTFChars(env, jEncryptionMode, encMode);
+            return 1;
+        }
+        strncpy(cmd->encryption_mode, encMode, EDGE_CMD_ENCRYPTION_MODE_SIZE);
+        (*env)->ReleaseStringUTFChars(env, jEncryptionMode, encMode);
+#ifndef NDEBUG
+        __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "encryptionMode = %s", cmd->encryption_mode);
+#endif /* #ifndef NDEBUG */
+    }
     // httpTunnel
     if (status.edge_type == EDGE_TYPE_V1) {
         jboolean jbHttpTunnel = (*env)->GetBooleanField(env, jcmd,

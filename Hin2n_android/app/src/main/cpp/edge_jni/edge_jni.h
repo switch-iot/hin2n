@@ -16,7 +16,7 @@
 #define EDGE_CMD_MACNAMSIZ 18
 #define EDGE_CMD_COMMUNITY_SIZE 16
 #define EDGE_CMD_HOLEPUNCH_INTERVAL 25
-
+#define EDGE_CMD_ENCRYPTION_MODE_SIZE 16
 
 typedef struct n2n_edge_cmd_st
 {
@@ -30,6 +30,7 @@ typedef struct n2n_edge_cmd_st
     unsigned int mtu;
     char local_ip[EDGE_CMD_IPSTR_SIZE];
     char gateway_ip[EDGE_CMD_IPSTR_SIZE];
+    char encryption_mode[EDGE_CMD_ENCRYPTION_MODE_SIZE];
     unsigned int holepunch_interval;
     int re_resolve_supernode_ip;
     unsigned int local_port;

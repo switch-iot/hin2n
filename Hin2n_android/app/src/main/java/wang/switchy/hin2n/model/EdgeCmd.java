@@ -24,11 +24,12 @@ public class EdgeCmd {
     public int vpnFd;
     public String gatewayIp;
     public String logPath;
+    public String encryptionMode;
 
     public EdgeCmd(int edgeType, String ipAddr, String ipNetmask, String[] supernodes, String community,
                    String encKey, String encKeyFile, String macAddr, int mtu, String localIP, int holePunchInterval,
                    boolean reResoveSupernodeIP, int localPort, boolean allowRouting, boolean dropMuticast,
-                   boolean httpTunnel, int traceLevel, int vpnFd, String logPath, String gatewayIp) {
+                   boolean httpTunnel, int traceLevel, int vpnFd, String logPath, String gatewayIp, String encryptionMode) {
         this.edgeType = edgeType;
         this.ipAddr = ipAddr;
         this.ipNetmask = ipNetmask;
@@ -49,6 +50,7 @@ public class EdgeCmd {
         this.vpnFd = vpnFd;
         this.logPath = logPath;
         this.gatewayIp = gatewayIp;
+        this.encryptionMode = encryptionMode;
     }
 
     public EdgeCmd(N2NSettingInfo n2NSettingInfo, int vpnFd, String logPath){
@@ -74,6 +76,7 @@ public class EdgeCmd {
         this.vpnFd = vpnFd;
         this.logPath = logPath;
         this.gatewayIp = n2NSettingInfo.getGatewayIp();
+        this.encryptionMode = n2NSettingInfo.getEncryptionMode();
     }
 
     public boolean checkValues(Vector<String> invalids) {

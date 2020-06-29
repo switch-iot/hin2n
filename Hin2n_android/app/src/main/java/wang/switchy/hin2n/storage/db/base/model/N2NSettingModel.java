@@ -39,6 +39,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
     int traceLevel;
     boolean isSelcected;
     String gatewayIp;
+    String encryptionMode;
 
 
     public String getSuperNode() {
@@ -205,15 +206,21 @@ public class N2NSettingModel /*implements Parcelable*/ {
         return this.gatewayIp;
     }
 
+    public String getEncryptionMode() {
+        return this.encryptionMode;
+    }
+
     public void setGatewayIp(String gatewayIp) {
         this.gatewayIp = gatewayIp;
     }
 
-    @Generated(hash = 527276015)
+    public void setEncryptionMode(String mode) { this.encryptionMode = mode; }
+
+    @Generated(hash = 1460443597)
     public N2NSettingModel(Long id, int version, String name, String ip, String netmask, String community, String password,
             String superNode, boolean moreSettings, String superNodeBackup, String macAddr, int mtu, String localIP,
             int holePunchInterval, boolean resoveSupernodeIP, int localPort, boolean allowRouting, boolean dropMuticast,
-            boolean useHttpTunnel, int traceLevel, boolean isSelcected, String gatewayIp) {
+            boolean useHttpTunnel, int traceLevel, boolean isSelcected, String gatewayIp, String encryptionMode) {
         this.id = id;
         this.version = version;
         this.name = name;
@@ -236,6 +243,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
         this.traceLevel = traceLevel;
         this.isSelcected = isSelcected;
         this.gatewayIp = gatewayIp;
+        this.encryptionMode = encryptionMode;
     }
 
     @Generated(hash = 998225630)
@@ -275,6 +283,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
                 ", traceLevel=" + traceLevel +
                 ", isSelcected=" + isSelcected +
                 ", gatewayIp=" + gatewayIp +
+                ", encryptionMode =" + encryptionMode +
                 '}';
     }
 

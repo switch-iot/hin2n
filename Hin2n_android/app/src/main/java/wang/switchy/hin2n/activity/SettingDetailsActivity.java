@@ -91,6 +91,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
     private RadioButton mVersionV2;
     private RadioButton mVersionV2s;
     private TextInputLayout mGatewayIp;
+    private LinearLayout mEncryptionBox;
+    private Spinner mEncryptionMode;
 
     @Override
     protected BaseTemplate createTemplate() {
@@ -172,6 +174,13 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         mAcceptMuticastCheckBox = (CheckBox) findViewById(R.id.accept_muticast_check_box);
         mUseHttpTunnelCheckBox = (CheckBox) findViewById(R.id.use_http_tunnel_check_box);
         mGatewayIp = (TextInputLayout) findViewById(R.id.til_gateway_ip);
+        mEncryptionBox = (LinearLayout) findViewById(R.id.ll_n2n_encryption);
+        mEncryptionMode = (Spinner) findViewById(R.id.til_encryption_mode);
+
+        ArrayAdapter<CharSequence> encAdapter = ArrayAdapter.createFromResource(this, R.array.encryption_modes,
+                android.R.layout.simple_spinner_item);
+        encAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mEncryptionMode.setAdapter(encAdapter);
 
         mTraceLevelSpinner = (Spinner) findViewById(R.id.spinner_trace_level);
 
@@ -234,6 +243,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             mTraceLevelSpinner.setSelection(Integer.valueOf(getString(R.string.item_default_tracelevel)) - 1);
             mMoreSettingCheckBox.setChecked(false);
             mGatewayIp.getEditText().setText(R.string.item_default_gateway_ip);
+            mEncryptionMode.setSelection(encAdapter.getPosition("AES-CBC"));
 
             mSaveBtn.setVisibility(View.VISIBLE);
             mButtons.setVisibility(View.GONE);
@@ -262,6 +272,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             mEncryptTIL.getEditText().setText(mN2NSettingModel.getPassword());
             mSuperNodeTIL.getEditText().setText(mN2NSettingModel.getSuperNode());
             mGatewayIp.getEditText().setText(mN2NSettingModel.getGatewayIp());
+            mEncryptionMode.setSelection(encAdapter.getPosition(mN2NSettingModel.getEncryptionMode()));
 
             mSuperNodeBackup.getEditText().setText(mN2NSettingModel.getSuperNodeBackup());
             mMacAddr.getEditText().setText(mN2NSettingModel.getMacAddr());
@@ -321,6 +332,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mLocalIP.setVisibility(View.GONE);
                 mLocalIpCheckBox.setVisibility(View.GONE);
                 mGatewayIp.setVisibility(View.GONE);
+                mEncryptionBox.setVisibility(View.GONE);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
                     mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v1);
                 }
@@ -333,6 +345,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mLocalIP.setVisibility(View.GONE);
                 mLocalIpCheckBox.setVisibility(View.GONE);
                 mGatewayIp.setVisibility(View.VISIBLE);
+                mEncryptionBox.setVisibility(View.VISIBLE);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
                     mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v2);
                 }
@@ -345,6 +358,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mLocalIP.setVisibility(View.VISIBLE);
                 mLocalIpCheckBox.setVisibility(View.VISIBLE);
                 mGatewayIp.setVisibility(View.GONE);
+                mEncryptionBox.setVisibility(View.GONE);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
                     mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v2s);
                 }
@@ -396,7 +410,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                         Integer.valueOf(mLocalPort.getEditText().getText().toString()), mAllowRoutinCheckBox.isChecked(),
                         !mAcceptMuticastCheckBox.isChecked(), mUseHttpTunnelCheckBox.isChecked(),
                         mTraceLevelSpinner.getSelectedItemPosition(), !hasSelected,
-                        mGatewayIp.getEditText().getText().toString());
+                        mGatewayIp.getEditText().getText().toString(),
+                        mEncryptionMode.getSelectedItem().toString());
                 n2NSettingModelDao.insert(mN2NSettingModel);
 
                 if (!hasSelected) {
@@ -445,7 +460,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                         Integer.valueOf(mLocalPort.getEditText().getText().toString()), mAllowRoutinCheckBox.isChecked(),
                         !mAcceptMuticastCheckBox.isChecked(), mUseHttpTunnelCheckBox.isChecked(),
                         mTraceLevelSpinner.getSelectedItemPosition(), mN2NSettingModel.getIsSelcected(),
-                        mGatewayIp.getEditText().getText().toString());
+                        mGatewayIp.getEditText().getText().toString(),
+                        mEncryptionMode.getSelectedItem().toString());
                 n2NSettingModelDao1.update(mN2NSettingModel);
 
                 if (N2NService.INSTANCE != null &&
