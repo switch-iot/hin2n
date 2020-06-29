@@ -16,11 +16,14 @@ else(${UIP_CONF_BYTE_ORDER} EQUAL 1)
 set(UIP_CONF_BYTE_ORDER UIP_LITTLE_ENDIAN)
 endif(${UIP_CONF_BYTE_ORDER} EQUAL 1)
 
-# TODO: add OpenSSL dependency
-#OPTION(N2N_OPTION_AES "USE AES" ON)
-#set(N2N_OPTION_AES ON)
-#find_package(OpenSSL REQUIRED)
-#add_definitions(-DN2N_HAVE_AES)
+# OpenSSL
+SET(OPENSSL_ROOT_DIR src/main/jniLibs/${ANDROID_ABI})
+SET(OPENSSL_LIBRARIES_DIR "${OPENSSL_ROOT_DIR}")
+SET(OPENSSL_INCLUDE_DIR ${OPENSSL_ROOT_DIR}/include)
+SET(OPENSSL_LIBRARIES "ssl" "crypto")
+LINK_DIRECTORIES(${OPENSSL_LIBRARIES_DIR})
+OPTION(N2N_OPTION_AES "USE AES" ON)
+set(N2N_OPTION_AES ON)
 
 if(CMAKE_BUILD_TYPE)
 if(NOT ${CMAKE_BUILD_TYPE} STREQUAL Debug)
@@ -42,6 +45,7 @@ target_link_libraries(edge_jni edge_v2s)
 target_link_libraries(edge_jni edge_v2)
 target_link_libraries(edge_jni edge_v1)
 target_link_libraries(edge_jni slog)
+target_link_libraries(edge_jni ${OPENSSL_LIBRARIES})
 
 add_library(edge_v2s SHARED
                 src/main/cpp/n2n_v2s/edge.c
@@ -68,11 +72,14 @@ add_library(edge_v2 SHARED
 
             src/main/cpp/n2n_v2/android/tuntap_android.c
         )
-target_include_directories(edge_v2 PUBLIC src/main/cpp/n2n_v2/include)
+target_compile_definitions(edge_v2 PUBLIC N2N_HAVE_AES)
+target_include_directories(edge_v2 PUBLIC
+            src/main/cpp/n2n_v2/include
+            ${OPENSSL_INCLUDE_DIR}
+        )
 target_link_libraries(edge_v2 uip)
 target_link_libraries(edge_v2 log)
-#target_link_libraries(edge_v2 ${OPENSSL_LIBRARIES})
-#include_directories(${OPENSSL_INCLUDE_DIR})
+target_link_libraries(edge_v2 ${OPENSSL_LIBRARIES})
 
 add_library(edge_v1 SHARED
                 src/main/cpp/n2n_v1/edge.c
