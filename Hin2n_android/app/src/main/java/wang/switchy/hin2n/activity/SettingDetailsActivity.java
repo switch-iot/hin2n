@@ -223,7 +223,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             //新增配置，需要设置默认值的设置默认值
             ((CommonTitleTemplate) mTemplate).setTitleText(R.string.title_add_setting);
             mSettingName.getEditText().setText(R.string.item_default_name);
-            mVersionV1.setChecked(true);
+            mVersionV2.setChecked(true);
             mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v1);
             mCommunityTIL.getEditText().setText(R.string.item_default_community);
             mEncryptTIL.getEditText().setText(R.string.item_default_password);
