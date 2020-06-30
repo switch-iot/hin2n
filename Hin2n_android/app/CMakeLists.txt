@@ -70,7 +70,8 @@ add_library(edge_v2 SHARED
             src/main/cpp/n2n_v2/src/transform_cc20.c
             src/main/cpp/n2n_v2/src/random_numbers.c
 
-            src/main/cpp/n2n_v2/android/tuntap_android.c
+            src/main/cpp/edge_jni/tuntap_android_v2.c
+            src/main/cpp/edge_jni/edge_android_v2.c
         )
 target_compile_definitions(edge_v2 PUBLIC N2N_HAVE_AES)
 target_include_directories(edge_v2 PUBLIC
