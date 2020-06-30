@@ -1,7 +1,7 @@
 @echo off
 
 call:chklink n2n_v1 bundles\n2n_meyerd\n2n_v1
-call:chklink n2n_v2 bundles\n2n_ntop
+call:chklink n2n_v2 bundles\n2n_ntop_dev
 call:chklink n2n_v2s bundles\n2n_meyerd\n2n_v2
 call:chklink uip bundles\uip\uip
 call:chklink tun2tap bundles\tun2tap
