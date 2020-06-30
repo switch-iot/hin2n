@@ -46,7 +46,8 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
         public final static Property TraceLevel = new Property(19, int.class, "traceLevel", false, "TRACE_LEVEL");
         public final static Property IsSelcected = new Property(20, boolean.class, "isSelcected", false, "IS_SELCECTED");
         public final static Property GatewayIp = new Property(21, String.class, "gatewayIp", false, "GATEWAY_IP");
-        public final static Property EncryptionMode = new Property(22, String.class, "encryptionMode", false, "ENCRYPTION_MODE");
+        public final static Property DnsServer = new Property(22, String.class, "dnsServer", false, "DNS_SERVER");
+        public final static Property EncryptionMode = new Property(23, String.class, "encryptionMode", false, "ENCRYPTION_MODE");
     }
 
 
@@ -84,7 +85,8 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
                 "\"TRACE_LEVEL\" INTEGER NOT NULL ," + // 19: traceLevel
                 "\"IS_SELCECTED\" INTEGER NOT NULL ," + // 20: isSelcected
                 "\"GATEWAY_IP\" TEXT," + // 21: gatewayIp
-                "\"ENCRYPTION_MODE\" TEXT);"); // 22: encryptionMode
+                "\"DNS_SERVER\" TEXT," + // 22: dnsServer
+                "\"ENCRYPTION_MODE\" TEXT);"); // 23: encryptionMode
     }
 
     /** Drops the underlying database table. */
@@ -163,9 +165,14 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
             stmt.bindString(22, gatewayIp);
         }
  
+        String dnsServer = entity.getDnsServer();
+        if (dnsServer != null) {
+            stmt.bindString(23, dnsServer);
+        }
+ 
         String encryptionMode = entity.getEncryptionMode();
         if (encryptionMode != null) {
-            stmt.bindString(23, encryptionMode);
+            stmt.bindString(24, encryptionMode);
         }
     }
 
@@ -239,9 +246,14 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
             stmt.bindString(22, gatewayIp);
         }
  
+        String dnsServer = entity.getDnsServer();
+        if (dnsServer != null) {
+            stmt.bindString(23, dnsServer);
+        }
+ 
         String encryptionMode = entity.getEncryptionMode();
         if (encryptionMode != null) {
-            stmt.bindString(23, encryptionMode);
+            stmt.bindString(24, encryptionMode);
         }
     }
 
@@ -275,7 +287,8 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
             cursor.getInt(offset + 19), // traceLevel
             cursor.getShort(offset + 20) != 0, // isSelcected
             cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21), // gatewayIp
-            cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22) // encryptionMode
+            cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22), // dnsServer
+            cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23) // encryptionMode
         );
         return entity;
     }
@@ -304,7 +317,8 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
         entity.setTraceLevel(cursor.getInt(offset + 19));
         entity.setIsSelcected(cursor.getShort(offset + 20) != 0);
         entity.setGatewayIp(cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21));
-        entity.setEncryptionMode(cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22));
+        entity.setDnsServer(cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22));
+        entity.setEncryptionMode(cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23));
      }
     
     @Override

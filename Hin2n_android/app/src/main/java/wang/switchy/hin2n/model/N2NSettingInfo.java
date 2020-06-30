@@ -35,6 +35,7 @@ public class N2NSettingInfo implements Parcelable {
     int traceLevel;
     boolean useHttpTunnel;
     String gatewayIp;
+    String dnsServer;
     String encryptionMode;
 
     public N2NSettingInfo(N2NSettingModel n2NSettingModel) {
@@ -59,6 +60,7 @@ public class N2NSettingInfo implements Parcelable {
         this.traceLevel = n2NSettingModel.getTraceLevel();
         this.useHttpTunnel = n2NSettingModel.isUseHttpTunnel();
         this.gatewayIp = n2NSettingModel.getGatewayIp();
+        this.dnsServer = n2NSettingModel.getDnsServer();
         this.encryptionMode = n2NSettingModel.getEncryptionMode();
     }
 
@@ -84,6 +86,7 @@ public class N2NSettingInfo implements Parcelable {
         traceLevel = in.readInt();
         useHttpTunnel = in.readByte() != 0;
         gatewayIp = in.readString();
+        dnsServer = in.readString();
         encryptionMode = in.readString();
     }
 
@@ -263,6 +266,10 @@ public class N2NSettingInfo implements Parcelable {
         return gatewayIp;
     }
 
+    public String getDnsServer() {
+        return dnsServer;
+    }
+
     public String getEncryptionMode() { return encryptionMode; }
 
     @Override
@@ -289,6 +296,7 @@ public class N2NSettingInfo implements Parcelable {
                 ", traceLevel=" + traceLevel +
                 ", useHttpTunnel=" + useHttpTunnel +
                 ", gatewayIp=" + gatewayIp +
+                ", dnsServer=" + dnsServer +
                 ", encryptionMode=" + encryptionMode +
                 '}';
     }
@@ -325,6 +333,7 @@ public class N2NSettingInfo implements Parcelable {
         parcel.writeInt(traceLevel);
         parcel.writeByte((byte) (useHttpTunnel ? 1 : 0));
         parcel.writeString(gatewayIp);
+        parcel.writeString(dnsServer);
         parcel.writeString(encryptionMode);
     }
 }

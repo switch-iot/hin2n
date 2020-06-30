@@ -204,7 +204,7 @@ android {
 }
 
 greendao {
-    schemaVersion 3
+    schemaVersion 4
     daoPackage 'wang.switchy.hin2n.storage.db.base'
     targetGenDir 'src/main/java'
 }

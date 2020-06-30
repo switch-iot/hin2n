@@ -88,6 +88,11 @@ public class N2NService extends VpnService {
             builder.addRoute("128.0.0.0", 1);
         }
 
+        if(!n2nSettingInfo.getDnsServer().isEmpty()) {
+            Log.d("N2NService", "Using DNS server: " + n2nSettingInfo.getDnsServer());
+            builder.addDnsServer(n2nSettingInfo.getDnsServer());
+        }
+
         String session = getResources().getStringArray(R.array.vpn_session_name)[n2nSettingInfo.getVersion()];
         try {
             mParcelFileDescriptor = builder.setSession(session).establish();

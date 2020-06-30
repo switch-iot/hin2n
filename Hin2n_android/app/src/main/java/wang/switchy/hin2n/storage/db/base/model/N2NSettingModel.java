@@ -39,6 +39,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
     int traceLevel;
     boolean isSelcected;
     String gatewayIp;
+    String dnsServer;
     String encryptionMode;
 
 
@@ -206,6 +207,10 @@ public class N2NSettingModel /*implements Parcelable*/ {
         return this.gatewayIp;
     }
 
+    public String getDnsServer() {
+        return this.dnsServer;
+    }
+
     public String getEncryptionMode() {
         return this.encryptionMode;
     }
@@ -214,13 +219,18 @@ public class N2NSettingModel /*implements Parcelable*/ {
         this.gatewayIp = gatewayIp;
     }
 
+    public void setDnsServer(String dnsServer) {
+        this.dnsServer = dnsServer;
+    }
+
     public void setEncryptionMode(String mode) { this.encryptionMode = mode; }
 
-    @Generated(hash = 1460443597)
+    @Generated(hash = 2072623276)
     public N2NSettingModel(Long id, int version, String name, String ip, String netmask, String community, String password,
             String superNode, boolean moreSettings, String superNodeBackup, String macAddr, int mtu, String localIP,
             int holePunchInterval, boolean resoveSupernodeIP, int localPort, boolean allowRouting, boolean dropMuticast,
-            boolean useHttpTunnel, int traceLevel, boolean isSelcected, String gatewayIp, String encryptionMode) {
+            boolean useHttpTunnel, int traceLevel, boolean isSelcected, String gatewayIp, String dnsServer,
+            String encryptionMode) {
         this.id = id;
         this.version = version;
         this.name = name;
@@ -243,6 +253,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
         this.traceLevel = traceLevel;
         this.isSelcected = isSelcected;
         this.gatewayIp = gatewayIp;
+        this.dnsServer = dnsServer;
         this.encryptionMode = encryptionMode;
     }
 
@@ -283,6 +294,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
                 ", traceLevel=" + traceLevel +
                 ", isSelcected=" + isSelcected +
                 ", gatewayIp=" + gatewayIp +
+                ", dnsServer=" + dnsServer +
                 ", encryptionMode =" + encryptionMode +
                 '}';
     }
