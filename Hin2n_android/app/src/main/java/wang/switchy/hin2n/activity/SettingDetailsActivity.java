@@ -491,14 +491,17 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                     @Override
                                     public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                        N2NService.INSTANCE.stop();
-
-                                        Intent vpnPrepareIntent = VpnService.prepare(SettingDetailsActivity.this);
-                                        if (vpnPrepareIntent != null) {
-                                            startActivityForResult(vpnPrepareIntent, REQUECT_CODE_VPN);
-                                        } else {
-                                            onActivityResult(REQUECT_CODE_VPN, RESULT_OK, null);
-                                        }
+                                        N2NService.INSTANCE.stop(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Intent vpnPrepareIntent = VpnService.prepare(SettingDetailsActivity.this);
+                                                if (vpnPrepareIntent != null) {
+                                                    startActivityForResult(vpnPrepareIntent, REQUECT_CODE_VPN);
+                                                } else {
+                                                    onActivityResult(REQUECT_CODE_VPN, RESULT_OK, null);
+                                                }
+                                            }
+                                        });
 
                                         sweetAlertDialog.dismiss();
                                     }

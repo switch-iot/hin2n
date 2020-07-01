@@ -127,16 +127,19 @@ public class ListActivity extends BaseActivity {
                             .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                 @Override
                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    N2NService.INSTANCE.stop();
+                                    N2NService.INSTANCE.stop(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Intent vpnPrepareIntent = VpnService.prepare(ListActivity.this);
+                                            if (vpnPrepareIntent != null) {
+                                                startActivityForResult(vpnPrepareIntent, REQUECT_CODE_VPN);
+                                            } else {
+                                                onActivityResult(REQUECT_CODE_VPN, RESULT_OK, null);
+                                            }
+                                        }
+                                    });
 
                                     mTargetSettingPosition = position;
-
-                                    Intent vpnPrepareIntent = VpnService.prepare(ListActivity.this);
-                                    if (vpnPrepareIntent != null) {
-                                        startActivityForResult(vpnPrepareIntent, REQUECT_CODE_VPN);
-                                    } else {
-                                        onActivityResult(REQUECT_CODE_VPN, RESULT_OK, null);
-                                    }
 
                                     if (currentSettingId != -1) {
                                         N2NSettingModel currentSettingItem = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load((long) currentSettingId);
@@ -288,7 +291,7 @@ public class ListActivity extends BaseActivity {
                                         mSettingItemAdapter.notifyDataSetChanged();
 
                                         if (N2NService.INSTANCE != null && currentSettingId == finalSettingItemEntity.getSaveId()) {
-                                            N2NService.INSTANCE.stop();
+                                            N2NService.INSTANCE.stop(null);
                                         }
 
                                         sweetAlertDialog.cancel();

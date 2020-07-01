@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.VpnService;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -59,6 +60,7 @@ public class N2NService extends VpnService {
 
     private static final int sNotificationId = 1;
     private NotificationManager mNotificationManager;
+    private boolean mStopInProgress = false;
 
     @Override
     public void onCreate() {
@@ -121,34 +123,67 @@ public class N2NService extends VpnService {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public void stop() {
-        stopEdge();
-        mLastStatus = mCurrentStatus = DISCONNECT;
-        showOrRemoveNotification(CMD_REMOVE_NOTIFICATION);
+    public boolean isStopInProgress() {
+        return(mStopInProgress);
+    }
 
-        try {
-            if (mParcelFileDescriptor != null) {
-                mParcelFileDescriptor.close();
-                mParcelFileDescriptor = null;
-            }
-        } catch (IOException e) {
-            EventBus.getDefault().post(new ErrorEvent());
-            return;
+    public boolean stop(final Runnable onStopCallback) {
+        if(isStopInProgress()) {
+            Toast.makeText(getApplicationContext(), "a stop command is already in progress", Toast.LENGTH_SHORT).show();
+            return(false);
         }
 
-        EventBus.getDefault().post(new StopEvent());
+        /* Using a separate thread to avoid blocking the main thread
+        * as stopEdge calls pthread_join on the n2n status thread which
+        * can take some time to finish (e.g. for calls to getaddrinfo) */
+        Thread stopThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                /* Blocking call */
+                stopEdge();
+
+                Handler handler = new Handler(getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLastStatus = mCurrentStatus = DISCONNECT;
+                        showOrRemoveNotification(CMD_REMOVE_NOTIFICATION);
+
+                        try {
+                            if (mParcelFileDescriptor != null) {
+                                mParcelFileDescriptor.close();
+                                mParcelFileDescriptor = null;
+                            }
+                        } catch (IOException e) {
+                            EventBus.getDefault().post(new ErrorEvent());
+                            return;
+                        }
+
+                        EventBus.getDefault().post(new StopEvent());
+                        mStopInProgress = false;
+
+                        if(onStopCallback != null)
+                            onStopCallback.run();
+                    }
+                });
+            }
+        });
+
+        mStopInProgress = true;
+        stopThread.start();
+        return(true);
     }
 
     @Override
     public void onRevoke() {
         super.onRevoke();
-        stop();
+        stop(null);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stop();
+        stop(null);
     }
 
     public native boolean startEdge(EdgeCmd cmd);

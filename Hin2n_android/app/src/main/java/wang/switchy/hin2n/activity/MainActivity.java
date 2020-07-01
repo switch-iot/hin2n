@@ -148,7 +148,8 @@ public class MainActivity extends BaseActivity {
 
                 EdgeStatus.RunningStatus status = N2NService.INSTANCE == null ? EdgeStatus.RunningStatus.DISCONNECT : N2NService.INSTANCE.getCurrentStatus();
                 if (N2NService.INSTANCE != null && status != EdgeStatus.RunningStatus.DISCONNECT && status != EdgeStatus.RunningStatus.FAILED) {
-                    N2NService.INSTANCE.stop();
+                    /* Asynchronous call */
+                    N2NService.INSTANCE.stop(null);
                 } else {
                     Intent vpnPrepareIntent = VpnService.prepare(MainActivity.this);
                     if (vpnPrepareIntent != null) {

@@ -420,10 +420,13 @@ int stop_edge_v2(void)
   sendto(fd, "stop", 4, 0, (struct sockaddr *)&peer_addr, sizeof(struct sockaddr_in));
   close(fd);
 
+  // Do not report the status yet, the edge thread may be still running
+  /*
   pthread_mutex_lock(&g_status->mutex);
   g_status->running_status = EDGE_STAT_DISCONNECT;
   pthread_mutex_unlock(&g_status->mutex);
   g_status->report_edge_status();
+   */
 
   return 0;
 }
