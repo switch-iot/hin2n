@@ -70,6 +70,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
     private TextInputLayout mMtu;
     private TextInputLayout mLocalIP;
     private TextInputLayout mHolePunchInterval;
+    private RelativeLayout mResolveSnLayout;
     private CheckBox mResoveSupernodeIPCheckBox;
     private TextInputLayout mLocalPort;
     private CheckBox mAllowRoutinCheckBox;
@@ -168,6 +169,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             }
         });
         mHolePunchInterval = (TextInputLayout) findViewById(R.id.til_hole_punch_Interval);
+        mResolveSnLayout = (RelativeLayout)  findViewById(R.id.rl_resolve_super_node_ip_check_box);
         mResoveSupernodeIPCheckBox = (CheckBox) findViewById(R.id.resove_super_node_ip_check_box);
         mLocalPort = (TextInputLayout) findViewById(R.id.til_local_port);
         mAllowRoutinCheckBox = (CheckBox) findViewById(R.id.allow_routing_check_box);
@@ -336,6 +338,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mLocalIpCheckBox.setVisibility(View.GONE);
                 mGatewayIp.setVisibility(View.GONE);
                 mDnsServer.setVisibility(View.GONE);
+                mResolveSnLayout.setVisibility(View.VISIBLE);
                 mEncryptionBox.setVisibility(View.GONE);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
                     mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v1);
@@ -350,6 +353,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mLocalIpCheckBox.setVisibility(View.GONE);
                 mGatewayIp.setVisibility(View.VISIBLE);
                 mDnsServer.setVisibility(View.VISIBLE);
+                mResolveSnLayout.setVisibility(View.GONE);
                 mEncryptionBox.setVisibility(View.VISIBLE);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
                     mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v2);
@@ -364,6 +368,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mLocalIpCheckBox.setVisibility(View.VISIBLE);
                 mGatewayIp.setVisibility(View.GONE);
                 mDnsServer.setVisibility(View.GONE);
+                mResolveSnLayout.setVisibility(View.VISIBLE);
                 mEncryptionBox.setVisibility(View.GONE);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
                     mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v2s);
