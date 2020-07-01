@@ -73,7 +73,7 @@ add_library(edge_v2 SHARED
             src/main/cpp/edge_jni/tuntap_android_v2.c
             src/main/cpp/edge_jni/edge_android_v2.c
         )
-target_compile_definitions(edge_v2 PUBLIC N2N_HAVE_AES)
+target_compile_definitions(edge_v2 PUBLIC N2N_HAVE_AES HAVE_OPENSSL_1_1)
 target_include_directories(edge_v2 PUBLIC
             src/main/cpp/n2n_v2/include
             ${OPENSSL_INCLUDE_DIR}
