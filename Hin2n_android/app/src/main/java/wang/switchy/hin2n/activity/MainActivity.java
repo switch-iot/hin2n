@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
+import com.tencent.bugly.beta.Beta;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
@@ -252,8 +253,7 @@ public class MainActivity extends BaseActivity {
         checkUpdateItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO
-                //Beta.checkUpgrade();
+                Beta.checkUpgrade();
             }
         });
 
