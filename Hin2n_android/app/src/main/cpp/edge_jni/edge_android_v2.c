@@ -242,6 +242,7 @@ int start_edge_v2(n2n_edge_status_t* status)
   int i;
   tuntap_dev dev;
   uint8_t hex_mac[6];
+  int rv = 0;
 
   if (!status) {
     traceEvent( TRACE_ERROR, "Empty cmd struct" );
@@ -260,6 +261,7 @@ int start_edge_v2(n2n_edge_status_t* status)
   pthread_mutex_unlock(&g_status->mutex);
   g_status->report_edge_status();
 
+  memset(&dev, 0, sizeof(dev));
   edge_init_conf_defaults(&conf);
 
   /* Load the configuration */
@@ -322,14 +324,15 @@ int start_edge_v2(n2n_edge_status_t* status)
   if(edge_verify_conf(&conf) != 0) {
     if(conf.encrypt_key) free(conf.encrypt_key);
     traceEvent(TRACE_ERROR, "Bad configuration");
-    return 1;
+    rv = 1;
+    goto cleanup;
   }
 
   /* Open the TAP device */
   if(tuntap_open(&dev, tuntap_dev_name, ip_mode, ip_addr, netmask, device_mac, cmd->mtu) < 0) {
     traceEvent(TRACE_ERROR, "Failed in tuntap_open");
-    free(encrypt_key);
-    return 1;
+    rv = 1;
+    goto cleanup;
   }
 
   /* Start n2n */
@@ -337,7 +340,8 @@ int start_edge_v2(n2n_edge_status_t* status)
 
   if(eee == NULL) {
     traceEvent( TRACE_ERROR, "Failed in edge_init" );
-    return 1;
+    rv = 1;
+    goto cleanup;
   }
 
   /* Private Status */
@@ -359,14 +363,16 @@ int start_edge_v2(n2n_edge_status_t* status)
     match = sscanf(ip_addr, "%d.%d.%d.%d", ip, ip + 1, ip + 2, ip + 3);
     if (match != 4) {
       traceEvent(TRACE_ERROR, "scan ip failed, ip: %s", ip_addr);
-      return 1;
+      rv = 1;
+      goto cleanup;
     }
     uip_ipaddr(ipaddr, ip[0], ip[1], ip[2], ip[3]);
     uip_sethostaddr(ipaddr);
     match = sscanf(netmask, "%d.%d.%d.%d", ip, ip + 1, ip + 2, ip + 3);
     if (match != 4) {
       traceEvent(TRACE_ERROR, "scan netmask error, ip: %s", netmask);
-      return 1;
+      rv = 1;
+      goto cleanup;
     }
     uip_ipaddr(ipaddr, ip[0], ip[1], ip[2], ip[3]);
     uip_setnetmask(ipaddr);
@@ -393,14 +399,15 @@ int start_edge_v2(n2n_edge_status_t* status)
 
   run_edge_loop(eee, &keep_on_running);
 
-  /* Cleanup */
-  edge_term(eee);
+cleanup:
+  if(eee) edge_term(eee);
+  if(encrypt_key) free(encrypt_key);
   tuntap_close(&dev);
   edge_term_conf(&conf);
 
   traceEvent(TRACE_NORMAL, "Edge stopped");
 
-  return 0;
+  return rv;
 }
 
 /* *************************************************** */
