@@ -560,7 +560,7 @@ void *EdgeRoutine(void *ignore) {
     }
 
     if (!status.start_edge) {
-        return (void *) -1;
+        return NULL;
     }
 
     int ret = status.start_edge(&status);
@@ -575,7 +575,7 @@ void *EdgeRoutine(void *ignore) {
         (*status.jvm)->DetachCurrentThread(status.jvm);
     }
 
-    return (void *) ret;
+    return NULL;
 }
 
 void report_edge_status(void) {
@@ -608,7 +608,7 @@ void report_edge_status(void) {
     pthread_mutex_unlock(&status.mutex);
 
     JNIEnv *env = NULL;
-    if ((*status.jvm)->GetEnv(status.jvm, &env, JNI_VERSION_1_1) != JNI_OK || !env) {
+    if ((*status.jvm)->GetEnv(status.jvm, (void **)&env, JNI_VERSION_1_1) != JNI_OK || !env) {
         return;
     }
 
