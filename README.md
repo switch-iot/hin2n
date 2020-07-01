@@ -82,14 +82,3 @@ Hin2n is a free and open source n2n project, and we welcome anyone to contribute
 - Hin2n QQ group： 769731491
 - N2N QQ group： 256572040
 
-## Donation
-If `Hin2n` help you a lot, you can support us by:
-
-### AliPay
-<img height="100" src="doc/pic/donate-alipay.png" alt="donate-alipay">
-
-### Wechat Pay
-<img height="100" src="doc/pic/donate-wechatpay.png" alt="donate-wechatpay">
-
-### Paypal
-Donate money by [paypal](https://www.paypal.me/hin2n) to my account `switch.st@gmail.com`

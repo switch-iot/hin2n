@@ -77,14 +77,3 @@ Hin2n是一个免费且开源的n2n项目，我们欢迎任何人为其开发和
 - Hin2n交流群： 769731491(QQ群号)
 - N2N交流群： 256572040(QQ群号)
 
-## 捐助
-如果您觉得`Hin2n`对你有帮助，欢迎给予我们一定的捐助来维持项目的长期发展
-
-### 支付宝扫码捐赠
-<img height="100" src="doc/pic/donate-alipay.png" alt="donate-alipay">
-
-### 微信支付捐赠
-<img height="100" src="doc/pic/donate-wechatpay.png" alt="donate-wechatpay">
-
-### Paypal 捐赠
-海外用户推荐通过 [Paypal](https://www.paypal.me/hin2n) 向我的账户`switch.st@gmail.com`进行捐赠。
