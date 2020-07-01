@@ -26,7 +26,6 @@ cache:
 install:
     - echo y | sdkmanager "ndk-bundle"
     - echo y | sdkmanager "cmake;3.6.4111459"
-    - echo y | sdkmanager "lldb;3.1"
     - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
 
 before_script:
