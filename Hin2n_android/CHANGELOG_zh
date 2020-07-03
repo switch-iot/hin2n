@@ -1,3 +1,9 @@
+2020-07-03 Hin2n_v0.6.0-rc3 体验版(https://github.com/switch-iot/hin2n/releases/tag/hin2n_v0.6.0-rc3)
+* 将ntop n2n协议更新为最新版本
+* 添加通过n2n访问互联网的功能
+* 增加了设置可在n2n中使用的dns服务器的功能
+* 增加了对AES-CBC，Chacha20和Speck加密的支持
+
 2018-10-13 Hin2n_v0.6.0-rc2 体验版(https://github.com/switch-iot/hin2n/releases/tag/hin2n_v0.6.0-rc2)
 * 增加n2n v1/v2版本的支持
 * 优化配置项顺序

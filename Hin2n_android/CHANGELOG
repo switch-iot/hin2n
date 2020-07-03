@@ -1,3 +1,9 @@
+2020-07-03 Hin2n_v0.6.0-rc3 Trial Version(https://github.com/switch-iot/hin2n/releases/tag/hin2n_v0.6.0-rc3)
+* Update the ntop n2n protocol to the latest version
+* Add the ability to route the internet traffic via n2n
+* Add the ability to set a dns server for use in n2n
+* Add support for the AES-CBC, Chacha20 and Speck encryptions
+
 2018-10-13 Hin2n_v0.6.0-rc2 Trial Version(https://github.com/switch-iot/hin2n/releases/tag/hin2n_v0.6.0-rc2)
 * Added support for n2n v1/v2 version
 * Optimize configuration item order
