@@ -153,6 +153,46 @@ static const char *random_device_mac(void)
 
 /* *************************************************** */
 
+static int protect_socket(int sock) {
+  JNIEnv *env = NULL;
+
+  if(!sock)
+    return(-1);
+
+  if(!g_status)
+    return(-1);
+
+  if ((*g_status->jvm)->GetEnv(g_status->jvm, (void**)&env, JNI_VERSION_1_1) != JNI_OK || !env) {
+    traceEvent(TRACE_ERROR, "GetEnv failed");
+    return(-1);
+  }
+
+  jclass vpn_service_cls = (*env)->GetObjectClass(env, g_status->jobj_service);
+
+  if(!vpn_service_cls) {
+    traceEvent(TRACE_ERROR, "GetObjectClass(VpnService) failed");
+    return(-1);
+  }
+
+  /* Call VpnService protect */
+  jmethodID midProtect = (*env)->GetMethodID(env, vpn_service_cls, "protect", "(I)Z");
+  if(!midProtect) {
+    traceEvent(TRACE_ERROR, "Could not resolve VpnService::protect");
+    return(-1);
+  }
+
+  jboolean isProtected = (*env)->CallBooleanMethod(env, g_status->jobj_service, midProtect, sock);
+
+  if(!isProtected) {
+    traceEvent(TRACE_ERROR, "VpnService::protect failed");
+    return(-1);
+  }
+
+  return(0);
+}
+
+/* *************************************************** */
+
 /** Called periodically to update the gateway MAC address. The ARP reply packet
     is handled in handle_PACKET . */
 static void update_gateway_mac(n2n_edge_t *eee) {
@@ -187,10 +227,10 @@ static void on_sn_registration_updated(n2n_edge_t *eee, time_t now, const n2n_so
 /* *************************************************** */
 
 static n2n_verdict on_packet_from_peer(n2n_edge_t *eee, const n2n_sock_t *peer,
-	  uint8_t *payload, uint16_t psize) {
+	  uint8_t *payload, uint16_t *psize) {
   n2n_android_t *priv = (n2n_android_t*) edge_get_userdata(eee);
 
-  if((psize >= 36) &&
+  if((*psize >= 36) &&
      (ntohs(*((uint16_t*)&payload[12])) == 0x0806) && /* ARP */
      (ntohs(*((uint16_t*)&payload[20])) == 0x0002) && /* REPLY */
      (!memcmp(&payload[28], &priv->gateway_ip, 4))) { /* From gateway */
@@ -207,12 +247,12 @@ static n2n_verdict on_packet_from_peer(n2n_edge_t *eee, const n2n_sock_t *peer,
 /* *************************************************** */
 
 static n2n_verdict on_packet_from_tap(n2n_edge_t *eee, uint8_t *payload,
-	    uint16_t payload_size) {
+	    uint16_t *psize) {
   n2n_android_t *priv = (n2n_android_t*) edge_get_userdata(eee);
 
   /* A NULL MAC as destination means that the packet is directed to the
    * default gateway. */
-  if((payload_size > 6) && (!memcmp(payload, null_mac, 6))) {
+  if((*psize > 6) && (!memcmp(payload, null_mac, 6))) {
     traceEvent(TRACE_DEBUG, "Detected packet for the gateway");
 
     /* Overwrite the destination MAC with the actual gateway mac address */
@@ -340,6 +380,19 @@ int start_edge_v2(n2n_edge_status_t* status)
 
   if(eee == NULL) {
     traceEvent( TRACE_ERROR, "Failed in edge_init" );
+    rv = 1;
+    goto cleanup;
+  }
+
+  /* Protect the socket so that the supernode traffic won't go inside the n2n VPN */
+  if(protect_socket(edge_get_n2n_socket(eee)) < 0) {
+    traceEvent( TRACE_ERROR, "protect(n2n_socket) failed" );
+    rv = 1;
+    goto cleanup;
+  }
+
+  if(protect_socket(edge_get_management_socket(eee)) < 0) {
+    traceEvent( TRACE_ERROR, "protect(management_socket) failed" );
     rv = 1;
     goto cleanup;
   }
