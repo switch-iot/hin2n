@@ -161,17 +161,9 @@ android {
             dimension "channel"
             manifestPlaceholders += [UMENG_CHANNEL_VALUE: "github"]
         }
-        osc {
-            dimension "channel"
-            manifestPlaceholders += [UMENG_CHANNEL_VALUE: "osc"]
-        }
         bugly {
             dimension "channel"
             manifestPlaceholders += [UMENG_CHANNEL_VALUE: "bugly"]
-        }
-        anzhi {
-            dimension "channel"
-            manifestPlaceholders += [UMENG_CHANNEL_VALUE: "anzhi"]
         }
         arm {
             dimension "arch"
