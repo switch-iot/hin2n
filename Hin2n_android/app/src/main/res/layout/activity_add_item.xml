@@ -25,13 +25,13 @@
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/til_setting_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:hint="Name">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/tie_setting_name"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Name"/>
+                    android:layout_height="wrap_content"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -76,13 +76,13 @@
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/ll_n2n_version">
+                android:layout_below="@id/ll_n2n_version"
+                android:hint="Supernode">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/tie_super_node"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Supernode"
                     android:text=""/>
 
             </android.support.design.widget.TextInputLayout>
@@ -92,13 +92,13 @@
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/til_super_node">
+                android:layout_below="@id/til_super_node"
+                android:hint="Community">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/tie_community"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Community"/>
+                    android:layout_height="wrap_content"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -108,7 +108,8 @@
                 android:orientation="vertical"
                 android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:hint="Encryption">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -118,8 +119,7 @@
                 <Spinner
                     android:id="@+id/til_encryption_mode"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Encryption">
+                    android:layout_height="wrap_content">
                 </Spinner>
             </LinearLayout>
 
@@ -128,14 +128,14 @@
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/ll_n2n_encryption">
+                android:layout_below="@id/ll_n2n_encryption"
+                android:hint="Password">
                 <!--app:passwordToggleEnabled="true"-->
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/tie_encrypt"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Password"/>
+                    android:layout_height="wrap_content" />
                 <!--android:inputType="textPassword"-->
 
             </android.support.design.widget.TextInputLayout>
@@ -145,13 +145,13 @@
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/til_encrypt">
+                android:layout_below="@id/til_encrypt"
+                android:hint="IP address">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/tie_ip_address"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="IP address"/>
+                    android:layout_height="wrap_content" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -185,13 +185,13 @@
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/til_super_node_2"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:hint="Backup supernode">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/tie_super_node_2"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Backup supernode"/>
+                        android:layout_height="wrap_content" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -200,13 +200,13 @@
                     android:id="@+id/til_mtu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/til_super_node_2">
+                    android:layout_below="@id/til_super_node_2"
+                    android:hint="MTU">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/tie_mtu"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="MTU"/>
+                        android:layout_height="wrap_content" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -215,13 +215,13 @@
                     android:id="@+id/til_hole_punch_Interval"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/til_mtu">
+                    android:layout_below="@id/til_mtu"
+                    android:hint="Hole-punch interval">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/tie_hole_punch_interval"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Hole-punch interval"/>
+                        android:layout_height="wrap_content" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -230,12 +230,13 @@
                     android:id="@+id/til_local_ip"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/til_hole_punch_Interval">
+                    android:layout_below="@id/til_hole_punch_Interval"
+                    android:hint="Local IP">
+
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/tie_local_ip"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Local IP"/>
+                        android:layout_height="wrap_content" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -252,13 +253,13 @@
                     android:layout_below="@id/check_box_local_ip"
                     android:id="@+id/til_local_port"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:hint="local port">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/tie_local_port"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="local port"/>
+                        android:layout_height="wrap_content" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -267,13 +268,13 @@
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/til_local_port">
+                    android:layout_below="@id/til_local_port"
+                    android:hint="Gateway IP address">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/tie_gateway_ip"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Gateway IP address"/>
+                        android:layout_height="wrap_content" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -282,13 +283,13 @@
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/til_gateway_ip">
+                    android:layout_below="@id/til_gateway_ip"
+                    android:hint="DNS server IP address">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/tie_dns_server_ip"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="DNS server IP address"/>
+                        android:layout_height="wrap_content" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -297,13 +298,13 @@
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/til_dns_server_ip">
+                    android:layout_below="@id/til_dns_server_ip"
+                    android:hint="Netmask">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/tie_net_mask"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Netmask"
                         android:text="255.255.255.0"/>
 
                 </android.support.design.widget.TextInputLayout>
@@ -313,13 +314,13 @@
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/til_net_mask">
+                    android:layout_below="@id/til_net_mask"
+                    android:hint="Mac Address">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/tie_mac_addr"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Mac Address"/>
+                        android:layout_height="wrap_content" />
 
                 </android.support.design.widget.TextInputLayout>
 
