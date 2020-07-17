@@ -187,10 +187,10 @@ static void on_sn_registration_updated(n2n_edge_t *eee, time_t now, const n2n_so
 /* *************************************************** */
 
 static n2n_verdict on_packet_from_peer(n2n_edge_t *eee, const n2n_sock_t *peer,
-	  uint8_t *payload, uint16_t psize) {
+	  uint8_t *payload, uint16_t *payload_size) {
   n2n_android_t *priv = (n2n_android_t*) edge_get_userdata(eee);
 
-  if((psize >= 36) &&
+  if((*payload_size >= 36) &&
      (ntohs(*((uint16_t*)&payload[12])) == 0x0806) && /* ARP */
      (ntohs(*((uint16_t*)&payload[20])) == 0x0002) && /* REPLY */
      (!memcmp(&payload[28], &priv->gateway_ip, 4))) { /* From gateway */
@@ -201,18 +201,40 @@ static n2n_verdict on_packet_from_peer(n2n_edge_t *eee, const n2n_sock_t *peer,
 	       priv->gateway_mac[3], priv->gateway_mac[4], priv->gateway_mac[5]);
   }
 
+  uip_buf = payload;
+  uip_len = *payload_size;
+  if (IPBUF->ethhdr.type == htons(UIP_ETHTYPE_ARP)) {
+    uip_arp_arpin();
+    if (uip_len > 0) {
+      traceEvent(TRACE_DEBUG, "ARP reply packet prepare to send");
+      edge_send_packet2net(eee, uip_buf, uip_len);
+      return N2N_DROP;
+    }
+  }
+
   return(N2N_ACCEPT);
 }
 
 /* *************************************************** */
 
 static n2n_verdict on_packet_from_tap(n2n_edge_t *eee, uint8_t *payload,
-	    uint16_t payload_size) {
+	    uint16_t *payload_size) {
   n2n_android_t *priv = (n2n_android_t*) edge_get_userdata(eee);
+
+  /* Fill destination mac address first or generate arp request packet instead of
+   * normal packet. */
+  uip_buf = payload;
+  uip_len = *payload_size;
+  uip_arp_out();
+  if (IPBUF->ethhdr.type == htons(UIP_ETHTYPE_ARP))
+  {
+    *payload_size = uip_len;
+    traceEvent(TRACE_DEBUG, "ARP request packets are sent instead of packets");
+  }
 
   /* A NULL MAC as destination means that the packet is directed to the
    * default gateway. */
-  if((payload_size > 6) && (!memcmp(payload, null_mac, 6))) {
+  if((*payload_size > 6) && (!memcmp(payload, null_mac, 6))) {
     traceEvent(TRACE_DEBUG, "Detected packet for the gateway");
 
     /* Overwrite the destination MAC with the actual gateway mac address */
