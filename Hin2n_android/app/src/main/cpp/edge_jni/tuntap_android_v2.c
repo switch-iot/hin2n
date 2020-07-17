@@ -62,39 +62,25 @@ int tuntap_open(tuntap_dev *device,
 }
 
 int tuntap_read(struct tuntap_dev *tuntap, unsigned char *buf, int len) {
+    memset(buf, 0, UIP_LLH_LEN);
     int rlen = read(tuntap->fd, buf + UIP_LLH_LEN, len - UIP_LLH_LEN);
-    if ((rlen <= 0) || (rlen > N2N_PKT_BUF_SIZE - UIP_LLH_LEN))
-    {
+    if (rlen < 0) {
         return rlen;
     }
-    uip_buf = buf;
-    uip_len = rlen;
-    uip_arp_out();
-    if (IPBUF->ethhdr.type == htons(UIP_ETHTYPE_ARP))
-    {
-        traceEvent(TRACE_DEBUG, "ARP request packets are sent instead of packets");
-    }
-
-    return uip_len;
+    return rlen + UIP_LLH_LEN;
 }
 
 int tuntap_write(struct tuntap_dev *tuntap, unsigned char *buf, int len) {
     uip_buf = buf;
     uip_len = len;
     if (IPBUF->ethhdr.type == htons(UIP_ETHTYPE_IP)) {
-        return write(tuntap->fd, buf + UIP_LLH_LEN, len - UIP_LLH_LEN);
-    } else if (IPBUF->ethhdr.type == htons(UIP_ETHTYPE_ARP)) {
-        uip_arp_arpin();
-        if (uip_len > 0) {
-            uip_arp_len = uip_len;
-            memcpy(uip_arp_buf, uip_buf, uip_arp_len);
-            traceEvent(TRACE_DEBUG, "ARP reply packet prepare to send");
+        int rlen = write(tuntap->fd, buf + UIP_LLH_LEN, len - UIP_LLH_LEN);
+        if (rlen < 0) {
+            return rlen;
         }
-        return uip_len;
+        return rlen + UIP_LLH_LEN;
     }
-
-    errno = EINVAL;
-    return -1;
+    return 0;
 }
 
 void tuntap_close(struct tuntap_dev *tuntap) {
