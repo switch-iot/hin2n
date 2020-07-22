@@ -25,6 +25,7 @@
 #define N2N_NETMASK_STR_SIZE    16 /* dotted decimal 12 numbers + 3 dots */
 #define N2N_MACNAMSIZ           18 /* AA:BB:CC:DD:EE:FF + NULL*/
 #define N2N_IF_MODE_SIZE        16 /* static | dhcp */
+#define ARP_PERIOD_INTERVAL     10 /* sec */
 
 /* Shared status. Must call pthread_mutex_lock before use. */
 n2n_edge_status_t* g_status;
@@ -41,6 +42,7 @@ typedef struct {
   n2n_edge_conf_t *conf;
   uint8_t tap_mac[6];
   uint32_t tap_ipaddr;
+  time_t lastArpPeriod;
 } n2n_android_t;
 
 /* ***************************************************** */
@@ -284,6 +286,16 @@ static n2n_verdict on_packet_from_tap(n2n_edge_t *eee, uint8_t *payload,
   return(N2N_ACCEPT);
 }
 
+void on_main_loop_period(n2n_edge_t *eee, time_t now) {
+  n2n_android_t *priv = (n2n_android_t *) edge_get_userdata(eee);
+
+  /* call arp timer periodically  */
+  if ((now - priv->lastArpPeriod) > ARP_PERIOD_INTERVAL) {
+    uip_arp_timer();
+    priv->lastArpPeriod = now;
+  }
+}
+
 /* *************************************************** */
 
 int start_edge_v2(n2n_edge_status_t* status)
@@ -463,6 +475,7 @@ int start_edge_v2(n2n_edge_status_t* status)
   callbacks.sn_registration_updated = on_sn_registration_updated;
   callbacks.packet_from_peer = on_packet_from_peer;
   callbacks.packet_from_tap = on_packet_from_tap;
+  callbacks.main_loop_period = on_main_loop_period;
   edge_set_callbacks(eee, &callbacks);
 
   keep_on_running = 1;
