@@ -325,6 +325,14 @@ int start_edge_v2(n2n_edge_status_t* status)
   g_status = status;
   n2n_edge_cmd_t* cmd = &status->cmd;
 
+  setTraceLevel(cmd->trace_vlevel);
+  FILE* fp = fopen(cmd->logpath, "a");
+  if (fp == NULL) {
+    traceEvent(TRACE_ERROR, "failed to open log file.");
+  } else {
+    setTraceFile(fp);
+  }
+
   if (cmd->vpn_fd < 0) {
     traceEvent(TRACE_ERROR, "VPN socket is invalid.");
     return 1;
@@ -397,6 +405,7 @@ int start_edge_v2(n2n_edge_status_t* status)
 
   if(edge_verify_conf(&conf) != 0) {
     if(conf.encrypt_key) free(conf.encrypt_key);
+    conf.encrypt_key = NULL;
     traceEvent(TRACE_ERROR, "Bad configuration");
     rv = 1;
     goto cleanup;
@@ -487,13 +496,13 @@ int start_edge_v2(n2n_edge_status_t* status)
 
   run_edge_loop(eee, &keep_on_running);
 
+  traceEvent(TRACE_NORMAL, "edge stopped");
+
 cleanup:
   if(eee) edge_term(eee);
   if(encrypt_key) free(encrypt_key);
   tuntap_close(&dev);
   edge_term_conf(&conf);
-
-  traceEvent(TRACE_NORMAL, "Edge stopped");
 
   return rv;
 }
