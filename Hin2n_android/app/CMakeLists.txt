@@ -79,7 +79,6 @@ target_include_directories(edge_v2 PUBLIC
             ${OPENSSL_INCLUDE_DIR}
         )
 target_link_libraries(edge_v2 uip)
-target_link_libraries(edge_v2 log)
 target_link_libraries(edge_v2 ${OPENSSL_LIBRARIES})
 
 add_library(edge_v1 SHARED
