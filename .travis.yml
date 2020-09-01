@@ -34,10 +34,11 @@ before_script:
     - git submodule init
     - git submodule sync
     - git submodule update
-    - openssl aes-256-cbc -K $encrypted_13aef818f0d2_key -iv $encrypted_13aef818f0d2_iv -in app/Hin2n.jks.enc -out app/Hin2n.jks -d
+    - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then openssl aes-256-cbc -K $encrypted_13aef818f0d2_key -iv $encrypted_13aef818f0d2_iv -in app/Hin2n.jks.enc -out app/Hin2n.jks -d; fi'
 
 script:
-    - ./gradlew assembleRelease
+    - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then ./gradlew assembleDebug; fi'
+    - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then ./gradlew assembleRelease; fi'
 
 deploy:
     provider: releases
