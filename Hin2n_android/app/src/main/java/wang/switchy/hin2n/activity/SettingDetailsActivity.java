@@ -248,7 +248,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             mMoreSettingCheckBox.setChecked(false);
             mGatewayIp.getEditText().setText(R.string.item_default_gateway_ip);
             mDnsServer.getEditText().setText("");
-            mEncryptionMode.setSelection(encAdapter.getPosition("AES-CBC"));
+            mEncryptionMode.setSelection(encAdapter.getPosition("Twofish"));
 
             mSaveBtn.setVisibility(View.VISIBLE);
             mButtons.setVisibility(View.GONE);
