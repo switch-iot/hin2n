@@ -44,7 +44,7 @@ There are three popular versions of the n2n project
 Only the ntop v2 protocol is under active development.
 
 ### About v2s version
-The v2s is the renaming of the v2 (also known as v2.1) developed by master Meyerd in the QQ group(256572040), that is, the v2 upgrade version. The v2s version is not compatible with the v2 version developed by the ntop.org masters. To avoid confusion, the QQ group friends named the project separately.
+The v2s is the renaming of the v2 (also known as v2.1) developed by master Meyerd in the QQ group(5804301), that is, the v2 upgrade version. The v2s version is not compatible with the v2 version developed by the ntop.org masters. To avoid confusion, the QQ group friends named the project separately.
 
 ## Development and compilation
 ### Project Structure
@@ -80,5 +80,5 @@ Hin2n is a free and open source n2n project, and we welcome anyone to contribute
 
 ## QQ group
 - Hin2n QQ group： 769731491
-- N2N QQ group： 256572040
+- N2N QQ group： 5804301
 
