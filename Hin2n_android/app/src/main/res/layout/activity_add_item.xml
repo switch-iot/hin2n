@@ -57,17 +57,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
-                        android:text="ntop dev"/>
-                    <RadioButton
-                        android:id="@+id/rb_v1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="ntop v1.0" />
+                        android:text="n2n v2"/>
                     <RadioButton
                         android:id="@+id/rb_v2s"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Meyerd"/>
+                        android:text="n2n v2s"/>
+                    <RadioButton
+                        android:id="@+id/rb_v1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="n2n v1" />
                 </RadioGroup>
 
             </LinearLayout>
