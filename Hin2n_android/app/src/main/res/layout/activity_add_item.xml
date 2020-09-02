@@ -102,27 +102,6 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <LinearLayout
-                android:layout_below="@id/til_community"
-                android:id="@+id/ll_n2n_encryption"
-                android:orientation="vertical"
-                android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Encryption">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Encryption"/>
-
-                <Spinner
-                    android:id="@+id/til_encryption_mode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                </Spinner>
-            </LinearLayout>
-
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/til_encrypt"
                 android:layout_marginTop="5dp"
@@ -193,6 +172,27 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_below="@id/til_community"
+                    android:id="@+id/ll_n2n_encryption"
+                    android:orientation="vertical"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Encryption">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Encryption"/>
+
+                    <Spinner
+                        android:id="@+id/til_encryption_mode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                    </Spinner>
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
