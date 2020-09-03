@@ -26,7 +26,7 @@
                 android:id="@+id/til_setting_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Name">
+                android:hint="Setting name">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/tie_setting_name"
@@ -57,17 +57,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
-                        android:text="n2n v2"/>
+                        android:text="v2"/>
                     <RadioButton
                         android:id="@+id/rb_v2s"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="n2n v2s"/>
+                        android:text="v2s"/>
                     <RadioButton
                         android:id="@+id/rb_v1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="n2n v1" />
+                        android:text="v1" />
                 </RadioGroup>
 
             </LinearLayout>
@@ -108,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/til_community"
-                android:hint="Password">
+                android:hint="Encrypt key">
                 <!--app:passwordToggleEnabled="true"-->
 
                 <android.support.design.widget.TextInputEditText
@@ -151,7 +151,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/more_setting_check_box"
-                    android:text="more settings"/>
+                    android:text="More settings"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -162,31 +162,17 @@
                 android:visibility="gone">
 
                 <android.support.design.widget.TextInputLayout
-                    android:id="@+id/til_super_node_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Backup supernode">
-
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/tie_super_node_2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_below="@id/til_super_node_2"
                     android:id="@+id/ll_n2n_encryption"
                     android:orientation="vertical"
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Encryption">
+                    android:hint="Encryption method">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Encryption"/>
+                        android:text="Encryption method"/>
 
                     <Spinner
                         android:id="@+id/til_encryption_mode"
@@ -196,11 +182,25 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
+                    android:layout_below="@id/ll_n2n_encryption"
+                    android:id="@+id/til_super_node_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Supernode 2">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/tie_super_node_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
                     android:layout_marginTop="5dp"
                     android:id="@+id/til_mtu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/ll_n2n_encryption"
+                    android:layout_below="@id/til_super_node_2"
                     android:hint="MTU">
 
                     <android.support.design.widget.TextInputEditText
@@ -254,7 +254,7 @@
                     android:id="@+id/til_local_port"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="local port">
+                    android:hint="Local port">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/tie_local_port"

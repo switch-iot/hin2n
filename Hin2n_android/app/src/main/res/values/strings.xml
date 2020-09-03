@@ -6,8 +6,8 @@
     <string name="facebook_app_id"></string>
 
     <string name="no_setting">--choose setting--</string>
-    <string name="title_add_setting">Add settings</string>
-    <string name="title_update_setting">Update settings</string>
+    <string name="title_add_setting">New setting</string>
+    <string name="title_update_setting">Update setting</string>
     <string name="title_setting_list">Settings list</string>
     
     <string name="dialog_add_succeed">Add succeed!</string>
