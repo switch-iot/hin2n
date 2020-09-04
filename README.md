@@ -37,27 +37,28 @@ If you have new features and ideas, you can submit them in [`issues`](https://gi
 
 ## N2N protocol version
 There are three popular versions of the n2n project
-- Version v1 developed by the great masters of ntop.org. Project address：https://github.com/meyerd/n2n.git(n2n_v1)
+- Version v1 developed by the great masters of ntop.org. Project address：https://github.com/meyerd/n2n.git
 - Version v2 developed by the great masters of ntop.org. Project address：https://github.com/ntop/n2n.git
-- Version [v2s](#about-v2s-version) developed by the master Meyerd. Project address：https://github.com/meyerd/n2n.git(n2n_v2)
+- Version v2s developed by the master Meyerd. Project address：https://github.com/meyerd/n2n.git
 
 Only the ntop v2 protocol is under active development.
 
 ### About v2s version
-The v2s is the renaming of the v2 (also known as v2.1) developed by master Meyerd in the QQ group(256572040), that is, the v2 upgrade version. The v2s version is not compatible with the v2 version developed by the ntop.org masters. To avoid confusion, the QQ group friends named the project separately.
+The v2s is the renaming of the v2 (also known as v2.1) developed by master Meyerd in the QQ group(5804301), that is, the v2 upgrade version. The v2s version is not compatible with the v2 version developed by the ntop.org masters. To avoid confusion, the QQ group friends named the project separately.
 
 ## Development and compilation
 ### Project Structure
 The n2n source code is linked to the hin2n directory via git submodules, which are located into the `bundles` directory. hin2n provides the [CMakeLists.txt](https://github.com/switch-iot/hin2n/blob/dev_android/Hin2n_android/app/CMakeLists.txt) file to build all the supported n2n versions from the corresponding submodule. The submodules actually link a fork of the official n2n source code repositories (e.g. https://github.com/switch-iot/n2n_ntop) in order to guaranteed that the compilation of hin2n always succedes. The ntop v2 fork is a 1:1 copy of the official repository, which will be periodically updated to reflect the upstream changes.
 
-### Hin2n
-- `git clone https://github.com/switch-iot/hin2n.git --recurse-submodules`
-- Hin2n_android directory is the Hin2n project Android source directory
-- Execute `gradlew assemble` in Hin2n_android directory to compile Hin2n. If you are using Android Studio, use "Import Project", then select the `Hin2n_android` directory and build the `app` module.
+### How to compile on linux (using ubuntu as an example, need java and sdk environment support)
+- `cd /opt`
+- `git clone https://github.com/switch-iot/hin2n.git --recurse-submodules` # download source
+- `cd hin2n/Hin2n_android` # hin2n_android directory is the hin2n project android source directory
+- `./gradlew assemble` # compile hin2n (You can compile one of the files: `./gradlew assembleNormalAllarchDebug` ). If you are using android studio, use "Import Project", then select the `hin2n_android` directory and build the `app` module. The compiled files are here: hin2n/Hin2n_android/app/build/outputs/apk/
 - When switching branches, you need to execute `git submodule update` to synchronize the code of the submodules
 
-### Windows environment
-The git compatible symbolic link needs to be set in the Windows environment.
+### How to compile on windows
+The git compatible symbolic link needs to be set in the windows environment.
 - Launch `gpedit.msc`, and add the account(s) to `Computer Configuration/Windows Setting/Security Settings/Local Policies/User Rights Assignment/Create symbolic links`
 - Or run git-cmd as an administrator user, and execute the following command
 - git clone -c `core.symlinks=true` https://github.com/switch-iot/hin2n.git `--recurse-submodules`  && cd hin2n && `link.bat`
@@ -80,5 +81,5 @@ Hin2n is a free and open source n2n project, and we welcome anyone to contribute
 
 ## QQ group
 - Hin2n QQ group： 769731491
-- N2N QQ group： 256572040
+- N2N QQ group： 5804301
 

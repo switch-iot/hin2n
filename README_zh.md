@@ -37,21 +37,22 @@ Hin2n最新版本可在[release地址](https://github.com/switch-iot/hin2n/relea
 
 ## n2n协议版本
 n2n项目现有三个主流版本
-- ntop.org大神们维护的v1版本，项目地址：https://github.com/meyerd/n2n.git(n2n_v1)
-- ntop.org大神们维护的v2版本，项目地址：https://github.com/ntop/n2n.git
-- meyerd大神维护的[v2s版本](#关于v2s版本)，项目地址：https://github.com/meyerd/n2n.git(n2n_v2)
+- ntop.org大神们维护的 v1 版本，项目地址：https://github.com/meyerd/n2n.git
+- ntop.org大神们维护的 v2 版本，项目地址：https://github.com/ntop/n2n.git
+- meyerd大神维护的 v2s 版本，项目地址：https://github.com/meyerd/n2n.git
 
 ### 关于v2s版本
-v2s版本是N2N交流QQ群(256572040)中对meyerd大神维护的v2版本(又称v2.1)的命名，即v2升级版，该版本与ntop.org大神们维护的v2版本并不互通，为避免混淆，群友们对该项目另行命名。
+v2s版本是N2N交流QQ群(5804301)中对meyerd大神维护的v2版本(又称v2.1)的命名，即v2升级版，该版本与ntop.org大神们维护的v2版本并不互通，为避免混淆，群友们对该项目另行命名。
 
 ## 项目开发/编译说明
-### Hin2n
-- git clone https://github.com/switch-iot/hin2n.git `--recurse-submodules`
-- Hin2n_android目录即是Hin2n项目安卓源码目录
-- Hin2n_android目录下执行`gradlew assemble`编译
-- 切换分支时，需要执行`git submodule update`来同步submodule的代码
+### Hin2n 在 linux 系统下的编译方法（以 ubuntu 为例子进行说明，需要 java、sdk 环境的支持）
+- `cd /opt`
+- `git clone https://github.com/switch-iot/hin2n.git --recurse-submodules` # 下载源码
+- `cd hin2n/Hin2n_android` # Hin2n_android 目录即是 Hin2n 项目安卓源码目录
+- `./gradlew assemble` # 开始编译（你也可以使用`./gradlew assembleNormalAllarchDebug`来编译其中一个文件）。如果你要使用 android studio 来编译，那么请选择 Import Project，指向 hin2n_android 目录，然后再选择建立 app。编译好的文件在这里 hin2n/Hin2n_android/app/build/outputs/apk/
+- 切换分支时，需要执行`git submodule update`来同步 submodule 的代码
 
-### Windows环境
+### Windows 系统下的编译方法
 Windows环境下需要设置git兼容符号链接。
 - 打开`gpedit.msc`，将当前账户加入设置`计算机配置/Windows 设置/安全设置/本地策略/用户权限分配/创建符号链接`中。
 - 或以管理员用户运行git-cmd，并执行下述命令
@@ -75,5 +76,5 @@ Hin2n是一个免费且开源的n2n项目，我们欢迎任何人为其开发和
 
 ## 交流群
 - Hin2n交流群： 769731491(QQ群号)
-- N2N交流群： 256572040(QQ群号)
+- N2N交流群： 5804301(QQ群号)
 
