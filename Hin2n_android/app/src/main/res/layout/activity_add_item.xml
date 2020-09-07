@@ -53,21 +53,21 @@
                     android:orientation="horizontal">
 
                     <RadioButton
-                        android:id="@+id/rb_v2"
+                        android:id="@+id/rb_v1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="v2   "/>
+                        android:text="v1   " />
                     <RadioButton
                         android:id="@+id/rb_v2s"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="v2s   "/>
                     <RadioButton
-                        android:id="@+id/rb_v1"
+                        android:id="@+id/rb_v2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="v1   " />
+                        android:checked="true"
+                        android:text="v2"/>
                 </RadioGroup>
 
             </LinearLayout>
@@ -299,7 +299,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/til_dns_server_ip"
-                    android:hint="Netmask">
+                    android:hint="Subnet mask">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/tie_net_mask"
@@ -315,7 +315,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/til_net_mask"
-                    android:hint="Mac Address">
+                    android:hint="Mac address">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/tie_mac_addr"
@@ -344,7 +344,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@id/resove_super_node_ip_check_box"
-                        android:text="Resolve dynamic supernode IPs"/>
+                        android:text="Supernodes are running dynamic IPs"/>
                 </RelativeLayout>
 
 
@@ -421,7 +421,7 @@
                         android:id="@+id/tv_trace_level"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Trace Level : "/>
+                        android:text="Trace level : "/>
 
                     <Spinner
                         android:layout_toRightOf="@id/tv_trace_level"
