@@ -51,7 +51,7 @@ The v2s is the renaming of the v2 (also known as v2.1) developed by master Meyer
 The n2n source code is linked to the hin2n directory via git submodules, which are located into the `bundles` directory. hin2n provides the [CMakeLists.txt](https://github.com/switch-iot/hin2n/blob/dev_android/Hin2n_android/app/CMakeLists.txt) file to build all the supported n2n versions from the corresponding submodule. The submodules actually link a fork of the official n2n source code repositories (e.g. https://github.com/switch-iot/n2n_ntop) in order to guaranteed that the compilation of hin2n always succedes. The ntop v2 fork is a 1:1 copy of the official repository, which will be periodically updated to reflect the upstream changes.
 
 ### How to compile on linux
-Using ubuntu as an example, need java and sdk environment support
+Using ubuntu as an example (need java and sdk environment support)
 - `cd /opt`
 - `git clone https://github.com/switch-iot/hin2n.git --recurse-submodules` # download source
 - `cd hin2n/Hin2n_android` # hin2n_android directory is the hin2n project android source directory

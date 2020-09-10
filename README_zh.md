@@ -46,7 +46,7 @@ v2s版本是N2N交流QQ群(5804301)中对meyerd大神维护的v2版本(又称v2.
 
 ## 项目开发/编译说明
 ### Hin2n 在 linux 系统下的编译方法
-下面以 ubuntu 为例子进行说明，需要先安装 java、sdk 环境的
+下面以 ubuntu 为例子进行说明（需要先安装好 java 和 sdk）
 - `cd /opt`
 - `git clone https://github.com/switch-iot/hin2n.git --recurse-submodules` # 下载源码
 - `cd hin2n/Hin2n_android` # Hin2n_android 目录即是 hin2n 项目安卓源码目录
