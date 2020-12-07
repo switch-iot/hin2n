@@ -353,20 +353,21 @@ int start_edge_v2(n2n_edge_status_t* status)
     conf.transop_id = N2N_TRANSFORM_ID_TWOFISH;
     conf.encrypt_key = strdup(cmd->enc_key);
     traceEvent(TRACE_DEBUG, "encrypt_key = '%s'\n", encrypt_key);
-  }
 
-  if(cmd->encryption_mode[0]) {
-    if(!strcmp(cmd->encryption_mode, "Twofish"))
-      conf.transop_id = N2N_TRANSFORM_ID_TWOFISH;
-    else if(!strcmp(cmd->encryption_mode, "AES-CBC"))
-      conf.transop_id = N2N_TRANSFORM_ID_AESCBC;
-    else if(!strcmp(cmd->encryption_mode, "Speck-CTR"))
-      conf.transop_id = N2N_TRANSFORM_ID_SPECK;
-    else if(!strcmp(cmd->encryption_mode, "ChaCha20"))
-      conf.transop_id = N2N_TRANSFORM_ID_CHACHA20;
-    else
-      traceEvent(TRACE_WARNING, "unknown encryption mode:'%s'\n", cmd->encryption_mode);
-  }
+    if(cmd->encryption_mode[0]) {
+      if(!strcmp(cmd->encryption_mode, "Twofish"))
+        conf.transop_id = N2N_TRANSFORM_ID_TWOFISH;
+      else if(!strcmp(cmd->encryption_mode, "AES-CBC"))
+        conf.transop_id = N2N_TRANSFORM_ID_AESCBC;
+      else if(!strcmp(cmd->encryption_mode, "Speck-CTR"))
+        conf.transop_id = N2N_TRANSFORM_ID_SPECK;
+      else if(!strcmp(cmd->encryption_mode, "ChaCha20"))
+        conf.transop_id = N2N_TRANSFORM_ID_CHACHA20;
+      else
+        traceEvent(TRACE_WARNING, "unknown encryption mode:'%s'\n", cmd->encryption_mode);
+    }
+  } else
+    conf.transop_id = N2N_TRANSFORM_ID_NULL;
 
   scan_address(ip_addr, N2N_NETMASK_STR_SIZE,
 	       ip_mode, N2N_IF_MODE_SIZE,
