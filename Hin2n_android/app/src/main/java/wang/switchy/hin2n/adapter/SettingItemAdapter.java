@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.util.List;
@@ -53,7 +54,7 @@ public class SettingItemAdapter extends BaseAdapter {
             convertView = mLayoutInflater.inflate(R.layout.layout_setting_item, null);
             viewHolder = new ViewHolder();
             viewHolder.settingName = (TextView) convertView.findViewById(R.id.tv_setting_name);
-            viewHolder.imgIsSelected = (ImageView) convertView.findViewById(R.id.iv_selected);
+            viewHolder.imgIsSelected = (RadioButton) convertView.findViewById(R.id.iv_selected);
             viewHolder.moreInfo = (ImageView) convertView.findViewById(R.id.iv_info);
 
             convertView.setTag(viewHolder);
@@ -64,9 +65,9 @@ public class SettingItemAdapter extends BaseAdapter {
 
         viewHolder.settingName.setText(settingItemEntity.getSettingName());
         if (settingItemEntity.isSelected()) {
-            viewHolder.imgIsSelected.setVisibility(View.VISIBLE);
+            viewHolder.imgIsSelected.setChecked(true);
         } else {
-            viewHolder.imgIsSelected.setVisibility(View.INVISIBLE);
+            viewHolder.imgIsSelected.setChecked(false);
         }
 
         viewHolder.moreInfo.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +81,7 @@ public class SettingItemAdapter extends BaseAdapter {
 
     class ViewHolder {
         TextView settingName;
-        ImageView imgIsSelected;
+        RadioButton imgIsSelected;
         ImageView moreInfo;
     }
 }

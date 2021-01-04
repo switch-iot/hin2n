@@ -7,14 +7,17 @@
         android:layout_width="match_parent"
         android:layout_height="70dp">
 
-        <ImageView
+        <RadioButton
             android:layout_marginLeft="20dp"
             android:layout_centerVertical="true"
             android:id="@+id/iv_selected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"
-            android:src="@mipmap/img_icon_selected"/>
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:button="@drawable/radio_button_selector"/>
 
         <TextView
             android:layout_toRightOf="@id/iv_selected"
