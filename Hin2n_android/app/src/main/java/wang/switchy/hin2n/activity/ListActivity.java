@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.VpnService;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
@@ -39,6 +38,7 @@ import wang.switchy.hin2n.storage.db.base.model.N2NSettingModel;
 import wang.switchy.hin2n.template.BaseTemplate;
 import wang.switchy.hin2n.template.CommonTitleTemplate;
 import wang.switchy.hin2n.tool.N2nTools;
+import wang.switchy.hin2n.tool.ThreadUtils;
 
 
 /**
@@ -142,25 +142,33 @@ public class ListActivity extends BaseActivity {
                                     mTargetSettingPosition = position;
 
                                     if (currentSettingId != -1) {
-                                        N2NSettingModel currentSettingItem = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load((long) currentSettingId);
-                                        if (currentSettingItem != null) {
-                                            currentSettingItem.setIsSelcected(false);
-                                            Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().update(currentSettingItem);
-                                        }
+                                        ThreadUtils.cachedThreadExecutor(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                N2NSettingModel currentSettingItem = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load((long) currentSettingId);
+                                                if (currentSettingItem != null) {
+                                                    currentSettingItem.setIsSelcected(false);
+                                                    Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().update(currentSettingItem);
+                                                }
+                                            }
+                                        });
                                     }
 
                                     for (int i = 0; i < mSettingItemEntities.size(); i++) {
                                         mSettingItemEntities.get(i).setSelected(false);
                                     }
+                                    ThreadUtils.cachedThreadExecutor(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            N2NSettingModelDao n2NSettingModelDao = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
+                                            mN2NSettingModel = n2NSettingModelDao.load(mSettingItemEntities.get(position).getSaveId());
+                                            mN2NSettingModel.setIsSelcected(true);
+                                            n2NSettingModelDao.update(mN2NSettingModel);
+                                            mHin2nEdit.putLong("current_setting_id", mN2NSettingModel.getId());
+                                            mHin2nEdit.commit();
+                                        }
+                                    });
 
-                                    N2NSettingModelDao n2NSettingModelDao = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
-                                    mN2NSettingModel = n2NSettingModelDao.load(mSettingItemEntities.get(position).getSaveId());
-                                    mN2NSettingModel.setIsSelcected(true);
-
-                                    n2NSettingModelDao.update(mN2NSettingModel);
-
-                                    mHin2nEdit.putLong("current_setting_id", mN2NSettingModel.getId());
-                                    mHin2nEdit.commit();
                                     mSettingItemEntities.get(position).setSelected(true);
                                     mSettingItemAdapter.notifyDataSetChanged();
 
@@ -170,25 +178,35 @@ public class ListActivity extends BaseActivity {
                             .show();
                 } else {
                     if (currentSettingId != -1) {
-                        N2NSettingModel currentSettingItem = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load((long) currentSettingId);
-                        if (currentSettingItem != null) {
-                            currentSettingItem.setIsSelcected(false);
-                            Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().update(currentSettingItem);
-                        }
+                        ThreadUtils.cachedThreadExecutor(new Runnable() {
+                            @Override
+                            public void run() {
+                                N2NSettingModel currentSettingItem = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load((long) currentSettingId);
+                                if (currentSettingItem != null) {
+                                    currentSettingItem.setIsSelcected(false);
+                                    Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().update(currentSettingItem);
+                                }
+                            }
+                        });
                     }
 
                     for (int i = 0; i < mSettingItemEntities.size(); i++) {
                         mSettingItemEntities.get(i).setSelected(false);
                     }
+                    ThreadUtils.cachedThreadExecutor(new Runnable() {
+                        @Override
+                        public void run() {
+                            N2NSettingModelDao n2NSettingModelDao = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
+                            mN2NSettingModel = n2NSettingModelDao.load(mSettingItemEntities.get(position).getSaveId());
+                            mN2NSettingModel.setIsSelcected(true);
 
-                    N2NSettingModelDao n2NSettingModelDao = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
-                    mN2NSettingModel = n2NSettingModelDao.load(mSettingItemEntities.get(position).getSaveId());
-                    mN2NSettingModel.setIsSelcected(true);
+                            n2NSettingModelDao.update(mN2NSettingModel);
 
-                    n2NSettingModelDao.update(mN2NSettingModel);
+                            mHin2nEdit.putLong("current_setting_id", mN2NSettingModel.getId());
+                            mHin2nEdit.commit();
+                        }
+                    });
 
-                    mHin2nEdit.putLong("current_setting_id", mN2NSettingModel.getId());
-                    mHin2nEdit.commit();
                     mSettingItemEntities.get(position).setSelected(true);
                     mSettingItemAdapter.notifyDataSetChanged();
                 }
@@ -307,6 +325,42 @@ public class ListActivity extends BaseActivity {
             }
         });
 
+        ThreadUtils.cachedThreadExecutor(new Runnable() {
+            @Override
+            public void run() {
+                N2NSettingModelDao n2NSettingModelDao = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
+                List<N2NSettingModel> n2NSettingModels = n2NSettingModelDao.loadAll();
+
+                N2NSettingModel n2NSettingModel;
+                mSettingItemEntities.clear();
+                for (int i = 0; i < n2NSettingModels.size(); i++) {
+                    n2NSettingModel = n2NSettingModels.get(i);
+                    final SettingItemEntity settingItemEntity = new SettingItemEntity(n2NSettingModel.getName(),
+                            n2NSettingModel.getId(), n2NSettingModel.getIsSelcected());
+
+                    settingItemEntity.setOnMoreBtnClickListener(new SettingItemEntity.OnMoreBtnClickListener() {
+
+                        @Override
+                        public void onClick(int positon) {
+                            Intent intent = new Intent(ListActivity.this, SettingDetailsActivity.class);
+                            intent.putExtra("type", SettingDetailsActivity.TYPE_SETTING_MODIFY);
+                            intent.putExtra("saveId", settingItemEntity.getSaveId());
+
+                            startActivity(intent);
+                        }
+                    });
+                    mSettingItemEntities.add(settingItemEntity);
+
+                    if (n2NSettingModel.getIsSelcected()) {
+                        mHin2nEdit.putLong("current_setting_id", n2NSettingModel.getId());
+                        mHin2nEdit.commit();
+                    }
+                }
+
+                mSettingItemAdapter.notifyDataSetChanged();
+            }
+        });
+
         /*****************侧滑菜单 end********************/
 
         mSettingsListView.setAdapter(mSettingItemAdapter);
@@ -316,36 +370,6 @@ public class ListActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        N2NSettingModelDao n2NSettingModelDao = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao();
-        List<N2NSettingModel> n2NSettingModels = n2NSettingModelDao.loadAll();
-
-        N2NSettingModel n2NSettingModel;
-        mSettingItemEntities.clear();
-        for (int i = 0; i < n2NSettingModels.size(); i++) {
-            n2NSettingModel = n2NSettingModels.get(i);
-            final SettingItemEntity settingItemEntity = new SettingItemEntity(n2NSettingModel.getName(),
-                    n2NSettingModel.getId(), n2NSettingModel.getIsSelcected());
-
-            settingItemEntity.setOnMoreBtnClickListener(new SettingItemEntity.OnMoreBtnClickListener() {
-
-                @Override
-                public void onClick(int positon) {
-                    Intent intent = new Intent(ListActivity.this, SettingDetailsActivity.class);
-                    intent.putExtra("type", SettingDetailsActivity.TYPE_SETTING_MODIFY);
-                    intent.putExtra("saveId", settingItemEntity.getSaveId());
-
-                    startActivity(intent);
-                }
-            });
-            mSettingItemEntities.add(settingItemEntity);
-
-            if (n2NSettingModel.getIsSelcected()) {
-                mHin2nEdit.putLong("current_setting_id", n2NSettingModel.getId());
-                mHin2nEdit.commit();
-            }
-        }
-
-        mSettingItemAdapter.notifyDataSetChanged();
     }
 
     @Override

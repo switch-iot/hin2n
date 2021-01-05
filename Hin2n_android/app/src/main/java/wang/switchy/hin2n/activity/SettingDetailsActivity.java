@@ -753,8 +753,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        finish();
                         sweetAlertDialog.dismiss();
+                        finish();
                     }
                 }).show();
     }

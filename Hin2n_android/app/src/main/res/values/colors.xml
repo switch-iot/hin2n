@@ -6,6 +6,7 @@
     <color name="colorSupernodeDisconnect">#FF0000</color>
     <color name="c_white">#ffffff</color>
     <color name="c_gray">#c7c7c7</color>
+    <color name="termail_gray">#302C2C</color>
     <color name="c_black">#000000</color>
     <color name="c_eeeeee">#eeeeee</color>
 </resources>

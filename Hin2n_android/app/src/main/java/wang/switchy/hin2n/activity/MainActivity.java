@@ -4,29 +4,19 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.net.VpnService;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
+import android.support.v4.widget.NestedScrollView;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import com.orhanobut.logger.Logger;
 import com.tencent.bugly.beta.Beta;
-import com.umeng.socialize.ShareAction;
-import com.umeng.socialize.UMShareAPI;
-import com.umeng.socialize.UMShareListener;
-import com.umeng.socialize.bean.SHARE_MEDIA;
-import com.umeng.socialize.media.UMImage;
-import com.umeng.socialize.media.UMWeb;
+
 import com.zhy.m.permission.MPermissions;
 import com.zhy.m.permission.PermissionDenied;
 import com.zhy.m.permission.PermissionGrant;
@@ -39,26 +29,26 @@ import org.greenrobot.eventbus.ThreadMode;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import wang.switchy.hin2n.Hin2nApplication;
 import wang.switchy.hin2n.R;
-import wang.switchy.hin2n.event.ConnectingEvent;
-import wang.switchy.hin2n.event.ErrorEvent;
-import wang.switchy.hin2n.event.StartEvent;
-import wang.switchy.hin2n.event.StopEvent;
-import wang.switchy.hin2n.event.SupernodeDisconnectEvent;
+import wang.switchy.hin2n.event.*;
 import wang.switchy.hin2n.model.EdgeStatus;
 import wang.switchy.hin2n.model.N2NSettingInfo;
 import wang.switchy.hin2n.service.N2NService;
 import wang.switchy.hin2n.storage.db.base.model.N2NSettingModel;
 import wang.switchy.hin2n.template.BaseTemplate;
 import wang.switchy.hin2n.template.CommonTitleTemplate;
+import wang.switchy.hin2n.tool.IOUtils;
 import wang.switchy.hin2n.tool.N2nTools;
+import wang.switchy.hin2n.tool.ShareUtils;
+import wang.switchy.hin2n.tool.ThreadUtils;
 
 public class MainActivity extends BaseActivity {
 
     private N2NSettingModel mCurrentSettingInfo;
     private RelativeLayout mCurrentSettingItem;
     private TextView mCurrentSettingName;
+    private TextView mLogAction;
+    private NestedScrollView mScrollLogAction;
     private ImageView mConnectBtn;
-    private TextView mSupernodeDisconnectNote;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private LinearLayout mLeftMenu;
@@ -125,6 +115,8 @@ public class MainActivity extends BaseActivity {
         mLeftMenu = (LinearLayout) findViewById(R.id.ll_menu_left);
 
         mConnectBtn = (ImageView) findViewById(R.id.iv_connect_btn);
+        mLogAction = (TextView) findViewById(R.id.tv_log_action);
+        mScrollLogAction = (NestedScrollView) findViewById(R.id.scroll_log_action);
 
         if (N2NService.INSTANCE == null) {
             mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
@@ -162,7 +154,6 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        mSupernodeDisconnectNote = (TextView) findViewById(R.id.tv_supernode_disconnect_note);
 
         mCurrentSettingItem = (RelativeLayout) findViewById(R.id.rl_current_setting_item);
         mCurrentSettingItem.setOnClickListener(new View.OnClickListener() {
@@ -218,7 +209,7 @@ public class MainActivity extends BaseActivity {
 
 
                 } else {
-                    doOnClickShareItem();
+                    ShareUtils.doOnClickShareItem(MainActivity.this);
 
                 }
 
@@ -230,12 +221,7 @@ public class MainActivity extends BaseActivity {
         contactItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean b = joinQQGroup("5QSK63d7uDivxPW2oCpWHyi7FmE4sAzo");
-                if (!b) {
-                    Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
-                    intent.putExtra(WebViewActivity.WEB_VIEW_TYPE, WebViewActivity.TYPE_WEB_VIEW_CONTACT);
-                    startActivity(intent);
-                }
+                ShareUtils.joinQQGroup(MainActivity.this);
             }
         });
 
@@ -269,64 +255,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void doOnClickShareItem() {
 
-        UMWeb umWeb = new UMWeb("https://github.com/switch-iot/hin2n/blob/master/README.md");
-        umWeb.setTitle("Hin2n");
-        umWeb.setThumb(new UMImage(this, R.mipmap.ic_launcher));
-        umWeb.setDescription("N2N is a VPN project that supports p2p.");
-
-        new ShareAction(MainActivity.this)
-                .withMedia(umWeb)
-                .setDisplayList(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE/**,SHARE_MEDIA.SINA*/)
-                .setCallback(new UMShareListener() {
-                    /**
-                     * @descrption 分享开始的回调
-                     * @param platform 平台类型
-                     */
-                    @Override
-                    public void onStart(SHARE_MEDIA platform) {
-
-                    }
-
-                    /**
-                     * @descrption 分享成功的回调
-                     * @param platform 平台类型
-                     */
-                    @Override
-                    public void onResult(SHARE_MEDIA platform) {
-//                        Toast.makeText(MainActivity.this, "成功了", Toast.LENGTH_LONG).show();
-
-                        Log.e("zhangbzshare", "onResult");
-                    }
-
-                    /**
-                     * @descrption 分享失败的回调
-                     * @param platform 平台类型
-                     * @param t 错误原因
-                     */
-                    @Override
-                    public void onError(SHARE_MEDIA platform, Throwable t) {
-//                        Toast.makeText(MainActivity.this, "失败" + t.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.e("zhangbzshare", "onError : " + t.getMessage());
-
-                        Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
-                        intent.putExtra(WebViewActivity.WEB_VIEW_TYPE, WebViewActivity.TYPE_WEB_VIEW_SHARE);
-                        startActivity(intent);
-
-                    }
-
-                    /**
-                     * @descrption 分享取消的回调
-                     * @param platform 平台类型
-                     */
-                    @Override
-                    public void onCancel(SHARE_MEDIA platform) {
-//                        Toast.makeText(MainActivity.this, "取消了", Toast.LENGTH_LONG).show();
-                        Log.e("zhangbzshare", "onCancel");
-                    }
-                }).open();
-    }
 
 
     @Override
@@ -337,8 +266,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        //UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUECT_CODE_VPN && resultCode == RESULT_OK) {
             Intent intent = new Intent(MainActivity.this, N2NService.class);
@@ -366,7 +293,6 @@ public class MainActivity extends BaseActivity {
             }
 
             mConnectBtn.setVisibility(View.VISIBLE);
-            mSupernodeDisconnectNote.setVisibility(View.GONE);
             if (N2NService.INSTANCE == null) {
                 mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
             } else {
@@ -375,7 +301,6 @@ public class MainActivity extends BaseActivity {
                     mConnectBtn.setImageResource(R.mipmap.ic_state_connect);
                 } else if (status == EdgeStatus.RunningStatus.SUPERNODE_DISCONNECT) {
                     mConnectBtn.setImageResource(R.mipmap.ic_state_supernode_diconnect);
-                    mSupernodeDisconnectNote.setVisibility(View.VISIBLE);
                 } else {
                     mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
                 }
@@ -391,7 +316,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
@@ -402,21 +326,18 @@ public class MainActivity extends BaseActivity {
     public void onStartEvent(StartEvent event) {
         mConnectBtn.setVisibility(View.VISIBLE);
         mConnectBtn.setImageResource(R.mipmap.ic_state_connect);
-        mSupernodeDisconnectNote.setVisibility(View.GONE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStopEvent(StopEvent event) {
         mConnectBtn.setVisibility(View.VISIBLE);
         mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
-        mSupernodeDisconnectNote.setVisibility(View.GONE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onErrorEvent(ErrorEvent event) {
         mConnectBtn.setVisibility(View.VISIBLE);
         mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
-        mSupernodeDisconnectNote.setVisibility(View.GONE);
 
         Toast.makeText(mContext, getString(R.string.toast_connect_failed), Toast.LENGTH_SHORT).show();
     }
@@ -430,29 +351,29 @@ public class MainActivity extends BaseActivity {
     public void onSupernodeDisconnectEvent(SupernodeDisconnectEvent event) {
         mConnectBtn.setVisibility(View.VISIBLE);
         mConnectBtn.setImageResource(R.mipmap.ic_state_supernode_diconnect);
-        mSupernodeDisconnectNote.setVisibility(View.VISIBLE);
-
         Toast.makeText(mContext, getString(R.string.toast_disconnect_and_retry), Toast.LENGTH_SHORT).show();
     }
 
-    /****************
-     * 发起添加群流程。群号：手机版n2n(hin2n)交流群(769731491) 的 key 为： 5QSK63d7uDivxPW2oCpWHyi7FmE4sAzo
-     * 调用 joinQQGroup(5QSK63d7uDivxPW2oCpWHyi7FmE4sAzo) 即可发起手Q客户端申请加群 手机版n2n(hin2n)交流群(769731491)
-     *
-     * @param key 由官网生成的key
-     * @return 返回true表示呼起手Q成功，返回fals表示呼起失败
-     ******************/
-    public boolean joinQQGroup(String key) {
-        Intent intent = new Intent();
-        intent.setData(Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D" + key));
-        // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        try {
-            startActivity(intent);
-            return true;
-        } catch (Exception e) {
-            // 未安装手Q或安装的版本不支持
-            return false;
-        }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLogChangeEvent(final LogChangeEvent event) {
+//        Toast.makeText(this,"LogChageEvent",Toast.LENGTH_SHORT).show();
+        ThreadUtils.cachedThreadExecutor(new Runnable() {
+            @Override
+            public void run() {
+                final String logText = IOUtils.readTxt(event.getTxtPath());
+                ThreadUtils.mainThreadExecutor(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLogAction.setText(logText);
+                        mScrollLogAction.setFocusable(true);
+                        mScrollLogAction.setFocusableInTouchMode(true);
+                        mScrollLogAction.requestFocus();
+                        mScrollLogAction.fullScroll(NestedScrollView.FOCUS_DOWN);
+                    }
+                });
+            }
+        });
     }
 
 
@@ -476,8 +397,7 @@ public class MainActivity extends BaseActivity {
                     return;
                 }
             }
-
-            doOnClickShareItem();
+            ShareUtils.doOnClickShareItem(MainActivity.this);
         }
 
     }
@@ -491,17 +411,12 @@ public class MainActivity extends BaseActivity {
     @PermissionDenied(REQUECT_CODE_SDCARD)
     public void requestSdcardFailed() {
         Toast.makeText(this, "DENY ACCESS SDCARD!", Toast.LENGTH_SHORT).show();
-//        finish();
     }
 
     @ShowRequestPermissionRationale(REQUECT_CODE_SDCARD)
     public void ShowRequestPermissionRationale() {
         Toast.makeText(this, "ShowRequestPermissionRationale", Toast.LENGTH_SHORT).show();
         Logger.d("ShowRequestPermissionRationale");
-
-//        mConnectBtn.setImageResource(R.mipmap.ic_state_supernode_diconnect);
-//        mSupernodeDisconnectNote.setVisibility(View.VISIBLE);
-
         SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE);
         sweetAlertDialog
                 .setTitleText("I need permission!")

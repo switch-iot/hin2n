@@ -6,39 +6,28 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.VpnService;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.ParcelFileDescriptor;
+import android.os.*;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.orhanobut.logger.Logger;
-
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.InetAddress;
-import java.util.List;
 
-import wang.switchy.hin2n.Hin2nApplication;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import wang.switchy.hin2n.R;
 import wang.switchy.hin2n.activity.MainActivity;
-import wang.switchy.hin2n.event.ConnectingEvent;
-import wang.switchy.hin2n.event.ErrorEvent;
-import wang.switchy.hin2n.event.StartEvent;
-import wang.switchy.hin2n.event.StopEvent;
-import wang.switchy.hin2n.event.SupernodeDisconnectEvent;
+import wang.switchy.hin2n.event.*;
 import wang.switchy.hin2n.model.EdgeCmd;
 import wang.switchy.hin2n.model.EdgeStatus;
 import wang.switchy.hin2n.model.N2NSettingInfo;
-import wang.switchy.hin2n.storage.db.base.model.N2NSettingModel;
+import wang.switchy.hin2n.tool.IOUtils;
+import wang.switchy.hin2n.tool.LogFileObserver;
+import wang.switchy.hin2n.tool.ThreadUtils;
 
-import static wang.switchy.hin2n.model.EdgeCmd.getRandomMac;
-import static wang.switchy.hin2n.model.EdgeStatus.RunningStatus.CONNECTING;
 import static wang.switchy.hin2n.model.EdgeStatus.RunningStatus.DISCONNECT;
 import static wang.switchy.hin2n.model.EdgeStatus.RunningStatus.SUPERNODE_DISCONNECT;
 import static wang.switchy.hin2n.tool.N2nTools.getIpAddrPrefixLength;
@@ -61,11 +50,15 @@ public class N2NService extends VpnService {
     private static final int sNotificationId = 1;
     private NotificationManager mNotificationManager;
     private boolean mStopInProgress = false;
+    private FileObserver mFileObserver;
 
     @Override
     public void onCreate() {
         super.onCreate();
         INSTANCE = this;
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
     }
 
     @Override
@@ -83,14 +76,14 @@ public class N2NService extends VpnService {
                 .addAddress(n2nSettingInfo.getIp(), getIpAddrPrefixLength(n2nSettingInfo.getNetmask()))
                 .addRoute(getRoute(n2nSettingInfo.getIp(), getIpAddrPrefixLength(n2nSettingInfo.getNetmask())), getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
 
-        if(!n2nSettingInfo.getGatewayIp().isEmpty()) {
+        if (!n2nSettingInfo.getGatewayIp().isEmpty()) {
             /* Route all the internet traffic via n2n. Most specific routes "win" over the system default gateway.
              * See https://github.com/zerotier/ZeroTierOne/issues/178#issuecomment-204599227 */
             builder.addRoute("0.0.0.0", 1);
             builder.addRoute("128.0.0.0", 1);
         }
 
-        if(!n2nSettingInfo.getDnsServer().isEmpty()) {
+        if (!n2nSettingInfo.getDnsServer().isEmpty()) {
             Log.d("N2NService", "Using DNS server: " + n2nSettingInfo.getDnsServer());
             builder.addDnsServer(n2nSettingInfo.getDnsServer());
         }
@@ -119,31 +112,27 @@ public class N2NService extends VpnService {
         } catch (Exception e) {
             EventBus.getDefault().post(new ErrorEvent());
         }
-
+        mFileObserver = new LogFileObserver(cmd.logPath);
+        mFileObserver.startWatching();
         return super.onStartCommand(intent, flags, startId);
     }
 
     public boolean isStopInProgress() {
-        return(mStopInProgress);
+        return (mStopInProgress);
     }
 
     public boolean stop(final Runnable onStopCallback) {
-        if(isStopInProgress()) {
+        if (isStopInProgress()) {
             Toast.makeText(getApplicationContext(), "a stop command is already in progress", Toast.LENGTH_SHORT).show();
-            return(false);
+            return (false);
         }
 
-        /* Using a separate thread to avoid blocking the main thread
-        * as stopEdge calls pthread_join on the n2n status thread which
-        * can take some time to finish (e.g. for calls to getaddrinfo) */
-        Thread stopThread = new Thread(new Runnable() {
+        ThreadUtils.cachedThreadExecutor(new Runnable() {
             @Override
             public void run() {
                 /* Blocking call */
                 stopEdge();
-
-                Handler handler = new Handler(getMainLooper());
-                handler.post(new Runnable() {
+                ThreadUtils.mainThreadExecutor(new Runnable() {
                     @Override
                     public void run() {
                         mLastStatus = mCurrentStatus = DISCONNECT;
@@ -161,17 +150,18 @@ public class N2NService extends VpnService {
 
                         EventBus.getDefault().post(new StopEvent());
                         mStopInProgress = false;
-
-                        if(onStopCallback != null)
+                        mFileObserver.stopWatching();  //清除日志文件会导致FileObserver失效，要先stop再start
+                        IOUtils.clearLogTxt(cmd.logPath);
+                        mFileObserver.startWatching();
+                        if (onStopCallback != null)
                             onStopCallback.run();
+
                     }
                 });
             }
         });
-
         mStopInProgress = true;
-        stopThread.start();
-        return(true);
+        return (true);
     }
 
     @Override
@@ -184,11 +174,27 @@ public class N2NService extends VpnService {
     public void onDestroy() {
         super.onDestroy();
         stop(null);
+        if (mFileObserver != null) {
+            mFileObserver.stopWatching();
+        }
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     public native boolean startEdge(EdgeCmd cmd);
 
     public native void stopEdge();
+
+    public native EdgeStatus getEdgeStatus();
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLogChangeEvent(final LogChangeEvent event) {
+        EdgeStatus status = getEdgeStatus();
+        Log.d("status",status.runningStatus.name());
+        reportEdgeStatus(status);
+    }
+
 
     public void reportEdgeStatus(EdgeStatus status) {
         mLastStatus = mCurrentStatus;
