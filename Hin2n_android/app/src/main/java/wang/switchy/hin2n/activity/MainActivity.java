@@ -366,10 +366,12 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void run() {
                         mLogAction.setText(logText);
-                        mScrollLogAction.setFocusable(true);
-                        mScrollLogAction.setFocusableInTouchMode(true);
-                        mScrollLogAction.requestFocus();
-                        mScrollLogAction.fullScroll(NestedScrollView.FOCUS_DOWN);
+                        mLogAction.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mScrollLogAction.fullScroll(NestedScrollView.FOCUS_DOWN);
+                            }
+                        });
                     }
                 });
             }
