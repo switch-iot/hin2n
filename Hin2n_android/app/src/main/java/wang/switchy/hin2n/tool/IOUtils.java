@@ -8,10 +8,13 @@ public class IOUtils {
     public static String readTxt(String txtPath){
         File file = new File(txtPath);
         if(file.isFile() && file.exists()){
+            FileInputStream fileInputStream = null;
+            InputStreamReader inputStreamReader = null;
+            BufferedReader bufferedReader = null;
             try {
-                FileInputStream fileInputStream = new FileInputStream(file);
-                InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                fileInputStream = new FileInputStream(file);
+                inputStreamReader = new InputStreamReader(fileInputStream);
+                bufferedReader = new BufferedReader(inputStreamReader);
                 StringBuilder stringBuilder = new StringBuilder();
                 String text = null;
                 while ((text = bufferedReader.readLine()) != null){
@@ -21,6 +24,10 @@ public class IOUtils {
                 return stringBuilder.toString();
             }catch (Exception e) {
                 e.printStackTrace();
+            }finally {
+                close(fileInputStream);
+                close(inputStreamReader);
+                close(bufferedReader);
             }
         }
         return "";
@@ -41,5 +48,15 @@ public class IOUtils {
             }
         }
         return false;
+    }
+
+    public static void close(Closeable closeable){
+        try {
+            if(null != closeable){
+                closeable.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
