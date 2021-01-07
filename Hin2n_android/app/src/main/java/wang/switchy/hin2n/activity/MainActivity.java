@@ -108,6 +108,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                drawerView.setClickable(true);
             }
 
             // 菜单关闭
@@ -175,10 +176,6 @@ public class MainActivity extends BaseActivity {
 
         initLeftMenu();
 
-        // TODO 高版本日志权限
-//        if (!MPermissions.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUECT_CODE_SDCARD)) {
-//            MPermissions.requestPermissions(MainActivity.this, REQUECT_CODE_SDCARD, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-//        }
     }
 
     private void initLeftMenu() {
