@@ -1,7 +1,6 @@
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'com.android.application'
 
-
 def getVersionCode = { ->
     try {
         def stdout = new ByteArrayOutputStream()
@@ -72,12 +71,12 @@ def getAllManifestValues = { variant ->
 }
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "wang.switchy.hin2n"
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode getVersionCode()
         versionName getVersionName()
         multiDexEnabled true
@@ -203,12 +202,13 @@ greendao {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.drawerlayout:drawerlayout:1.0.0'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support:design:26.+'
+    implementation 'com.android.support:design:28.0.0'
     testImplementation 'junit:junit:4.12'
-    implementation 'com.android.support:appcompat-v7:26.+'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'org.greenrobot:eventbus:latest.integration'
     implementation 'com.umeng.sdk:common:latest.integration'
     implementation 'com.umeng.sdk:utdid:latest.integration'
@@ -223,7 +223,6 @@ dependencies {
     implementation files('libs/umeng-share-sina-simplify-6.9.2.jar')
     implementation files('libs/umeng-share-wechat-simplify-6.9.2.jar')
     implementation files('libs/umeng-sharetool-6.9.2.jar')
-    annotationProcessor 'com.zhy:mpermission-compiler:1.0.0'
-    implementation 'com.zhy:mpermission-api:1.0.0'
+    implementation 'com.yanzhenjie:permission:2.0.3'
     implementation 'com.github.f0ris.sweetalert:library:latest.release'
 }

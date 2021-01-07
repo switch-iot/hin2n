@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,18 +20,18 @@
             android:focusable="true"
             android:focusableInTouchMode="true">
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_setting_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Setting name">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_setting_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
                 android:layout_below="@id/til_setting_name"
@@ -71,7 +69,7 @@
                 </RadioGroup>
 
             </LinearLayout>
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_super_node"
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
@@ -79,15 +77,15 @@
                 android:layout_below="@id/ll_n2n_version"
                 android:hint="Supernode">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_super_node"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text=""/>
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_community"
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
@@ -95,14 +93,14 @@
                 android:layout_below="@id/til_super_node"
                 android:hint="Community">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_community"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_encrypt"
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
@@ -111,15 +109,15 @@
                 android:hint="Encrypt key">
                 <!--app:passwordToggleEnabled="true"-->
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_encrypt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
                 <!--android:inputType="textPassword"-->
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_ip_address"
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
@@ -127,12 +125,12 @@
                 android:layout_below="@id/til_encrypt"
                 android:hint="IP address">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_ip_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <RelativeLayout
                 android:layout_marginTop="5dp"
@@ -161,7 +159,7 @@
                 android:layout_below="@id/rl_more_setting_check_box"
                 android:visibility="gone">
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/ll_n2n_encryption"
                     android:orientation="vertical"
                     android:layout_marginTop="5dp"
@@ -179,23 +177,23 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                     </Spinner>
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_below="@id/ll_n2n_encryption"
                     android:id="@+id/til_super_node_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Supernode 2">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tie_super_node_2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_marginTop="5dp"
                     android:id="@+id/til_mtu"
                     android:layout_width="match_parent"
@@ -203,14 +201,14 @@
                     android:layout_below="@id/til_super_node_2"
                     android:hint="MTU">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tie_mtu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_marginTop="5dp"
                     android:id="@+id/til_hole_punch_Interval"
                     android:layout_width="match_parent"
@@ -218,14 +216,14 @@
                     android:layout_below="@id/til_mtu"
                     android:hint="Hole-punch interval">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tie_hole_punch_interval"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_marginTop="5dp"
                     android:id="@+id/til_local_ip"
                     android:layout_width="match_parent"
@@ -233,12 +231,12 @@
                     android:layout_below="@id/til_hole_punch_Interval"
                     android:hint="Local IP">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tie_local_ip"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <CheckBox
                     android:layout_marginTop="5dp"
@@ -248,7 +246,7 @@
                     android:layout_height="wrap_content"
                     android:text="Automatically detect local IP"/>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_marginTop="5dp"
                     android:layout_below="@id/check_box_local_ip"
                     android:id="@+id/til_local_port"
@@ -256,14 +254,14 @@
                     android:layout_height="wrap_content"
                     android:hint="Local port">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tie_local_port"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_gateway_ip"
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
@@ -271,14 +269,14 @@
                     android:layout_below="@id/til_local_port"
                     android:hint="Gateway IP address">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tie_gateway_ip"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_dns_server_ip"
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
@@ -286,14 +284,14 @@
                     android:layout_below="@id/til_gateway_ip"
                     android:hint="DNS server IP address">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tie_dns_server_ip"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_net_mask"
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
@@ -301,15 +299,15 @@
                     android:layout_below="@id/til_dns_server_ip"
                     android:hint="Subnet mask">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tie_net_mask"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="255.255.255.0"/>
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_mac_addr"
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
@@ -317,12 +315,12 @@
                     android:layout_below="@id/til_net_mask"
                     android:hint="Mac address">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tie_mac_addr"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <!--android:layout_below="@id/til_local_ip"-->
 

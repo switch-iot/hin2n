@@ -1,8 +1,10 @@
 package wang.switchy.hin2n.tool;
 
 import android.os.FileObserver;
-import android.support.annotation.Nullable;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
+
 import org.greenrobot.eventbus.EventBus;
 import wang.switchy.hin2n.event.LogChangeEvent;
 

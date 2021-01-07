@@ -7,10 +7,12 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.VpnService;
 import android.os.*;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
+
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import org.greenrobot.eventbus.EventBus;
 

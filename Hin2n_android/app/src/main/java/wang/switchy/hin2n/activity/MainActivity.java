@@ -1,35 +1,43 @@
 package wang.switchy.hin2n.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.VpnService;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.NestedScrollView;
+
 import android.view.View;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.orhanobut.logger.Logger;
 import com.tencent.bugly.beta.Beta;
-
-import com.zhy.m.permission.MPermissions;
-import com.zhy.m.permission.PermissionDenied;
-import com.zhy.m.permission.PermissionGrant;
-import com.zhy.m.permission.ShowRequestPermissionRationale;
-
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.runtime.Permission;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import cn.pedant.SweetAlert.SweetAlertDialog;
+import java.util.List;
 import wang.switchy.hin2n.Hin2nApplication;
 import wang.switchy.hin2n.R;
-import wang.switchy.hin2n.event.*;
+import wang.switchy.hin2n.event.ConnectingEvent;
+import wang.switchy.hin2n.event.ErrorEvent;
+import wang.switchy.hin2n.event.LogChangeEvent;
+import wang.switchy.hin2n.event.StartEvent;
+import wang.switchy.hin2n.event.StopEvent;
+import wang.switchy.hin2n.event.SupernodeDisconnectEvent;
 import wang.switchy.hin2n.model.EdgeStatus;
 import wang.switchy.hin2n.model.N2NSettingInfo;
 import wang.switchy.hin2n.service.N2NService;
@@ -93,10 +101,9 @@ public class MainActivity extends BaseActivity {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.mipmap.ic_launcher, R.string.open, R.string.close) {
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, null, R.string.open, R.string.close) {
             //菜单打开
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -185,32 +192,23 @@ public class MainActivity extends BaseActivity {
                 Logger.d("shareItem onClick~");
 
                 if (Build.VERSION.SDK_INT >= 23) {
-                    String[] permissionList = new String[]{
-//                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-//                            Manifest.permission.CALL_PHONE,
-//                            Manifest.permission.READ_LOGS,
-                            Manifest.permission.READ_PHONE_STATE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-//                            Manifest.permission.SET_DEBUG_APP,
-//                            Manifest.permission.SYSTEM_ALERT_WINDOW,
-//                            Manifest.permission.GET_ACCOUNTS,
-//                            Manifest.permission.WRITE_APN_SETTINGS
-                    };
-//                    String[] DeniedPermissions = new String[]{};
-//                    for (int i = 0; i < permissionList.length; i++) {
-//                        if (ContextCompat.checkSelfPermission(MainActivity.this,
-//                                permissionList[i])
-//                                != PackageManager.PERMISSION_GRANTED) {
-//                            DeniedPermissions
-//                        }
-//                    }
-                    ActivityCompat.requestPermissions(MainActivity.this, permissionList, 123);
-
-
+                    AndPermission.with(MainActivity.this)
+                            .runtime()
+                            .permission(Permission.READ_EXTERNAL_STORAGE, Permission.ACCESS_FINE_LOCATION, Permission.READ_PHONE_STATE)
+                            .onGranted(new Action<List<String>>() {
+                                @Override
+                                public void onAction(List<String> data) {
+                                    ShareUtils.doOnClickShareItem(MainActivity.this);
+                                }
+                            })
+                            .onDenied(new Action<List<String>>() {
+                                @Override
+                                public void onAction(List<String> data) {
+                                    Toast.makeText(MainActivity.this, "I NEED PERMISSIONS!", Toast.LENGTH_SHORT).show();
+                                }
+                            }).start();
                 } else {
                     ShareUtils.doOnClickShareItem(MainActivity.this);
-
                 }
 
             }
@@ -379,57 +377,4 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    /**
-     * check permission
-     *
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        MPermissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == 123) {
-            for (int i = 0; i < grantResults.length; i++) {
-//                Log.e("zhangbzshare", "permission[" + i + "] = " + permissions[i] + ",grantResult[" + i + "] = " + grantResults[i]);
-                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(mContext, "Permission Denied", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            }
-            ShareUtils.doOnClickShareItem(MainActivity.this);
-        }
-
     }
-
-
-    @PermissionGrant(REQUECT_CODE_SDCARD)
-    public void requestSdcardSuccess() {
-        Toast.makeText(this, "GRANT ACCESS SDCARD!", Toast.LENGTH_SHORT).show();
-    }
-
-    @PermissionDenied(REQUECT_CODE_SDCARD)
-    public void requestSdcardFailed() {
-        Toast.makeText(this, "DENY ACCESS SDCARD!", Toast.LENGTH_SHORT).show();
-    }
-
-    @ShowRequestPermissionRationale(REQUECT_CODE_SDCARD)
-    public void ShowRequestPermissionRationale() {
-        Toast.makeText(this, "ShowRequestPermissionRationale", Toast.LENGTH_SHORT).show();
-        Logger.d("ShowRequestPermissionRationale");
-        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE);
-        sweetAlertDialog
-                .setTitleText("I need permission!")
-                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
-                        MPermissions.requestPermissions(MainActivity.this, REQUECT_CODE_SDCARD, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-                    }
-                })
-                .show();
-    }
-}

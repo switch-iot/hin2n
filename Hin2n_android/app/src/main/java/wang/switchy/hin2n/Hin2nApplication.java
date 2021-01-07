@@ -6,15 +6,15 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
-import android.support.multidex.MultiDexApplication;
-import android.util.Log;
+
+
+import androidx.multidex.MultiDexApplication;
 
 import wang.switchy.hin2n.storage.db.base.DaoMaster;
 import wang.switchy.hin2n.storage.db.base.DaoSession;
 import wang.switchy.hin2n.tool.N2nTools;
 
 import com.tencent.bugly.Bugly;
-import com.tencent.bugly.beta.Beta;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
