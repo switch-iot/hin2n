@@ -132,6 +132,7 @@ public class N2NService extends VpnService {
             public void run() {
                 /* Blocking call */
                 stopEdge();
+                mStopInProgress = true;
                 ThreadUtils.mainThreadExecutor(new Runnable() {
                     @Override
                     public void run() {
@@ -160,7 +161,6 @@ public class N2NService extends VpnService {
                 });
             }
         });
-        mStopInProgress = true;
         return (true);
     }
 

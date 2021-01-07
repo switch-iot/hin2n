@@ -166,12 +166,15 @@ public class ListActivity extends BaseActivity {
                                             n2NSettingModelDao.update(mN2NSettingModel);
                                             mHin2nEdit.putLong("current_setting_id", mN2NSettingModel.getId());
                                             mHin2nEdit.commit();
+                                            mSettingItemEntities.get(position).setSelected(true);
+                                            ThreadUtils.mainThreadExecutor(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    mSettingItemAdapter.notifyDataSetChanged();
+                                                }
+                                            });
                                         }
                                     });
-
-                                    mSettingItemEntities.get(position).setSelected(true);
-                                    mSettingItemAdapter.notifyDataSetChanged();
-
                                     sweetAlertDialog.cancel();
                                 }
                             })
@@ -204,11 +207,16 @@ public class ListActivity extends BaseActivity {
 
                             mHin2nEdit.putLong("current_setting_id", mN2NSettingModel.getId());
                             mHin2nEdit.commit();
+                            mSettingItemEntities.get(position).setSelected(true);
+                            ThreadUtils.mainThreadExecutor(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mSettingItemAdapter.notifyDataSetChanged();
+                                }
+                            });
+
                         }
                     });
-
-                    mSettingItemEntities.get(position).setSelected(true);
-                    mSettingItemAdapter.notifyDataSetChanged();
                 }
 
             }
@@ -325,6 +333,14 @@ public class ListActivity extends BaseActivity {
             }
         });
 
+        /*****************侧滑菜单 end********************/
+
+        mSettingsListView.setAdapter(mSettingItemAdapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         ThreadUtils.cachedThreadExecutor(new Runnable() {
             @Override
             public void run() {
@@ -356,20 +372,14 @@ public class ListActivity extends BaseActivity {
                         mHin2nEdit.commit();
                     }
                 }
-
-                mSettingItemAdapter.notifyDataSetChanged();
+                ThreadUtils.mainThreadExecutor(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSettingItemAdapter.notifyDataSetChanged();
+                    }
+                });
             }
         });
-
-        /*****************侧滑菜单 end********************/
-
-        mSettingsListView.setAdapter(mSettingItemAdapter);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
     }
 
     @Override
