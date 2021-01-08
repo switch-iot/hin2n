@@ -46,6 +46,12 @@ public class IOUtils {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            try {
+                return file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return false;
     }

@@ -115,6 +115,8 @@ public class N2NService extends VpnService {
             EventBus.getDefault().post(new ErrorEvent());
         }
         mFileObserver = new LogFileObserver(cmd.logPath);
+        mFileObserver.stopWatching();
+        IOUtils.clearLogTxt(cmd.logPath);
         mFileObserver.startWatching();
         return super.onStartCommand(intent, flags, startId);
     }
@@ -154,8 +156,6 @@ public class N2NService extends VpnService {
                         EventBus.getDefault().post(new StopEvent());
                         mStopInProgress = false;
                         mFileObserver.stopWatching();  //清除日志文件会导致FileObserver失效，要先stop再start
-                        IOUtils.clearLogTxt(cmd.logPath);
-                        mFileObserver.startWatching();
                         if (onStopCallback != null)
                             onStopCallback.run();
 
