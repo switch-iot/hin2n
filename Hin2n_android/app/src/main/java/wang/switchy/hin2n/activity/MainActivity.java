@@ -150,8 +150,12 @@ public class MainActivity extends BaseActivity {
                 EdgeStatus.RunningStatus status = N2NService.INSTANCE == null ? EdgeStatus.RunningStatus.DISCONNECT : N2NService.INSTANCE.getCurrentStatus();
                 if (N2NService.INSTANCE != null && status != EdgeStatus.RunningStatus.DISCONNECT && status != EdgeStatus.RunningStatus.FAILED) {
                     /* Asynchronous call */
+                    mConnectBtn.setClickable(false);
+                    mConnectBtn.setImageResource(R.mipmap.ic_state_connect_change);
                     N2NService.INSTANCE.stop(null);
                 } else {
+                    mConnectBtn.setClickable(false);
+                    mConnectBtn.setImageResource(R.mipmap.ic_state_connect_change);
                     Intent vpnPrepareIntent = VpnService.prepare(MainActivity.this);
                     if (vpnPrepareIntent != null) {
                         startActivityForResult(vpnPrepareIntent, REQUECT_CODE_VPN);
@@ -319,14 +323,25 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStartEvent(StartEvent event) {
-        mConnectBtn.setVisibility(View.VISIBLE);
-        mConnectBtn.setImageResource(R.mipmap.ic_state_connect);
+        mConnectBtn.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mConnectBtn.setImageResource(R.mipmap.ic_state_connect);
+                mConnectBtn.setClickable(true);
+            }
+        }, 200);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStopEvent(StopEvent event) {
-        mConnectBtn.setVisibility(View.VISIBLE);
-        mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
+        mConnectBtn.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
+                mConnectBtn.setClickable(true);
+            }
+        }, 200);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
