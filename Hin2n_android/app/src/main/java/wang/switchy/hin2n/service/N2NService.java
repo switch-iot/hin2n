@@ -107,6 +107,10 @@ public class N2NService extends VpnService {
         }
 
         cmd = new EdgeCmd(n2nSettingInfo, mParcelFileDescriptor.detachFd(), getExternalFilesDir("log") + "/" + session + ".log");
+        mFileObserver = new LogFileObserver(cmd.logPath);
+        mFileObserver.stopWatching();
+        IOUtils.clearLogTxt(cmd.logPath);
+        mFileObserver.startWatching();
         try {
             if (!startEdge(cmd)) {
                 EventBus.getDefault().post(new ErrorEvent());
@@ -114,10 +118,6 @@ public class N2NService extends VpnService {
         } catch (Exception e) {
             EventBus.getDefault().post(new ErrorEvent());
         }
-        mFileObserver = new LogFileObserver(cmd.logPath);
-        mFileObserver.stopWatching();
-        IOUtils.clearLogTxt(cmd.logPath);
-        mFileObserver.startWatching();
         return super.onStartCommand(intent, flags, startId);
     }
 

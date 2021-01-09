@@ -9,6 +9,7 @@ import android.net.VpnService;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -60,6 +61,7 @@ public class MainActivity extends BaseActivity {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private LinearLayout mLeftMenu;
+    private String logTxtPath;
 
     private static final int REQUECT_CODE_SDCARD = 1;
     private static final int REQUECT_CODE_VPN = 2;
@@ -280,8 +282,9 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         SharedPreferences n2nSp = getSharedPreferences("Hin2n", MODE_PRIVATE);
+        logTxtPath = n2nSp.getString("current_log_path", "");
+        showLog();
         Long currentSettingId = n2nSp.getLong("current_setting_id", -1);
         if (currentSettingId != -1) {
             mCurrentSettingInfo = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load((long) currentSettingId);
@@ -310,6 +313,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        SharedPreferences n2nSp = getSharedPreferences("Hin2n", MODE_PRIVATE);
+        n2nSp.edit().putString("current_log_path", logTxtPath).apply();
     }
 
     @Override
@@ -368,25 +373,32 @@ public class MainActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLogChangeEvent(final LogChangeEvent event) {
 //        Toast.makeText(this,"LogChageEvent",Toast.LENGTH_SHORT).show();
+        logTxtPath = event.getTxtPath();
+        showLog();
+    }
+
+    private void showLog() {
         ThreadUtils.cachedThreadExecutor(new Runnable() {
             @Override
             public void run() {
-                final String logText = IOUtils.readTxt(event.getTxtPath());
-                ThreadUtils.mainThreadExecutor(new Runnable() {
-                    @Override
-                    public void run() {
-                        mLogAction.setText(logText);
-                        mLogAction.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                mScrollLogAction.fullScroll(NestedScrollView.FOCUS_DOWN);
-                            }
-                        });
-                    }
-                });
+                if(!TextUtils.isEmpty(logTxtPath)){
+                    final String logText = IOUtils.readTxt(logTxtPath);
+                    ThreadUtils.mainThreadExecutor(new Runnable() {
+                        @Override
+                        public void run() {
+                            mLogAction.setText(logText);
+                            mLogAction.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mScrollLogAction.fullScroll(NestedScrollView.FOCUS_DOWN);
+                                }
+                            });
+                        }
+                    });
+                }
             }
         });
     }
 
 
-    }
+}
