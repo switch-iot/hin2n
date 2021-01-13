@@ -382,7 +382,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 if(!TextUtils.isEmpty(logTxtPath)){
-                    final String logText = IOUtils.readTxt(logTxtPath);
+                    final String logText = IOUtils.readTxtLimit(logTxtPath,1024*2);
                     ThreadUtils.mainThreadExecutor(new Runnable() {
                         @Override
                         public void run() {

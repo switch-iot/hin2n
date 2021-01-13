@@ -33,6 +33,34 @@ public class IOUtils {
         return "";
     }
 
+    public static String readTxtLimit(String txtPath,int size){
+        File file = new File(txtPath);
+        if(file.isFile() && file.exists()){
+            RandomAccessFile randomAccessFile = null;
+            try {
+                randomAccessFile = new RandomAccessFile(file, "r");
+                long length = randomAccessFile.length();
+                long start = 0;
+                if(length > size){
+                    start = length - size;
+                }
+                randomAccessFile.seek(start);
+                StringBuilder stringBuilder = new StringBuilder();
+                String text = null;
+                while ((text = randomAccessFile.readLine()) != null){
+                    stringBuilder.append(text);
+                    stringBuilder.append("\n");
+                }
+                return stringBuilder.toString();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }finally {
+                close(randomAccessFile);
+            }
+        }
+        return "";
+    }
+
     public static boolean clearLogTxt(String txtPath){
         File file = new File(txtPath);
         File fileBak = new File(txtPath+".bak");
