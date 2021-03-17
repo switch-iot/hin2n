@@ -155,7 +155,9 @@ public class N2NService extends VpnService {
 
                         EventBus.getDefault().post(new StopEvent());
                         mStopInProgress = false;
-                        mFileObserver.stopWatching();  //清除日志文件会导致FileObserver失效，要先stop再start
+                        if(mFileObserver != null){
+                            mFileObserver.stopWatching();  //清除日志文件会导致FileObserver失效，要先stop再start
+                        }
                         if (onStopCallback != null)
                             onStopCallback.run();
 
