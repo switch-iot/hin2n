@@ -2,7 +2,7 @@ project(Hin2n)
 cmake_minimum_required(VERSION 3.4.1)
 
 # N2n information
-set(N2N_VERSION 2.7.0)
+set(N2N_VERSION 2.9.0)
 set(N2N_OSNAME ${CMAKE_SYSTEM})
 set(N2N_MODIFY_VERSION v2s_0.1.0)
 set(N2N_MODIFY_AUTHOR "switchwang(https://github.com/switch-st) zhangbz(https://github.com/zhangbz)")
@@ -38,18 +38,15 @@ add_definitions(-DN2N_VERSION=\"${N2N_VERSION}\" -DN2N_OSNAME=\"${N2N_OSNAME}\" 
 add_definitions(-DGIT_RELEASE="" -DPACKAGE_VERSION="${N2N_VERSION}" -DPACKAGE_OSNAME="${CMAKE_SYSTEM}")
 include_directories(src/main/cpp src/main/cpp/edge_jni src/main/cpp/slog src/main/cpp/tun2tap src/main/cpp/uip)
 
-add_library(edge_jni SHARED
-                src/main/cpp/edge_jni/edge_jni.c
-            )
+add_library(edge_jni SHARED src/main/cpp/edge_jni/edge_jni.c)
+target_link_libraries(edge_jni edge_v3)
 target_link_libraries(edge_jni edge_v2s)
 target_link_libraries(edge_jni edge_v2)
 target_link_libraries(edge_jni edge_v1)
 target_link_libraries(edge_jni slog)
 target_link_libraries(edge_jni ${OPENSSL_LIBRARIES})
 
-add_library(edge_v2s SHARED
-                src/main/cpp/n2n_v2s/edge.c
-            )
+add_library(edge_v2s SHARED src/main/cpp/n2n_v2s/edge.c)
 target_link_libraries(edge_v2s n2n_v2s)
 target_link_libraries(edge_v2s slog)
 
@@ -80,6 +77,37 @@ target_include_directories(edge_v2 PUBLIC
         )
 target_link_libraries(edge_v2 uip)
 target_link_libraries(edge_v2 ${OPENSSL_LIBRARIES})
+
+add_library(edge_v3 SHARED
+        src/main/cpp/n2n_v3/src/n2n.c
+        src/main/cpp/n2n_v3/src/edge_utils.c
+        src/main/cpp/n2n_v3/src/wire.c
+        src/main/cpp/n2n_v3/src/minilzo.c
+        src/main/cpp/n2n_v3/src/speck.c
+        src/main/cpp/n2n_v3/src/pearson.c
+        src/main/cpp/n2n_v3/src/tf.c
+        src/main/cpp/n2n_v3/src/header_encryption.c
+        src/main/cpp/n2n_v3/src/transform_null.c
+        src/main/cpp/n2n_v3/src/transform_tf.c
+        src/main/cpp/n2n_v3/src/transform_aes.c
+        src/main/cpp/n2n_v3/src/transform_speck.c
+        src/main/cpp/n2n_v3/src/transform_cc20.c
+        src/main/cpp/n2n_v3/src/cc20.c
+        src/main/cpp/n2n_v3/src/aes.c
+        src/main/cpp/n2n_v3/src/network_traffic_filter.c
+        src/main/cpp/n2n_v3/src/sn_selection.c
+        src/main/cpp/n2n_v3/src/random_numbers.c
+        src/main/cpp/edge_jni/tuntap_android_v2.c
+        src/main/cpp/edge_jni/edge_android_v2.c
+        )
+target_compile_definitions(edge_v3 PUBLIC N2N_HAVE_AES HAVE_OPENSSL_1_1)
+target_compile_options(edge_v3 PRIVATE -DN2N_V3)
+target_include_directories(edge_v3 PUBLIC
+        src/main/cpp/n2n_v3/include
+        ${OPENSSL_INCLUDE_DIR}
+        )
+target_link_libraries(edge_v3 uip)
+target_link_libraries(edge_v3 ${OPENSSL_LIBRARIES})
 
 add_library(edge_v1 SHARED
                 src/main/cpp/n2n_v1/edge.c
@@ -118,7 +146,5 @@ add_library(uip SHARED
                 src/main/cpp/tun2tap/tun2tap.c
             )
 
-add_library(slog SHARED
-                src/main/cpp/slog/slog.c
-            )
+add_library(slog SHARED src/main/cpp/slog/slog.c)
 target_link_libraries(slog log)

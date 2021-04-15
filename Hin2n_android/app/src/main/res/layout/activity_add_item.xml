@@ -64,8 +64,13 @@
                         android:id="@+id/rb_v2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="v2    "/>
+                    <RadioButton
+                        android:id="@+id/rb_v3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:checked="true"
-                        android:text="v2"/>
+                        android:text="v3"/>
                 </RadioGroup>
 
             </LinearLayout>
@@ -132,12 +137,43 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_net_mask"
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/til_ip_address"
+                android:hint="Subnet mask">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tie_net_mask"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="255.255.255.0"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_dev_desc"
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/til_net_mask"
+                android:hint="Device Description">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tie_dev_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
             <RelativeLayout
                 android:layout_marginTop="5dp"
                 android:id="@+id/rl_more_setting_check_box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/til_ip_address">
+                android:layout_below="@id/til_dev_desc">
 
                 <CheckBox
                     android:id="@+id/more_setting_check_box"
@@ -292,27 +328,11 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_net_mask"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/til_dns_server_ip"
-                    android:hint="Subnet mask">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tie_net_mask"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="255.255.255.0"/>
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_mac_addr"
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/til_net_mask"
+                    android:layout_below="@id/til_dns_server_ip"
                     android:hint="Mac address">
 
                     <com.google.android.material.textfield.TextInputEditText

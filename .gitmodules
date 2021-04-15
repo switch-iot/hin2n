@@ -5,3 +5,6 @@
 	path = bundles/n2n_ntop_dev
 	url = https://github.com/switch-iot/n2n_ntop.git
 	branch = ntop-dev
+[submodule "bundles/n2n_ntop_v3"]
+	path = bundles/n2n_ntop_v3
+	url = https://github.com/ntop/n2n.git

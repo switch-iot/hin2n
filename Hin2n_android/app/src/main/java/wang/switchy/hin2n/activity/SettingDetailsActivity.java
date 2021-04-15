@@ -6,7 +6,6 @@ import android.net.VpnService;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -60,6 +59,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
     private TextInputLayout mCommunityTIL;
     private TextInputLayout mEncryptTIL;
 
+    private TextInputLayout mDevDescTIL;
+
     private TextInputLayout mSuperNodeTIL;
     private Button mSaveBtn;
     private SharedPreferences mHin2nSp;
@@ -92,6 +93,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
     private RadioButton mVersionV1;
     private RadioButton mVersionV2;
     private RadioButton mVersionV2s;
+    private RadioButton mVersionV3;
     private TextInputLayout mGatewayIp;
     private TextInputLayout mDnsServer;
     private LinearLayout mEncryptionBox;
@@ -132,6 +134,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         mVersionV1 = (RadioButton) findViewById(R.id.rb_v1);
         mVersionV2 = (RadioButton) findViewById(R.id.rb_v2);
         mVersionV2s = (RadioButton) findViewById(R.id.rb_v2s);
+        mVersionV3 = (RadioButton) findViewById(R.id.rb_v3);
 
         mIpAddressTIL = (TextInputLayout) findViewById(R.id.til_ip_address);
         mNetMaskTIL = (TextInputLayout) findViewById(R.id.til_net_mask);
@@ -139,6 +142,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         mEncryptTIL = (TextInputLayout) findViewById(R.id.til_encrypt);
         mEncryptTIL.getEditText().setTransformationMethod(PasswordTransformationMethod.getInstance());//隐藏
         mSuperNodeTIL = (TextInputLayout) findViewById(R.id.til_super_node);
+
+        mDevDescTIL = (TextInputLayout) findViewById(R.id.til_dev_desc);
 
         mMoreSettingView = (RelativeLayout) findViewById(R.id.rl_more_setting);
 
@@ -251,6 +256,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             mDnsServer.getEditText().setText("");
             mEncryptionMode.setSelection(encAdapter.getPosition("Twofish"));
 
+            mDevDescTIL.getEditText().setText("");
+
             mSaveBtn.setVisibility(View.VISIBLE);
             mButtons.setVisibility(View.GONE);
         } else if (type == TYPE_SETTING_MODIFY) {
@@ -269,6 +276,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 case 2:
                     mVersionV2s.setChecked(true);
                     break;
+                case 3:
+                    mVersionV3.setChecked(true);
                 default:
                     break;
             }
@@ -276,6 +285,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             mNetMaskTIL.getEditText().setText(mN2NSettingModel.getNetmask());
             mCommunityTIL.getEditText().setText(mN2NSettingModel.getCommunity());
             mEncryptTIL.getEditText().setText(mN2NSettingModel.getPassword());
+            mDevDescTIL.getEditText().setText(mN2NSettingModel.getDevDesc());
             mSuperNodeTIL.getEditText().setText(mN2NSettingModel.getSuperNode());
             mGatewayIp.getEditText().setText(mN2NSettingModel.getGatewayIp());
             mDnsServer.getEditText().setText(mN2NSettingModel.getDnsServer());
@@ -332,6 +342,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         switch (checkedId) {
             case R.id.rb_v1:
                 mUseHttpTunnelCheckBox.setVisibility(View.GONE);
+                mDevDescTIL.setVisibility(View.GONE);
                 mSuperNodeBackup.setVisibility(View.GONE);
                 mAcceptMuticastView.setVisibility(View.GONE);
                 mHolePunchInterval.setVisibility(View.GONE);
@@ -347,6 +358,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 break;
             case R.id.rb_v2:
                 mUseHttpTunnelCheckBox.setVisibility(View.GONE);
+                mDevDescTIL.setVisibility(View.GONE);
                 mSuperNodeBackup.setVisibility(View.VISIBLE);
                 mAcceptMuticastView.setVisibility(View.VISIBLE);
                 mHolePunchInterval.setVisibility(View.GONE);
@@ -362,6 +374,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 break;
             case R.id.rb_v2s:
                 mUseHttpTunnelCheckBox.setVisibility(View.GONE);
+                mDevDescTIL.setVisibility(View.GONE);
                 mSuperNodeBackup.setVisibility(View.VISIBLE);
                 mAcceptMuticastView.setVisibility(View.VISIBLE);
                 mHolePunchInterval.setVisibility(View.VISIBLE);
@@ -373,6 +386,22 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mEncryptionBox.setVisibility(View.GONE);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
                     mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v2s);
+                }
+                break;
+            case R.id.rb_v3:
+                mUseHttpTunnelCheckBox.setVisibility(View.GONE);
+                mDevDescTIL.setVisibility(View.VISIBLE);
+                mSuperNodeBackup.setVisibility(View.VISIBLE);
+                mAcceptMuticastView.setVisibility(View.VISIBLE);
+                mHolePunchInterval.setVisibility(View.GONE);
+                mLocalIP.setVisibility(View.GONE);
+                mLocalIpCheckBox.setVisibility(View.GONE);
+                mGatewayIp.setVisibility(View.VISIBLE);
+                mDnsServer.setVisibility(View.VISIBLE);
+                mResolveSnLayout.setVisibility(View.GONE);
+                mEncryptionBox.setVisibility(View.VISIBLE);
+                if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
+                    mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v2);
                 }
                 break;
             default:
@@ -415,6 +444,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mN2NSettingModel = new N2NSettingModel(null, getN2nVersion(), settingName,
                         mIpAddressTIL.getEditText().getText().toString(), mNetMaskTIL.getEditText().getText().toString(),
                         mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
+                        mDevDescTIL.getEditText().getText().toString(),
                         mSuperNodeTIL.getEditText().getText().toString(), mMoreSettingCheckBox.isChecked(),
                         mSuperNodeBackup.getEditText().getText().toString(), mMacAddr.getEditText().getText().toString(),
                         Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIpCheckBox.isChecked() ? "auto" : mLocalIP.getEditText().getText().toString(),
@@ -466,6 +496,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mN2NSettingModel = new N2NSettingModel(mSaveId, getN2nVersion(), settingName1,
                         mIpAddressTIL.getEditText().getText().toString(), mNetMaskTIL.getEditText().getText().toString(),
                         mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
+                        mDevDescTIL.getEditText().getText().toString(),
                         mSuperNodeTIL.getEditText().getText().toString(), mMoreSettingCheckBox.isChecked(),
                         mSuperNodeBackup.getEditText().getText().toString(), mMacAddr.getEditText().getText().toString(),
                         Integer.valueOf(mMtu.getEditText().getText().toString()), mLocalIpCheckBox.isChecked() ? "auto" : mLocalIP.getEditText().getText().toString(),
@@ -626,7 +657,15 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         } else {
             mIpAddressTIL.setErrorEnabled(false);
         }
-
+        // netmask => v1, v2, v2s
+        if (!EdgeCmd.checkIPV4Mask(TextUtils.isEmpty(mNetMaskTIL.getEditText().getText().toString()) ?
+                        "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString())) {
+            mNetMaskTIL.setError(mNetMaskTIL.getHint() + " format is incorrect");
+            mNetMaskTIL.getEditText().requestFocus();
+            return false;
+        } else {
+            mNetMaskTIL.setErrorEnabled(false);
+        }
         if((!mGatewayIp.getEditText().getText().toString().isEmpty()) &&
             (!EdgeCmd.checkIPV4(mGatewayIp.getEditText().getText().toString()))) {
           mGatewayIp.setError(mGatewayIp.getHint() + " format is incorrect");
@@ -701,16 +740,6 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         } else {
             mLocalPort.setErrorEnabled(false);
         }
-        // netmask => v1, v2, v2s
-        if (!EdgeCmd.checkIPV4Mask(TextUtils.isEmpty(mNetMaskTIL.getEditText().getText().toString()) ? "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString())) {
-            mNetMaskTIL.setError(mNetMaskTIL.getHint() + " format is incorrect");
-            mNetMaskTIL.getEditText().requestFocus();
-            mMoreSettingCheckBox.setChecked(true);
-            mMoreSettingView.setVisibility(View.VISIBLE);
-            return false;
-        } else {
-            mNetMaskTIL.setErrorEnabled(false);
-        }
         // macAddr => v1, v2, v2s
         if (!TextUtils.isEmpty(mMacAddr.getEditText().getText().toString()) && !EdgeCmd.checkMacAddr(mMacAddr.getEditText().getText().toString())) {
             mMacAddr.setError(mMacAddr.getHint() + " format is incorrect");
@@ -742,6 +771,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 return 1;
             case R.id.rb_v2s:
                 return 2;
+            case R.id.rb_v3:
+                return 3;
             default:
                 return -1;
         }

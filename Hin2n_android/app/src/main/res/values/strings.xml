@@ -32,6 +32,7 @@
         <item>n2n_v1</item>
         <item>n2n_v2</item>
         <item>n2n_v2s</item>
+        <item>n2n_v3</item>
     </string-array>
 
     <string name="trace_level_error">ERROR</string>
