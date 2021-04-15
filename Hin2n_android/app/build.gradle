@@ -75,7 +75,7 @@ android {
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "wang.switchy.hin2n"
-        minSdkVersion 14
+        minSdkVersion 17
         targetSdkVersion 28
         versionCode getVersionCode()
         versionName getVersionName()
