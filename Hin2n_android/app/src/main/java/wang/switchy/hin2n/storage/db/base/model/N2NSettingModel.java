@@ -24,6 +24,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
      * 后续需要加密存储
      */
     String password;
+    String devDesc;
     String superNode;
     boolean moreSettings;
     String superNodeBackup;
@@ -82,6 +83,10 @@ public class N2NSettingModel /*implements Parcelable*/ {
     public void setIp(String ip) {
         this.ip = ip;
     }
+
+    public String getDevDesc() { return this.devDesc; }
+
+    public void setDevDesc(String devDesc) { this.devDesc = devDesc; }
 
     public Long getId() {
         return this.id;
@@ -225,12 +230,11 @@ public class N2NSettingModel /*implements Parcelable*/ {
 
     public void setEncryptionMode(String mode) { this.encryptionMode = mode; }
 
-    @Generated(hash = 2072623276)
-    public N2NSettingModel(Long id, int version, String name, String ip, String netmask, String community, String password,
-            String superNode, boolean moreSettings, String superNodeBackup, String macAddr, int mtu, String localIP,
-            int holePunchInterval, boolean resoveSupernodeIP, int localPort, boolean allowRouting, boolean dropMuticast,
-            boolean useHttpTunnel, int traceLevel, boolean isSelcected, String gatewayIp, String dnsServer,
-            String encryptionMode) {
+    @Generated(hash = 2037619007)
+    public N2NSettingModel(Long id, int version, String name, String ip, String netmask, String community, String password, String devDesc,
+            String superNode, boolean moreSettings, String superNodeBackup, String macAddr, int mtu, String localIP, int holePunchInterval,
+            boolean resoveSupernodeIP, int localPort, boolean allowRouting, boolean dropMuticast, boolean useHttpTunnel, int traceLevel,
+            boolean isSelcected, String gatewayIp, String dnsServer, String encryptionMode) {
         this.id = id;
         this.version = version;
         this.name = name;
@@ -238,6 +242,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
         this.netmask = netmask;
         this.community = community;
         this.password = password;
+        this.devDesc = devDesc;
         this.superNode = superNode;
         this.moreSettings = moreSettings;
         this.superNodeBackup = superNodeBackup;
@@ -279,6 +284,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
                 ", netmask='" + netmask + '\'' +
                 ", community='" + community + '\'' +
                 ", password='" + password + '\'' +
+                ", devDesc='" + devDesc + '\'' +
                 ", superNode='" + superNode + '\'' +
                 ", moreSettings=" + moreSettings +
                 ", superNodeBackup='" + superNodeBackup + '\'' +

@@ -3,6 +3,7 @@
 call:chklink n2n_v1 bundles\n2n_meyerd\n2n_v1
 call:chklink n2n_v2 bundles\n2n_ntop_dev
 call:chklink n2n_v2s bundles\n2n_meyerd\n2n_v2
+call:chklink n2n_v3 bundles\n2n_ntop_v3
 call:chklink uip bundles\uip\uip
 call:chklink tun2tap bundles\tun2tap
 call:chklink slog bundles\slog
@@ -10,6 +11,7 @@ pushd Hin2n_android\app\src\main\cpp
 call:chklink n2n_v1 ..\..\..\..\..\n2n_v1
 call:chklink n2n_v2 ..\..\..\..\..\n2n_v2
 call:chklink n2n_v2s ..\..\..\..\..\n2n_v2s
+call:chklink n2n_v3 ..\..\..\..\..\n2n_v3
 call:chklink uip ..\..\..\..\..\uip
 call:chklink tun2tap ..\..\..\..\..\tun2tap
 call:chklink slog ..\..\..\..\..\slog

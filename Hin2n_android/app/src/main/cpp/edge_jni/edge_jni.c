@@ -78,6 +78,10 @@ JNIEXPORT jboolean JNICALL Java_wang_switchy_hin2n_service_N2NService_startEdge(
             status.start_edge = start_edge_v2s;
             status.stop_edge = stop_edge_v2s;
             break;
+        case EDGE_TYPE_V3:
+            status.start_edge = start_edge_v3;
+            status.stop_edge = stop_edge_v3;
+            break;
         default:
             ResetEdgeStatus(env, 1 /* cleanup*/);
             return JNI_FALSE;
@@ -166,7 +170,7 @@ int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t *cmd) {
     {
         jint jiEdgeType = (*env)->GetIntField(env, jcmd,
                                               (*env)->GetFieldID(env, cls, "edgeType", "I"));
-        if (jiEdgeType < EDGE_TYPE_V1 || jiEdgeType > EDGE_TYPE_V2S) {
+        if (jiEdgeType < EDGE_TYPE_V1 || jiEdgeType > EDGE_TYPE_V3) {
             return 1;
         }
         status.edge_type = jiEdgeType;
@@ -277,7 +281,7 @@ int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t *cmd) {
         }
     }
     // encKeyFile
-    if (status.edge_type == EDGE_TYPE_V2 || status.edge_type == EDGE_TYPE_V2S) {
+    if (EDGE_TYPE_V2 <= status.edge_type && status.edge_type <= EDGE_TYPE_V3) {
         jstring jsEncKeyFile = (*env)->GetObjectField(env, jcmd,
                                                       (*env)->GetFieldID(env, cls, "encKeyFile",
                                                                          "Ljava/lang/String;"));
@@ -467,6 +471,20 @@ int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t *cmd) {
 #ifndef NDEBUG
     __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "logPath = %s", cmd->logpath);
 #endif /* #ifndef NDEBUG */
+    // devDesc
+    {
+        jstring jsDevDesc = (*env)->GetObjectField(env, jcmd, (*env)->GetFieldID(env, cls, "devDesc",
+                                                                                 "Ljava/lang/String;"));
+        JNI_CHECKNULL(jsDevDesc);
+        const char *devDesc = (*env)->GetStringUTFChars(env, jsDevDesc, NULL);
+        if (devDesc && strlen(devDesc) != 0) {
+            cmd->devDesc = strdup(devDesc);
+        }
+        (*env)->ReleaseStringUTFChars(env, jsDevDesc, devDesc);
+#ifndef NDEBUG
+        __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "devDesc = %s", cmd->devDesc);
+#endif /* #ifndef NDEBUG */
+    }
 
     return 0;
 }

@@ -4,11 +4,12 @@ import java.util.Random;
 import java.util.Vector;
 
 public class EdgeCmd {
-    public int edgeType;    // 0: v1, 1: v2, 2: v2s
+    public int edgeType;    // 0: v1, 1: v2, 2: v2s 3: v3
     public String ipAddr;
     public String ipNetmask;
     public String[] supernodes;
     public String community;
+    public String devDesc;
     public String encKey;
     public String encKeyFile;
     public String macAddr;
@@ -28,7 +29,7 @@ public class EdgeCmd {
     public String encryptionMode;
 
     public EdgeCmd(int edgeType, String ipAddr, String ipNetmask, String[] supernodes, String community,
-                   String encKey, String encKeyFile, String macAddr, int mtu, String localIP, int holePunchInterval,
+                   String encKey, String devDesc, String encKeyFile, String macAddr, int mtu, String localIP, int holePunchInterval,
                    boolean reResoveSupernodeIP, int localPort, boolean allowRouting, boolean dropMuticast,
                    boolean httpTunnel, int traceLevel, int vpnFd, String logPath, String gatewayIp, String dnsServer,
                    String encryptionMode) {
@@ -38,6 +39,7 @@ public class EdgeCmd {
         this.supernodes = supernodes;
         this.community = community;
         this.encKey = encKey;
+        this.devDesc = devDesc;
         this.encKeyFile = encKeyFile;
         this.macAddr = macAddr;
         this.mtu = mtu;
@@ -65,6 +67,7 @@ public class EdgeCmd {
         this.supernodes[1] = n2NSettingInfo.getSuperNodeBackup();
         this.community = n2NSettingInfo.getCommunity();
         this.encKey = n2NSettingInfo.getPassword();
+        this.devDesc = n2NSettingInfo.getDevDesc();
         this.encKeyFile = "";
         this.macAddr = n2NSettingInfo.getMacAddr();
         this.mtu = n2NSettingInfo.getMtu();
