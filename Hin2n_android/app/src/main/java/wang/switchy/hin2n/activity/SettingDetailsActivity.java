@@ -59,6 +59,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
     private TextInputLayout mCommunityTIL;
     private TextInputLayout mEncryptTIL;
 
+    private RelativeLayout mGetIpFromSupernodeView;
+    private CheckBox mGetIpFromSupernodeCheckBox;
     private TextInputLayout mDevDescTIL;
 
     private TextInputLayout mSuperNodeTIL;
@@ -144,6 +146,24 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         mSuperNodeTIL = (TextInputLayout) findViewById(R.id.til_super_node);
 
         mDevDescTIL = (TextInputLayout) findViewById(R.id.til_dev_desc);
+        mGetIpFromSupernodeView = (RelativeLayout) findViewById(R.id.rl_get_ip_from_supernode);
+        mGetIpFromSupernodeCheckBox = (CheckBox) findViewById(R.id.get_ip_from_supernode_check_box);
+        mGetIpFromSupernodeCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    mIpAddressTIL.getEditText().setText("0.0.0.0");
+                    mNetMaskTIL.getEditText().setText(R.string.item_default_netmask);
+                    mIpAddressTIL.setVisibility(View.GONE);
+                    mNetMaskTIL.setVisibility(View.GONE);
+                } else {
+                    mIpAddressTIL.getEditText().setText(R.string.item_default_ip);
+                    mNetMaskTIL.getEditText().setText(R.string.item_default_netmask);
+                    mIpAddressTIL.setVisibility(View.VISIBLE);
+                    mNetMaskTIL.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         mMoreSettingView = (RelativeLayout) findViewById(R.id.rl_more_setting);
 
@@ -281,6 +301,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 default:
                     break;
             }
+            mGetIpFromSupernodeCheckBox.setChecked(mN2NSettingModel.getIpMode() == 1);
             mIpAddressTIL.getEditText().setText(mN2NSettingModel.getIp());
             mNetMaskTIL.getEditText().setText(mN2NSettingModel.getNetmask());
             mCommunityTIL.getEditText().setText(mN2NSettingModel.getCommunity());
@@ -342,6 +363,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         switch (checkedId) {
             case R.id.rb_v1:
                 mUseHttpTunnelCheckBox.setVisibility(View.GONE);
+                mGetIpFromSupernodeView.setVisibility(View.GONE);
+                mGetIpFromSupernodeCheckBox.setChecked(false);
                 mDevDescTIL.setVisibility(View.GONE);
                 mSuperNodeBackup.setVisibility(View.GONE);
                 mAcceptMuticastView.setVisibility(View.GONE);
@@ -358,6 +381,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 break;
             case R.id.rb_v2:
                 mUseHttpTunnelCheckBox.setVisibility(View.GONE);
+                mGetIpFromSupernodeView.setVisibility(View.GONE);
+                mGetIpFromSupernodeCheckBox.setChecked(false);
                 mDevDescTIL.setVisibility(View.GONE);
                 mSuperNodeBackup.setVisibility(View.VISIBLE);
                 mAcceptMuticastView.setVisibility(View.VISIBLE);
@@ -375,6 +400,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             case R.id.rb_v2s:
                 mUseHttpTunnelCheckBox.setVisibility(View.GONE);
                 mDevDescTIL.setVisibility(View.GONE);
+                mGetIpFromSupernodeView.setVisibility(View.GONE);
+                mGetIpFromSupernodeCheckBox.setChecked(false);
                 mSuperNodeBackup.setVisibility(View.VISIBLE);
                 mAcceptMuticastView.setVisibility(View.VISIBLE);
                 mHolePunchInterval.setVisibility(View.VISIBLE);
@@ -391,6 +418,11 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             case R.id.rb_v3:
                 mUseHttpTunnelCheckBox.setVisibility(View.GONE);
                 mDevDescTIL.setVisibility(View.VISIBLE);
+                mGetIpFromSupernodeView.setVisibility(View.VISIBLE);
+                boolean bGetIpFromSupernodeChecked = false;
+                if(mN2NSettingModel != null)
+                    bGetIpFromSupernodeChecked = mN2NSettingModel.getIpMode() == 1;
+                mGetIpFromSupernodeCheckBox.setChecked(bGetIpFromSupernodeChecked);
                 mSuperNodeBackup.setVisibility(View.VISIBLE);
                 mAcceptMuticastView.setVisibility(View.VISIBLE);
                 mHolePunchInterval.setVisibility(View.GONE);
@@ -441,7 +473,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                     hasSelected = true;
                 }
 
-                mN2NSettingModel = new N2NSettingModel(null, getN2nVersion(), settingName,
+                mN2NSettingModel = new N2NSettingModel(null, getN2nVersion(), settingName, mGetIpFromSupernodeCheckBox.isChecked() ? 1 : 0,
                         mIpAddressTIL.getEditText().getText().toString(), mNetMaskTIL.getEditText().getText().toString(),
                         mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
                         mDevDescTIL.getEditText().getText().toString(),
@@ -493,7 +525,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                     n2NSettingModelTmp = n2NSettingModelDao1.queryBuilder().where(N2NSettingModelDao.Properties.Name.eq(settingName1)).unique();
                 }
 
-                mN2NSettingModel = new N2NSettingModel(mSaveId, getN2nVersion(), settingName1,
+                mN2NSettingModel = new N2NSettingModel(mSaveId, getN2nVersion(), settingName1, mGetIpFromSupernodeCheckBox.isChecked() ? 1 : 0,
                         mIpAddressTIL.getEditText().getText().toString(), mNetMaskTIL.getEditText().getText().toString(),
                         mCommunityTIL.getEditText().getText().toString(), mEncryptTIL.getEditText().getText().toString(),
                         mDevDescTIL.getEditText().getText().toString(),
@@ -579,7 +611,6 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
          * 判空的状态恢复有问题，后续有时间再改吧
          */
         if (TextUtils.isEmpty(mSettingName.getEditText().getText())
-                || TextUtils.isEmpty(mIpAddressTIL.getEditText().getText())
                 || TextUtils.isEmpty(mCommunityTIL.getEditText().getText())
                 || TextUtils.isEmpty(mSuperNodeTIL.getEditText().getText())) {
             Boolean bReq = false;
@@ -612,17 +643,6 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             } else {
                 mCommunityTIL.setErrorEnabled(false);
             }
-
-            if (TextUtils.isEmpty(mIpAddressTIL.getEditText().getText())) {
-                mIpAddressTIL.setError(mIpAddressTIL.getHint() + " is required");
-                if (!bReq) {
-                    mIpAddressTIL.getEditText().requestFocus();
-                    bReq = true;
-                }
-            } else {
-                mIpAddressTIL.setErrorEnabled(false);
-            }
-
             return false;
         }
 
@@ -650,13 +670,24 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         } else {
             mEncryptTIL.setErrorEnabled(false);
         }
-        if (!EdgeCmd.checkIPV4(mIpAddressTIL.getEditText().getText().toString())) {
-            mIpAddressTIL.setError(mIpAddressTIL.getHint() + " format is incorrect");
-            mIpAddressTIL.getEditText().requestFocus();
-            return false;
-        } else {
-            mIpAddressTIL.setErrorEnabled(false);
+
+        if (!mGetIpFromSupernodeCheckBox.isChecked()) {
+            if (TextUtils.isEmpty(mIpAddressTIL.getEditText().getText())) {
+                mIpAddressTIL.setError(mIpAddressTIL.getHint() + " is required");
+                mIpAddressTIL.getEditText().requestFocus();
+            } else {
+                mIpAddressTIL.setErrorEnabled(false);
+            }
+
+            if (!EdgeCmd.checkIPV4(mIpAddressTIL.getEditText().getText().toString())) {
+                mIpAddressTIL.setError(mIpAddressTIL.getHint() + " format is incorrect");
+                mIpAddressTIL.getEditText().requestFocus();
+                return false;
+            } else {
+                mIpAddressTIL.setErrorEnabled(false);
+            }
         }
+
         // netmask => v1, v2, v2s
         if (!EdgeCmd.checkIPV4Mask(TextUtils.isEmpty(mNetMaskTIL.getEditText().getText().toString()) ?
                         "255.255.255.0" : mNetMaskTIL.getEditText().getText().toString())) {

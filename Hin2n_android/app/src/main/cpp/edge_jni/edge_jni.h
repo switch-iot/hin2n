@@ -20,6 +20,7 @@
 
 typedef struct n2n_edge_cmd_st
 {
+    char ip_mode;
     char ip_addr[EDGE_CMD_IPSTR_SIZE];
     char ip_netmask[EDGE_CMD_IPSTR_SIZE];
     char supernodes[EDGE_CMD_SUPERNODES_NUM][EDGE_CMD_SN_HOST_SIZE];

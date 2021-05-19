@@ -33,17 +33,20 @@ JNIEXPORT jboolean JNICALL Java_wang_switchy_hin2n_service_N2NService_startEdge(
         return JNI_FALSE;
     }
 
-    int val = fcntl(status.cmd.vpn_fd, F_GETFL);
-    if (val == -1) {
-        ResetEdgeStatus(env, 1 /* cleanup*/);
-        return JNI_FALSE;
-    }
-    if ((val & O_NONBLOCK) == O_NONBLOCK) {
-        val &= ~O_NONBLOCK;
-        val = fcntl(status.cmd.vpn_fd, F_SETFL, val);
+    /* only when java already created the vpn service and pass to C should we reset NON_BLOCK */
+    if(status.cmd.vpn_fd > 0) {
+        int val = fcntl(status.cmd.vpn_fd, F_GETFL);
         if (val == -1) {
             ResetEdgeStatus(env, 1 /* cleanup*/);
             return JNI_FALSE;
+        }
+        if ((val & O_NONBLOCK) == O_NONBLOCK) {
+            val &= ~O_NONBLOCK;
+            val = fcntl(status.cmd.vpn_fd, F_SETFL, val);
+            if (val == -1) {
+                ResetEdgeStatus(env, 1 /* cleanup*/);
+                return JNI_FALSE;
+            }
         }
     }
 
@@ -180,6 +183,18 @@ int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t *cmd) {
 #endif /* #ifndef NDEBUG */
     }
 
+    {
+        jint jiEdgeType = (*env)->GetIntField(env, jcmd,
+                                              (*env)->GetFieldID(env, cls, "ipMode", "I"));
+        if (jiEdgeType < 0 || jiEdgeType > 1) {
+            return 1;
+        }
+        status.cmd.ip_mode = jiEdgeType;
+#ifndef NDEBUG
+        __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "ipMode = %d", status.cmd.ip_mode);
+#endif /* #ifndef NDEBUG */
+    }
+ 
     // ipAddr
     {
         jstring jsIpAddr = (*env)->GetObjectField(env, jcmd, (*env)->GetFieldID(env, cls, "ipAddr",
@@ -451,9 +466,11 @@ int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t *cmd) {
     // vpnFd
     {
         jint jiVpnFd = (*env)->GetIntField(env, jcmd, (*env)->GetFieldID(env, cls, "vpnFd", "I"));
+#if 0
         if (jiVpnFd < 0) {
             return 1;
         }
+#endif
         cmd->vpn_fd = jiVpnFd;
 #ifndef NDEBUG
         __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "vpnFd = %d", cmd->vpn_fd);

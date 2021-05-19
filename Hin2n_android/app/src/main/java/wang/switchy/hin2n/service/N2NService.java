@@ -45,6 +45,7 @@ public class N2NService extends VpnService {
 
     private ParcelFileDescriptor mParcelFileDescriptor = null;
     private EdgeCmd cmd;
+    N2NSettingInfo mN2nSettingInfo = null;
 
     private EdgeStatus.RunningStatus mLastStatus = DISCONNECT;
     private EdgeStatus.RunningStatus mCurrentStatus = DISCONNECT;
@@ -63,6 +64,44 @@ public class N2NService extends VpnService {
         }
     }
 
+    public int EstablishVpnService(String ip, int mask) {
+
+        Builder builder = new Builder()
+                .setMtu(mN2nSettingInfo.getMtu())
+                .addAddress(ip, mask)
+                .addRoute(getRoute(mN2nSettingInfo.getIp(), mask), mask);
+
+        if (!mN2nSettingInfo.getGatewayIp().isEmpty()) {
+            /* Route all the internet traffic via n2n. Most specific routes "win" over the system default gateway.
+             * See https://github.com/zerotier/ZeroTierOne/issues/178#issuecomment-204599227 */
+            builder.addRoute("0.0.0.0", 1);
+            builder.addRoute("128.0.0.0", 1);
+        }
+
+        if (!mN2nSettingInfo.getDnsServer().isEmpty()) {
+            Log.d("N2NService", "Using DNS server: " + mN2nSettingInfo.getDnsServer());
+            builder.addDnsServer(mN2nSettingInfo.getDnsServer());
+        }
+
+        String session = getResources().getStringArray(R.array.vpn_session_name)[mN2nSettingInfo.getVersion()];
+        try {
+            mParcelFileDescriptor = builder.setSession(session).establish();
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(INSTANCE, "Parameter is not accepted by the operating system.", Toast.LENGTH_SHORT).show();
+            return -1;
+        } catch (IllegalStateException e) {
+            Toast.makeText(INSTANCE, "Parameter cannot be applied by the operating system.", Toast.LENGTH_SHORT).show();
+            return -1;
+        }
+
+        if (mParcelFileDescriptor == null) {
+            EventBus.getDefault().post(new ErrorEvent());
+            return -1;
+        }
+
+        return mParcelFileDescriptor.detachFd();
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) {
@@ -71,42 +110,18 @@ public class N2NService extends VpnService {
         }
 
         Bundle setting = intent.getBundleExtra("Setting");
-        N2NSettingInfo n2nSettingInfo = setting.getParcelable("n2nSettingInfo");
+        mN2nSettingInfo = setting.getParcelable("n2nSettingInfo");
 
-        Builder builder = new Builder()
-                .setMtu(n2nSettingInfo.getMtu())
-                .addAddress(n2nSettingInfo.getIp(), getIpAddrPrefixLength(n2nSettingInfo.getNetmask()))
-                .addRoute(getRoute(n2nSettingInfo.getIp(), getIpAddrPrefixLength(n2nSettingInfo.getNetmask())), getIpAddrPrefixLength(n2nSettingInfo.getNetmask()));
-
-        if (!n2nSettingInfo.getGatewayIp().isEmpty()) {
-            /* Route all the internet traffic via n2n. Most specific routes "win" over the system default gateway.
-             * See https://github.com/zerotier/ZeroTierOne/issues/178#issuecomment-204599227 */
-            builder.addRoute("0.0.0.0", 1);
-            builder.addRoute("128.0.0.0", 1);
+        int vpnServiceFd = -1;
+        if (mN2nSettingInfo.getIpMode() == 0) {
+            vpnServiceFd = EstablishVpnService(mN2nSettingInfo.getIp(), getIpAddrPrefixLength(mN2nSettingInfo.getNetmask()));
+            if (vpnServiceFd < 0) {
+                return super.onStartCommand(intent, flags, startId);
+            }
         }
 
-        if (!n2nSettingInfo.getDnsServer().isEmpty()) {
-            Log.d("N2NService", "Using DNS server: " + n2nSettingInfo.getDnsServer());
-            builder.addDnsServer(n2nSettingInfo.getDnsServer());
-        }
-
-        String session = getResources().getStringArray(R.array.vpn_session_name)[n2nSettingInfo.getVersion()];
-        try {
-            mParcelFileDescriptor = builder.setSession(session).establish();
-        } catch (IllegalArgumentException e) {
-            Toast.makeText(INSTANCE, "Parameter is not accepted by the operating system.", Toast.LENGTH_SHORT).show();
-            return super.onStartCommand(intent, flags, startId);
-        } catch (IllegalStateException e) {
-            Toast.makeText(INSTANCE, "Parameter cannot be applied by the operating system.", Toast.LENGTH_SHORT).show();
-            return super.onStartCommand(intent, flags, startId);
-        }
-
-        if (mParcelFileDescriptor == null) {
-            EventBus.getDefault().post(new ErrorEvent());
-            return super.onStartCommand(intent, flags, startId);
-        }
-
-        cmd = new EdgeCmd(n2nSettingInfo, mParcelFileDescriptor.detachFd(), getExternalFilesDir("log") + "/" + session + ".log");
+        String session = getResources().getStringArray(R.array.vpn_session_name)[mN2nSettingInfo.getVersion()];
+        cmd = new EdgeCmd(mN2nSettingInfo, vpnServiceFd, getExternalFilesDir("log") + "/" + session + ".log");
         mFileObserver = new LogFileObserver(cmd.logPath);
         mFileObserver.stopWatching();
         IOUtils.clearLogTxt(cmd.logPath);

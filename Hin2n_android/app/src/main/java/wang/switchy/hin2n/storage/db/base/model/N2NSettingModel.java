@@ -17,6 +17,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
     Long id;
     int version;
     String name;
+    int ipMode;  /* 0 - fix , 1 - from supernode */
     String ip;
     String netmask;
     String community;
@@ -67,6 +68,10 @@ public class N2NSettingModel /*implements Parcelable*/ {
     public void setCommunity(String community) {
         this.community = community;
     }
+
+    public int getIpMode() { return this.ipMode; }
+
+    public void setIpMode(int ipMode) { this.ipMode = ipMode; }
 
     public String getNetmask() {
         return this.netmask;
@@ -230,14 +235,15 @@ public class N2NSettingModel /*implements Parcelable*/ {
 
     public void setEncryptionMode(String mode) { this.encryptionMode = mode; }
 
-    @Generated(hash = 2037619007)
-    public N2NSettingModel(Long id, int version, String name, String ip, String netmask, String community, String password, String devDesc,
+    @Generated(hash = 611671959)
+    public N2NSettingModel(Long id, int version, String name, int ipMode, String ip, String netmask, String community, String password, String devDesc,
             String superNode, boolean moreSettings, String superNodeBackup, String macAddr, int mtu, String localIP, int holePunchInterval,
             boolean resoveSupernodeIP, int localPort, boolean allowRouting, boolean dropMuticast, boolean useHttpTunnel, int traceLevel,
             boolean isSelcected, String gatewayIp, String dnsServer, String encryptionMode) {
         this.id = id;
         this.version = version;
         this.name = name;
+        this.ipMode = ipMode;
         this.ip = ip;
         this.netmask = netmask;
         this.community = community;
@@ -280,6 +286,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
                 "id=" + id +
                 ", version=" + version +
                 ", name='" + name + '\'' +
+                ", ipMode='" + ipMode + '\'' +
                 ", ip='" + ip + '\'' +
                 ", netmask='" + netmask + '\'' +
                 ", community='" + community + '\'' +

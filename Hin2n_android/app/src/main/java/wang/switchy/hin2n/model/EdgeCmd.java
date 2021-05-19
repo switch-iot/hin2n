@@ -5,6 +5,7 @@ import java.util.Vector;
 
 public class EdgeCmd {
     public int edgeType;    // 0: v1, 1: v2, 2: v2s 3: v3
+    public int ipMode;
     public String ipAddr;
     public String ipNetmask;
     public String[] supernodes;
@@ -28,12 +29,13 @@ public class EdgeCmd {
     public String logPath;
     public String encryptionMode;
 
-    public EdgeCmd(int edgeType, String ipAddr, String ipNetmask, String[] supernodes, String community,
+    public EdgeCmd(int edgeType, int ipMode, String ipAddr, String ipNetmask, String[] supernodes, String community,
                    String encKey, String devDesc, String encKeyFile, String macAddr, int mtu, String localIP, int holePunchInterval,
                    boolean reResoveSupernodeIP, int localPort, boolean allowRouting, boolean dropMuticast,
                    boolean httpTunnel, int traceLevel, int vpnFd, String logPath, String gatewayIp, String dnsServer,
                    String encryptionMode) {
         this.edgeType = edgeType;
+        this.ipMode = ipMode;
         this.ipAddr = ipAddr;
         this.ipNetmask = ipNetmask;
         this.supernodes = supernodes;
@@ -60,6 +62,7 @@ public class EdgeCmd {
 
     public EdgeCmd(N2NSettingInfo n2NSettingInfo, int vpnFd, String logPath){
         this.edgeType = n2NSettingInfo.getVersion();
+        this.ipMode = n2NSettingInfo.getIpMode();
         this.ipAddr = n2NSettingInfo.getIp();
         this.ipNetmask = n2NSettingInfo.getNetmask();
         this.supernodes = new String[2];

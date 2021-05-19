@@ -207,6 +207,72 @@ static void update_gateway_mac(n2n_edge_t *eee) {
     }
 }
 
+int getIpAddrPrefixLength(char *ipaddrStr) {
+    unsigned int a[4] = {0};
+    unsigned int total = 0;
+    int ret = 0;
+
+    sscanf(ipaddrStr, "%u.%u.%u.%u", &a[0], &a[1], &a[2], &a[3]);
+    total = (a[0] << 24) + (a[1] << 16) + (a[2] << 8) + a[3];
+
+    int i, j;
+    for (i = 0, j = 0; i < 32; i++) {
+        unsigned char tmp = total % 2;
+        if (tmp == 1) {
+            j = 1;
+            ret += 1;
+        } else { // tmp == 0
+            if (j == 1)
+                return -1;
+        }
+        total /= 2;
+    }
+
+    return ret;
+}
+
+int establishVpnService(n2n_edge_cmd_t *cmd, char ipStr[], int netmask) {
+    JNIEnv *env = NULL;
+
+    if (!g_status)
+        return (-1);
+
+    if ((*g_status->jvm)->GetEnv(g_status->jvm, (void **) &env, JNI_VERSION_1_1) != JNI_OK ||
+        !env) {
+        traceEvent(TRACE_ERROR, "GetEnv failed");
+        return (-1);
+    }
+
+    jclass vpn_service_cls = (*env)->GetObjectClass(env, g_status->jobj_service);
+    if (!vpn_service_cls) {
+        traceEvent(TRACE_ERROR, "GetObjectClass(VpnService) failed");
+        return (-1);
+    }
+
+    /* Call VpnService protect */
+    jmethodID midEstablishVpnService = (*env)->GetMethodID(env, vpn_service_cls, "EstablishVpnService", "(Ljava/lang/String;I)I");
+    if (!midEstablishVpnService) {
+        traceEvent(TRACE_ERROR, "Could not resolve VpnService::EstablishVpnService");
+        return (-1);
+    }
+
+    jstring jIpStr = (*env)->NewStringUTF(env, ipStr);
+#if 0
+    if(!jIpStr) {
+        traceEvent(TRACE_ERROR, "Failed to create newStringUTF.");
+        return -1;
+    }
+#endif
+
+    int vpn_fd = (*env)->CallIntMethod(env, g_status->jobj_service, midEstablishVpnService, jIpStr, netmask);
+    if (vpn_fd < 0) {
+        traceEvent(TRACE_ERROR, "VpnService::EstablishVpnService failed");
+        return (-1);
+    }
+
+    return vpn_fd;    
+}
+
 /* *************************************************** */
 
 static void on_sn_registration_updated(n2n_edge_t *eee, time_t now, const n2n_sock_t *sn) {
@@ -425,7 +491,7 @@ int start_edge_v2(n2n_edge_status_t *status) {
         traceEvent(TRACE_ERROR, "Bad configuration");
         rv = 1;
         goto cleanup;
-    }    
+    }
 
     /* Open the TAP device */
     if (tuntap_open(&dev, tuntap_dev_name, ip_mode, ip_addr, netmask, device_mac, cmd->mtu) < 0) {
@@ -551,6 +617,8 @@ int stop_edge_v2(void) {
 }
 #else
 
+int g_stop_initial = 0;
+
 int start_edge_v3(n2n_edge_status_t *status) {
     int keep_on_running = 0;
     char tuntap_dev_name[N2N_IFNAMSIZ] = "tun0";
@@ -574,6 +642,8 @@ int start_edge_v3(n2n_edge_status_t *status) {
         traceEvent(TRACE_ERROR, "Empty cmd struct");
         return 1;
     }
+
+    g_stop_initial = 0;
     g_status = status;
     n2n_edge_cmd_t *cmd = &status->cmd;
 
@@ -583,11 +653,6 @@ int start_edge_v3(n2n_edge_status_t *status) {
         traceEvent(TRACE_ERROR, "failed to open log file.");
     } else {
         setTraceFile(fp);
-    }
-
-    if (cmd->vpn_fd < 0) {
-        traceEvent(TRACE_ERROR, "VPN socket is invalid.");
-        return 1;
     }
 
     pthread_mutex_lock(&g_status->mutex);
@@ -621,9 +686,12 @@ int start_edge_v3(n2n_edge_status_t *status) {
     } else
         conf.transop_id = N2N_TRANSFORM_ID_NULL;
 
-    scan_address(ip_addr, N2N_NETMASK_STR_SIZE,
-                 ip_mode, N2N_IF_MODE_SIZE,
-                 cmd->ip_addr);
+    if(cmd->ip_mode == 0)
+        scan_address(ip_addr, N2N_NETMASK_STR_SIZE,
+                     ip_mode, N2N_IF_MODE_SIZE,
+                     cmd->ip_addr);
+    else if(cmd->ip_mode == 1)
+        memset(ip_mode, 0, sizeof(ip_mode));
 
     dev.fd = cmd->vpn_fd;
 
@@ -716,6 +784,7 @@ int start_edge_v3(n2n_edge_status_t *status) {
     edge_set_userdata(eee, &private_status);
 
     /* set host addr, netmask, mac addr for UIP and init arp*/
+    if(cmd->ip_mode == 0)
     {
         int match, i;
         int ip[4];
@@ -785,6 +854,10 @@ int start_edge_v3(n2n_edge_status_t *status) {
     supernode_connect(eee);
 
     while(runlevel < 5) {
+        if(g_stop_initial) {
+            rv = 1;
+            goto cleanup;
+        }
 
         now = time(NULL);
 
@@ -865,11 +938,63 @@ int start_edge_v3(n2n_edge_status_t *status) {
         }
 
         if(runlevel == 4) { /* configure the TUNTAP device */
+            /* call java function to establish vpn service */
+            if(tuntap.fd < 0) {
+                int netmask = getIpAddrPrefixLength(eee->tuntap_priv_conf.netmask);
+                tuntap.fd = establishVpnService(&g_status->cmd, eee->tuntap_priv_conf.ip_addr, netmask);
+
+                dev.fd = g_status->cmd.vpn_fd = tuntap.fd;
+                int val = fcntl(g_status->cmd.vpn_fd, F_GETFL);
+                if (val == -1) {
+                    rv = 1;
+                    goto cleanup;
+                }
+                if ((val & O_NONBLOCK) == O_NONBLOCK) {
+                    val &= ~O_NONBLOCK;
+                    val = fcntl(g_status->cmd.vpn_fd, F_SETFL, val);
+                    if (val == -1) {
+                        rv = 1;
+                        goto cleanup;
+                    }
+                }
+
+                /****************** INIT ARP MODULE ******************/
+                {
+                    int match, i;
+                    int ip[4];
+                    uip_ipaddr_t ipaddr;
+                    struct uip_eth_addr eaddr;
+
+                    match = sscanf(eee->tuntap_priv_conf.ip_addr, "%d.%d.%d.%d", ip, ip + 1, ip + 2, ip + 3);
+                    if (match != 4) {
+                        traceEvent(TRACE_ERROR, "scan ip failed, ip: %s", ip_addr);
+                        rv = 1;
+                        goto cleanup;
+                    }
+                    uip_ipaddr(ipaddr, ip[0], ip[1], ip[2], ip[3]);
+                    uip_sethostaddr(ipaddr);
+                    
+                    match = sscanf(eee->tuntap_priv_conf.netmask, "%d.%d.%d.%d", ip, ip + 1, ip + 2, ip + 3);
+                    if (match != 4) {
+                        traceEvent(TRACE_ERROR, "scan netmask error, ip: %s", netmask);
+                        rv = 1;
+                        goto cleanup;
+                    }
+                    uip_ipaddr(ipaddr, ip[0], ip[1], ip[2], ip[3]);
+                    uip_setnetmask(ipaddr);
+
+                    for (i = 0; i < 6; ++i)
+                        eaddr.addr[i] = hex_mac[i];
+                    uip_setethaddr(eaddr);
+
+                    uip_arp_init();
+                }
+            }
+        
             if(tuntap_open(&tuntap, eee->tuntap_priv_conf.tuntap_dev_name, eee->tuntap_priv_conf.ip_mode,
                            eee->tuntap_priv_conf.ip_addr, eee->tuntap_priv_conf.netmask,
                            eee->tuntap_priv_conf.device_mac, eee->tuntap_priv_conf.mtu) < 0)
                 goto cleanup;
-            traceEvent(TRACE_DEBUG, "tuntap fd is %d", tuntap.fd);
             memcpy(&eee->device, &tuntap, sizeof(tuntap));
             traceEvent(TRACE_NORMAL, "Created local tap device IP: %s, Mask: %s, MAC: %s",
                                      eee->tuntap_priv_conf.ip_addr,
@@ -968,6 +1093,8 @@ cleanup:
 
 int stop_edge_v3(void) {
     // quick stop
+    g_stop_initial = 1;
+
     int fd = open_socket(0, 0 /* bind LOOPBACK*/,0 );
     if (fd < 0) {
         return 1;

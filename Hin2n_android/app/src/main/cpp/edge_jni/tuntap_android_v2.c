@@ -84,7 +84,8 @@ int tuntap_write(struct tuntap_dev *tuntap, unsigned char *buf, int len) {
 }
 
 void tuntap_close(struct tuntap_dev *tuntap) {
-  close(tuntap->fd);
+    if(tuntap->fd > 0)
+        close(tuntap->fd);
 }
 
 void tuntap_get_address(struct tuntap_dev *tuntap) {
