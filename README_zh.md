@@ -18,10 +18,10 @@ n2n是一个支持内网穿透p2p的VPN项目，最初由ntop.org大神`Luca Der
 - 该APP不需要root手机
 - 该APP暂时只支持安卓手机，后续会发开IPhone版本
 - 该项目现处于持续开发阶段，后续会提供更完善的功能
-- 该项目现已支持全部v1/v2/v2s协议
+- 该项目现已支持全部v1/v2s/v2/v3协议
 
 ### Hin2n最新版本 [CHANGELOG](Hin2n_android/CHANGELOG_zh)
-Hin2n最新版本可在[release地址](https://github.com/switch-iot/hin2n/releases)查看下载。
+Hin2n最新版本可在[release地址](https://github.com/switch-iot/hin2n/releases)下载。
 
 ### Hin2n开发计划
 详细开发计划请见[`Projects`](https://github.com/switch-iot/hin2n/projects)。
@@ -36,10 +36,11 @@ Hin2n最新版本可在[release地址](https://github.com/switch-iot/hin2n/relea
 > Hin2n对n2n协议的支持是采用jni的方式，native方法可以尽量复用原n2n项目的代码。
 
 ## n2n协议版本
-n2n项目现有三个主流版本
-- ntop.org大神们维护的 v1 版本，停止更新，项目地址：https://github.com/meyerd/n2n.git
-- meyerd大神维护的 v2s 版本，停止更新，项目地址：https://github.com/meyerd/n2n.git
-- ntop.org大神们维护的 v2 版本，正在更新，项目地址：https://github.com/ntop/n2n.git
+n2n项目现有四个主流版本
+- ntop.org大神们维护的 v1 版本，不再更新，项目地址：[github.com/meyerd/n2n/n2n_v1](https://github.com/meyerd/n2n/tree/master/n2n_v1)
+- meyerd大神维护的 v2s 版本，不再更新，项目地址：[github.com/meyerd/n2n/n2n_v2](https://github.com/meyerd/n2n/tree/master/n2n_v2)
+- ntop.org大神们维护的 v2 版本，已被封存，项目地址：[github.com/ntop/n2n/v2.8_r540](https://github.com/ntop/n2n/tree/2.8-stable)
+- ntop.org大神们维护的 v3 版本，正在更新，项目地址：[github.com/ntop/n2n](https://github.com/ntop/n2n)
 
 ### 关于v2s版本
 v2s版本是N2N交流QQ群(5804301)中对meyerd大神维护的v2版本(又称v2.1)的命名，即v2升级版，该版本与ntop.org大神们维护的v2版本并不互通，为避免混淆，群友们对该项目另行命名。

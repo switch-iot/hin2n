@@ -18,7 +18,7 @@ The original n2n supports many platforms, including windows, linux, osx, bsd, op
 - Hin2n does not need a rooted phone
 - Hin2n only supports Android phones for now, IPhone version will be developed in the future
 - Hin2n is currently in continuous development and will gradually provide more complete versions
-- Hin2n now supports all v1/v2/v2s protocols
+- Hin2n now supports all v1/v2s/v2/v3 protocols
 
 ### Hin2n latest version [CHANGELOG](Hin2n_android/CHANGELOG)
 The latest version of hin2n is available for download at [release link](https://github.com/switch-iot/hin2n/releases).
@@ -36,12 +36,11 @@ If you have new features and ideas, you can submit them in [`issues`](https://gi
 > Hin2n supports the n2n protocol by using the native method of jni to reuse the code of the original n2n project as far as possible.
 
 ## N2N protocol version
-There are three popular versions of the n2n project
-- Version v1 developed by the great masters of ntop.org, no more updates. Project address：https://github.com/meyerd/n2n.git
-- Version v2s developed by the master Meyerd, no more updates. Project address：https://github.com/meyerd/n2n.git
-- Version v2 developed by the great masters of ntop.org, updating. Project address：https://github.com/ntop/n2n.git
-
-Only the ntop v2 protocol is under active development.
+There are four popular versions of the n2n project
+- Version v1 developed by ntop.org, not being updated. Project address：[github.com/meyerd/n2n/n2n_v1](https://github.com/meyerd/n2n/tree/master/n2n_v1)
+- Version v2s developed by meyerd, not being updated. Project address：[github.com/meyerd/n2n/n2n_v2](https://github.com/meyerd/n2n/tree/master/n2n_v2)
+- Version v2 developed by ntop.org, been sealed. Project address：[github.com/ntop/n2n/v2.8_r540](https://github.com/ntop/n2n/tree/2.8-stable)
+- Version v3 developed by ntop.org, in updating. Project address：[github.com/ntop/n2n](https://github.com/ntop/n2n)
 
 ### About v2s version
 The v2s is the renaming of the v2 (also known as v2.1) developed by master Meyerd in the QQ group(5804301), that is, the v2 upgrade version. The v2s version is not compatible with the v2 version developed by the ntop.org masters. To avoid confusion, the QQ group friends named the project separately.
