@@ -1,10 +1,13 @@
 package wang.switchy.hin2n.service;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.VpnService;
 import android.os.*;
 
@@ -133,6 +136,32 @@ public class N2NService extends VpnService {
         } catch (Exception e) {
             EventBus.getDefault().post(new ErrorEvent());
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String CHANNEL_ONE_ID = "wang.switchy.hin2n";
+            String CHANNEL_ONE_NAME = "Channel One";
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ONE_ID,
+                    CHANNEL_ONE_NAME, NotificationManager.IMPORTANCE_HIGH);
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setShowBadge(true);
+            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            manager.createNotificationChannel(notificationChannel);
+
+            Intent i = new Intent(this, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, i, 0);
+            Notification notification = new Notification.Builder(this).setChannelId(CHANNEL_ONE_ID)
+                    .setTicker("Nature")
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("hin2n")
+                    .setContentText("hin2n service is running")
+                    .setContentIntent(pendingIntent)
+                    .getNotification();
+            notification.flags |= Notification.FLAG_NO_CLEAR;
+            startForeground(1, notification);
+        }
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -145,6 +174,9 @@ public class N2NService extends VpnService {
             Toast.makeText(getApplicationContext(), "a stop command is already in progress", Toast.LENGTH_SHORT).show();
             return (false);
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            stopForeground(false);
 
         ThreadUtils.cachedThreadExecutor(new Runnable() {
             @Override

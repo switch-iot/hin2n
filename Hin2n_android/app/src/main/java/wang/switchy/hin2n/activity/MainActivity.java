@@ -1,8 +1,10 @@
 package wang.switchy.hin2n.activity;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.VpnService;
@@ -10,7 +12,9 @@ import android.os.Build;
 import android.os.Bundle;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -62,9 +66,11 @@ public class MainActivity extends BaseActivity {
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private LinearLayout mLeftMenu;
     private String logTxtPath;
+    private CheckBox mStartAtBoot;
 
     private static final int REQUECT_CODE_SDCARD = 1;
     private static final int REQUECT_CODE_VPN = 2;
+    private static final int REQUEST_CODE_VPN_FOR_START_AT_BOOT = 3;
 
     @Override
     protected BaseTemplate createTemplate() {
@@ -168,7 +174,6 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-
         mCurrentSettingItem = (RelativeLayout) findViewById(R.id.rl_current_setting_item);
         mCurrentSettingItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,8 +185,27 @@ public class MainActivity extends BaseActivity {
         mCurrentSettingName = (TextView) findViewById(R.id.tv_current_setting_name);
         mCurrentSettingName.setText(R.string.no_setting);
 
-        initLeftMenu();
+        mStartAtBoot = (CheckBox) findViewById(R.id.check_box_start_at_boot);
+        SharedPreferences n2nSp = getSharedPreferences("Hin2n", Context.MODE_PRIVATE);
+        if(n2nSp.getBoolean("start_at_boot", false))
+            mStartAtBoot.setChecked(true);
 
+        mStartAtBoot.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if (mStartAtBoot.isChecked()) {
+                    Intent vpnPrepareIntent = VpnService.prepare(MainActivity.this);
+                    if (vpnPrepareIntent != null){
+                        startActivityForResult(vpnPrepareIntent, REQUEST_CODE_VPN_FOR_START_AT_BOOT);
+                        return;
+                    }
+                }
+                SharedPreferences n2nSp = getSharedPreferences("Hin2n", MODE_PRIVATE);
+                n2nSp.edit().putBoolean("start_at_boot", mStartAtBoot.isChecked()).apply();
+            }
+        });
+
+        initLeftMenu();
     }
 
     private void initLeftMenu() {
@@ -277,6 +301,17 @@ public class MainActivity extends BaseActivity {
 
             startService(intent);
         }
+        else if (requestCode == REQUEST_CODE_VPN_FOR_START_AT_BOOT) {
+            mStartAtBoot = (CheckBox) findViewById(R.id.check_box_start_at_boot);
+            if (mStartAtBoot.isChecked()) {
+                if (resultCode == RESULT_OK) {
+                    SharedPreferences n2nSp = getSharedPreferences("Hin2n", MODE_PRIVATE);
+                    n2nSp.edit().putBoolean("start_at_boot", true).apply();
+                } else {
+                    mStartAtBoot.setChecked(false);
+                }
+            }
+        }
     }
 
     @Override
@@ -285,13 +320,19 @@ public class MainActivity extends BaseActivity {
         SharedPreferences n2nSp = getSharedPreferences("Hin2n", MODE_PRIVATE);
         logTxtPath = n2nSp.getString("current_log_path", "");
         showLog();
+
         Long currentSettingId = n2nSp.getLong("current_setting_id", -1);
         if (currentSettingId != -1) {
             mCurrentSettingInfo = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load((long) currentSettingId);
             if (mCurrentSettingInfo != null) {
                 mCurrentSettingName.setText(mCurrentSettingInfo.getName());
+                mStartAtBoot = (CheckBox) findViewById(R.id.check_box_start_at_boot);
+                mStartAtBoot.setClickable(true);
             } else {
                 mCurrentSettingName.setText(R.string.no_setting);
+                mStartAtBoot = (CheckBox) findViewById(R.id.check_box_start_at_boot);
+                mStartAtBoot.setClickable(false);
+                mStartAtBoot.setChecked(false);
             }
 
             mConnectBtn.setVisibility(View.VISIBLE);
@@ -307,6 +348,10 @@ public class MainActivity extends BaseActivity {
                     mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
                 }
             }
+        } else {
+            mStartAtBoot = (CheckBox) findViewById(R.id.check_box_start_at_boot);
+            mStartAtBoot.setClickable(false);
+            mStartAtBoot.setChecked(false);
         }
     }
 
@@ -399,6 +444,4 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
-
-
 }

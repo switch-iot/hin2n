@@ -29,70 +29,80 @@
         <!--app:indicatorName="BallPulseIndicator"/>-->
 
         <RelativeLayout
-                android:id="@+id/rl_current_setting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/iv_connect_btn"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginTop="10dp">
+            android:id="@+id/rl_current_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_connect_btn"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="30dp">
 
             <TextView
+                android:id="@+id/tv_current_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Current Setting : "
+                android:textSize="18sp" />
 
-                    android:id="@+id/tv_current_setting"
+            <RelativeLayout
+                android:id="@+id/rl_current_setting_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tv_current_setting">
+
+                <TextView
+                    android:id="@+id/tv_current_setting_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="Current Setting : "
-                    android:textSize="18dp"/>
-
-            <RelativeLayout
-                    android:id="@+id/rl_current_setting_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/tv_current_setting">
-
-                <TextView
-                        android:id="@+id/tv_current_setting_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dp"
-                        android:paddingBottom="10dp"
-                        android:paddingTop="10dp"
-                        android:text="--choose setting--"
-                        android:textSize="18dp"/>
-
+                    android:layout_marginLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="--choose setting--"
+                    android:textSize="18sp" />
 
                 <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:src="@mipmap/img_more"/>
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/img_more" />
             </RelativeLayout>
+
+            <CheckBox
+                android:id="@+id/check_box_start_at_boot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_current_setting_item"
+                android:layout_centerHorizontal="true"
+                android:text="Start service at boot" />
 
         </RelativeLayout>
 
         <androidx.core.widget.NestedScrollView
-                android:id="@+id/scroll_log_action"
-                android:layout_below="@id/rl_current_setting"
-                android:background="@color/termail_gray"
-                android:layout_margin="10dp"
-                android:fillViewport="true"
-                android:focusableInTouchMode="true"
-                android:focusable="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            android:id="@+id/scroll_log_action"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/rl_current_setting"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/termail_gray"
+            android:fillViewport="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
             <TextView
                 android:id="@+id/tv_log_action"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/rl_current_setting"
                 android:layout_margin="10dp"
-                android:textSize="11sp"
+                android:text="/n2n"
                 android:textColor="@color/c_white"
-                android:text="/n2n"/>
+                android:textSize="11sp" />
         </androidx.core.widget.NestedScrollView>
     </RelativeLayout>
 
