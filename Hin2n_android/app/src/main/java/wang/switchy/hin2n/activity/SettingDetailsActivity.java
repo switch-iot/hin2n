@@ -254,7 +254,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             ((CommonTitleTemplate) mTemplate).setTitleText(R.string.title_add_setting);
             mSettingName.getEditText().setText(R.string.item_default_name);
             mVersionV2.setChecked(true);
-            mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v1);
+            mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v2);
             mCommunityTIL.getEditText().setText(R.string.item_default_community);
             mEncryptTIL.getEditText().setText(R.string.item_default_password);
             mIpAddressTIL.getEditText().setText(R.string.item_default_ip);
@@ -393,6 +393,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mDnsServer.setVisibility(View.VISIBLE);
                 mResolveSnLayout.setVisibility(View.GONE);
                 mEncryptionBox.setVisibility(View.VISIBLE);
+                mEncryptionMode.setSelection(0);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
                     mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v2);
                 }
@@ -432,6 +433,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mDnsServer.setVisibility(View.VISIBLE);
                 mResolveSnLayout.setVisibility(View.GONE);
                 mEncryptionBox.setVisibility(View.VISIBLE);
+                mEncryptionMode.setSelection(1);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
                     mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v2);
                 }
