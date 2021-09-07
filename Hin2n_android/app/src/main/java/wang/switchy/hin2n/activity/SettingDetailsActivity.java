@@ -435,7 +435,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mEncryptionBox.setVisibility(View.VISIBLE);
                 mEncryptionMode.setSelection(1);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
-                    mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v2);
+                    mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v3);
                 }
                 break;
             default:
@@ -447,7 +447,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         if (supernode == null || supernode.isEmpty() ||
                 supernode.equals(getString(R.string.item_default_supernode_v1)) ||
                 supernode.equals(getString(R.string.item_default_supernode_v2)) ||
-                supernode.equals(getString(R.string.item_default_supernode_v2s))) {
+                supernode.equals(getString(R.string.item_default_supernode_v2s)) ||
+                supernode.equals(getString(R.string.item_default_supernode_v3))) {
             return true;
         }
         return false;

@@ -9,6 +9,7 @@
     <string name="item_default_supernode_v1">hin2n.wang:10082</string>
     <string name="item_default_supernode_v2">hin2n.wang:10086</string>
     <string name="item_default_supernode_v2s">hin2n.wang:10088</string>
+    <string name="item_default_supernode_v3">supernode.ntop.org:7777</string>
     <string name="item_default_supernode_backup"></string>
     <string name="item_default_macaddr"></string>
     <string name="item_default_mtu">1386</string>
