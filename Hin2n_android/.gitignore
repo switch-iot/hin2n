@@ -13,3 +13,4 @@ jacoco.exec
 /build
 .externalNativeBuild
 /app/Hin2n.jks
+/app/.cxx

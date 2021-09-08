@@ -151,13 +151,15 @@ public class N2NService extends VpnService {
 
             Intent i = new Intent(this, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, i, 0);
-            Notification notification = new Notification.Builder(this).setChannelId(CHANNEL_ONE_ID)
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,CHANNEL_ONE_ID)
                     .setTicker("Nature")
                     .setSmallIcon(R.mipmap.ic_launcher)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                    .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .setContentTitle("hin2n")
                     .setContentText("hin2n service is running")
-                    .setContentIntent(pendingIntent)
-                    .getNotification();
+                    .setContentIntent(pendingIntent);
+            Notification notification = notificationBuilder.build();
             notification.flags |= Notification.FLAG_NO_CLEAR;
             startForeground(1, notification);
         }
@@ -176,7 +178,7 @@ public class N2NService extends VpnService {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            stopForeground(false);
+            stopForeground(true);
 
         ThreadUtils.cachedThreadExecutor(new Runnable() {
             @Override
