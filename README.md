@@ -37,8 +37,8 @@ If you have new features and ideas, you can submit them in [`issues`](https://gi
 
 ## N2N protocol version
 There are four popular versions of the n2n project
-- Version v1 developed by ntop.org, not being updated. Project address：[github.com/meyerd/n2n/n2n_v1](https://github.com/meyerd/n2n/tree/master/n2n_v1)
-- Version v2s developed by meyerd, not being updated. Project address：[github.com/meyerd/n2n/n2n_v2](https://github.com/meyerd/n2n/tree/master/n2n_v2)
+- Version v1 developed by ntop.org, not being updated. Project address：[github.com/switch-iot/n2n_meyerd/v1](https://github.com/switch-iot/n2n_meyerd/tree/master/n2n_v1)
+- Version v2s developed by meyerd, not being updated. Project address：[github.com/switch-iot/n2n_meyerd/v2s](https://github.com/switch-iot/n2n_meyerd/tree/master/n2n_v2)
 - Version v2 developed by ntop.org, been sealed. Project address：[github.com/ntop/n2n/v2.8_r540](https://github.com/ntop/n2n/tree/2.8-stable)
 - Version v3 developed by ntop.org, in updating. Project address：[github.com/ntop/n2n](https://github.com/ntop/n2n)
 

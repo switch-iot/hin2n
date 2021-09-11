@@ -37,8 +37,8 @@ Hin2n最新版本可在[release地址](https://github.com/switch-iot/hin2n/relea
 
 ## n2n协议版本
 n2n项目现有四个主流版本
-- ntop.org大神们维护的 v1 版本，不再更新，项目地址：[github.com/meyerd/n2n/n2n_v1](https://github.com/meyerd/n2n/tree/master/n2n_v1)
-- meyerd大神维护的 v2s 版本，不再更新，项目地址：[github.com/meyerd/n2n/n2n_v2](https://github.com/meyerd/n2n/tree/master/n2n_v2)
+- ntop.org大神们维护的 v1 版本，不再更新，项目地址：[github.com/switch-iot/n2n_meyerd/v1](https://github.com/switch-iot/n2n_meyerd/tree/master/n2n_v1)
+- meyerd大神维护的 v2s 版本，不再更新，项目地址：[github.com/switch-iot/n2n_meyerd/v2s](https://github.com/switch-iot/n2n_meyerd/tree/master/n2n_v2)
 - ntop.org大神们维护的 v2 版本，已被封存，项目地址：[github.com/ntop/n2n/v2.8_r540](https://github.com/ntop/n2n/tree/2.8-stable)
 - ntop.org大神们维护的 v3 版本，正在更新，项目地址：[github.com/ntop/n2n](https://github.com/ntop/n2n)
 
