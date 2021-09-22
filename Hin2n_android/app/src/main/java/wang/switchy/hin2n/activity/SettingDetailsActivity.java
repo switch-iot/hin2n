@@ -121,6 +121,9 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             EventBus.getDefault().register(this);
         }
 
+        Intent intent = getIntent();
+        type = intent.getIntExtra("type", 0);
+
         mHin2nSp = getSharedPreferences("Hin2n", MODE_PRIVATE);
         mHin2nEdit = mHin2nSp.edit();
 
@@ -130,6 +133,12 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         mVersionGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                if (type == TYPE_SETTING_ADD) {
+                    if (checkedId == R.id.rb_v3)
+                        mEncryptionMode.setSelection(1);
+                    else
+                        mEncryptionMode.setSelection(0);
+                }
                 updateVersionGroupCheck(checkedId);
             }
         });
@@ -245,9 +254,6 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         mButtons = (LinearLayout) findViewById(R.id.ll_buttons);
         mModifyBtn = (Button) findViewById(R.id.btn_modify);
         mModifyBtn.setOnClickListener(this);
-
-        Intent intent = getIntent();
-        type = intent.getIntExtra("type", 0);
 
         if (type == TYPE_SETTING_ADD) {
             //新增配置，需要设置默认值的设置默认值
@@ -393,7 +399,6 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mDnsServer.setVisibility(View.VISIBLE);
                 mResolveSnLayout.setVisibility(View.GONE);
                 mEncryptionBox.setVisibility(View.VISIBLE);
-                mEncryptionMode.setSelection(0);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
                     mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v2);
                 }
@@ -433,7 +438,6 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mDnsServer.setVisibility(View.VISIBLE);
                 mResolveSnLayout.setVisibility(View.GONE);
                 mEncryptionBox.setVisibility(View.VISIBLE);
-                mEncryptionMode.setSelection(1);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
                     mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v3);
                 }
