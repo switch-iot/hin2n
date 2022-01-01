@@ -23,4 +23,5 @@
     <string name="item_default_usehttptunnel">false</string>
     <string name="item_default_tracelevel">3</string>
     <string name="item_default_gateway_ip"></string>
+    <string name="item_default_headerenc">false</string>
 </resources>

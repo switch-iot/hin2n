@@ -502,6 +502,16 @@ int GetEdgeCmd(JNIEnv *env, jobject jcmd, n2n_edge_cmd_t *cmd) {
         __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "devDesc = %s", cmd->devDesc);
 #endif /* #ifndef NDEBUG */
     }
+    // headerEnc
+    {
+        jboolean jbHeaderEnc = (*env)->GetBooleanField(env, jcmd, (*env)->GetFieldID(env, cls,
+                                                                                        "headerEnc",
+                                                                                        "Z"));
+        cmd->header_encryption = jbHeaderEnc ? 2 : 0;
+#ifndef NDEBUG
+        __android_log_print(ANDROID_LOG_DEBUG, "edge_jni", "headerEnc = %d", cmd->header_encryption);
+#endif /* #ifndef NDEBUG */
+    }
 
     return 0;
 }
@@ -520,6 +530,7 @@ void InitEdgeStatus(void) {
     status.cmd.trace_vlevel = 1;
     status.cmd.vpn_fd = -1;
     status.cmd.logpath = NULL;
+    status.cmd.header_encryption = 0;
 
     status.tid = -1;
     status.jvm = NULL;

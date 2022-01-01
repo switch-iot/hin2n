@@ -50,6 +50,7 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
         public final static Property GatewayIp = new Property(23, String.class, "gatewayIp", false, "GATEWAY_IP");
         public final static Property DnsServer = new Property(24, String.class, "dnsServer", false, "DNS_SERVER");
         public final static Property EncryptionMode = new Property(25, String.class, "encryptionMode", false, "ENCRYPTION_MODE");
+        public final static Property HeaderEnc = new Property(26, boolean.class, "headerEnc", false, "HEADER_ENC");
     }
 
 
@@ -90,7 +91,8 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
                 "\"IS_SELCECTED\" INTEGER NOT NULL ," + // 22: isSelcected
                 "\"GATEWAY_IP\" TEXT," + // 23: gatewayIp
                 "\"DNS_SERVER\" TEXT," + // 24: dnsServer
-                "\"ENCRYPTION_MODE\" TEXT);"); // 25: encryptionMode
+                "\"ENCRYPTION_MODE\" TEXT ," + // 25: encryptionMode
+                "\"HEADER_ENC\" INTEGER NOT NULL);"); // 26: headerEnc
     }
 
     /** Drops the underlying database table. */
@@ -184,6 +186,7 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
         if (encryptionMode != null) {
             stmt.bindString(26, encryptionMode);
         }
+        stmt.bindLong(27, entity.getHeaderEnc() ? 1L: 0L);
     }
 
     @Override
@@ -271,6 +274,7 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
         if (encryptionMode != null) {
             stmt.bindString(26, encryptionMode);
         }
+        stmt.bindLong(27, entity.getHeaderEnc() ? 1L: 0L);
     }
 
     @Override
@@ -306,7 +310,8 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
             cursor.getShort(offset + 22) != 0, // isSelcected
             cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23), // gatewayIp
             cursor.isNull(offset + 24) ? null : cursor.getString(offset + 24), // dnsServer
-            cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25) // encryptionMode
+            cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25), // encryptionMode
+            cursor.getShort(offset + 26) != 0 // headerEnc
         );
         return entity;
     }
@@ -339,6 +344,7 @@ public class N2NSettingModelDao extends AbstractDao<N2NSettingModel, Long> {
         entity.setGatewayIp(cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23));
         entity.setDnsServer(cursor.isNull(offset + 24) ? null : cursor.getString(offset + 24));
         entity.setEncryptionMode(cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25));
+        entity.setHeaderEnc(cursor.getShort(offset + 26) != 0);
      }
     
     @Override
