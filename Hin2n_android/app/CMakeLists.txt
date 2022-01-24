@@ -80,6 +80,9 @@ target_link_libraries(edge_v2 ${OPENSSL_LIBRARIES})
 
 add_library(edge_v3 SHARED
         src/main/cpp/n2n_v3/src/n2n.c
+        src/main/cpp/n2n_v3/src/edge_management.c
+        src/main/cpp/n2n_v3/src/curve25519.c
+        src/main/cpp/n2n_v3/src/auth.c
         src/main/cpp/n2n_v3/src/edge_utils.c
         src/main/cpp/n2n_v3/src/wire.c
         src/main/cpp/n2n_v3/src/minilzo.c

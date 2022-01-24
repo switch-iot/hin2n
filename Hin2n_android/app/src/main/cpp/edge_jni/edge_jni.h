@@ -42,6 +42,7 @@ typedef struct n2n_edge_cmd_st
     int vpn_fd;
     char* logpath;
     char* devDesc;
+    int header_encryption;
 } n2n_edge_cmd_t;
 
 enum

@@ -100,6 +100,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
     private TextInputLayout mDnsServer;
     private LinearLayout mEncryptionBox;
     private Spinner mEncryptionMode;
+    private CheckBox mHeaderEncCheckBox;
 
     @Override
     protected BaseTemplate createTemplate() {
@@ -215,6 +216,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
         mDnsServer = (TextInputLayout) findViewById(R.id.til_dns_server_ip);
         mEncryptionBox = (LinearLayout) findViewById(R.id.ll_n2n_encryption);
         mEncryptionMode = (Spinner) findViewById(R.id.til_encryption_mode);
+        mHeaderEncCheckBox = (CheckBox) findViewById(R.id.header_enc_check_box);
 
         ArrayAdapter<CharSequence> encAdapter = ArrayAdapter.createFromResource(this, R.array.encryption_modes,
                 android.R.layout.simple_spinner_item);
@@ -281,6 +283,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             mGatewayIp.getEditText().setText(R.string.item_default_gateway_ip);
             mDnsServer.getEditText().setText("");
             mEncryptionMode.setSelection(encAdapter.getPosition("Twofish"));
+            mHeaderEncCheckBox.setChecked(Boolean.valueOf(getString(R.string.item_default_headerenc)));
 
             mDevDescTIL.getEditText().setText("");
 
@@ -333,6 +336,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
             mResoveSupernodeIPCheckBox.setChecked(mN2NSettingModel.getResoveSupernodeIP());
             mLocalPort.getEditText().setText(String.valueOf(mN2NSettingModel.getLocalPort()));
             mAllowRoutinCheckBox.setChecked(mN2NSettingModel.getAllowRouting());
+            mHeaderEncCheckBox.setChecked(mN2NSettingModel.getHeaderEnc());
             mAcceptMuticastCheckBox.setChecked(!mN2NSettingModel.getDropMuticast());
             mUseHttpTunnelCheckBox.setChecked(mN2NSettingModel.getUseHttpTunnel());
             mTraceLevelSpinner.setSelection(Integer.valueOf(mN2NSettingModel.getTraceLevel()));
@@ -381,6 +385,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mDnsServer.setVisibility(View.GONE);
                 mResolveSnLayout.setVisibility(View.VISIBLE);
                 mEncryptionBox.setVisibility(View.GONE);
+                mHeaderEncCheckBox.setVisibility(View.GONE);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
                     mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v1);
                 }
@@ -399,6 +404,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mDnsServer.setVisibility(View.VISIBLE);
                 mResolveSnLayout.setVisibility(View.GONE);
                 mEncryptionBox.setVisibility(View.VISIBLE);
+                mHeaderEncCheckBox.setVisibility(View.VISIBLE);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
                     mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v2);
                 }
@@ -417,6 +423,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mDnsServer.setVisibility(View.GONE);
                 mResolveSnLayout.setVisibility(View.VISIBLE);
                 mEncryptionBox.setVisibility(View.GONE);
+                mHeaderEncCheckBox.setVisibility(View.GONE);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
                     mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v2s);
                 }
@@ -438,6 +445,7 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                 mDnsServer.setVisibility(View.VISIBLE);
                 mResolveSnLayout.setVisibility(View.GONE);
                 mEncryptionBox.setVisibility(View.VISIBLE);
+                mHeaderEncCheckBox.setVisibility(View.VISIBLE);
                 if (isDefaultSupernode(mSuperNodeTIL.getEditText().getText().toString())) {
                     mSuperNodeTIL.getEditText().setText(R.string.item_default_supernode_v3);
                 }
@@ -493,7 +501,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                         mTraceLevelSpinner.getSelectedItemPosition(), !hasSelected,
                         mGatewayIp.getEditText().getText().toString(),
                         mDnsServer.getEditText().getText().toString(),
-                        mEncryptionMode.getSelectedItem().toString());
+                        mEncryptionMode.getSelectedItem().toString(),
+                        mHeaderEncCheckBox.isChecked());
                 n2NSettingModelDao.insert(mN2NSettingModel);
 
                 if (!hasSelected) {
@@ -545,7 +554,8 @@ public class SettingDetailsActivity extends BaseActivity implements View.OnClick
                         mTraceLevelSpinner.getSelectedItemPosition(), mN2NSettingModel.getIsSelcected(),
                         mGatewayIp.getEditText().getText().toString(),
                         mDnsServer.getEditText().getText().toString(),
-                        mEncryptionMode.getSelectedItem().toString());
+                        mEncryptionMode.getSelectedItem().toString(),
+                        mHeaderEncCheckBox.isChecked());
                 n2NSettingModelDao1.update(mN2NSettingModel);
 
                 if (N2NService.INSTANCE != null &&

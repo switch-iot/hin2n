@@ -460,6 +460,7 @@ int start_edge_v2(n2n_edge_status_t *status) {
     conf.drop_multicast = cmd->drop_multicast == 0 ? 0 : 1;
     conf.allow_routing = cmd->allow_routing == 0 ? 0 : 1;
     conf.dyn_ip_mode = (strcmp("dhcp", ip_mode) == 0) ? 1 : 0;
+    conf.header_encryption = cmd->header_encryption == 0 ? 0 : 2;
 
     for (i = 0; i < N2N_EDGE_NUM_SUPERNODES && i < EDGE_CMD_SUPERNODES_NUM; ++i) {
         if (cmd->supernodes[i][0] != '\0') {
@@ -697,6 +698,7 @@ int start_edge_v3(n2n_edge_status_t *status) {
 
     conf.drop_multicast = cmd->drop_multicast == 0 ? 0 : 1;
     conf.allow_routing = cmd->allow_routing == 0 ? 0 : 1;
+    conf.header_encryption = cmd->header_encryption == 0 ? 0 : 2;
 
     if(0 == strcmp("static", ip_mode))
         conf.tuntap_ip_mode = TUNTAP_IP_MODE_STATIC;
@@ -1078,7 +1080,8 @@ int start_edge_v3(n2n_edge_status_t *status) {
     g_status->report_edge_status();
     traceEvent(TRACE_NORMAL, "edge started");    
 
-    run_edge_loop(eee, &keep_on_running);
+    eee->keep_running = &keep_on_running;
+    run_edge_loop(eee);
 
     traceEvent(TRACE_NORMAL, "edge stopped");
 

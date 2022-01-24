@@ -39,6 +39,7 @@ public class N2NSettingInfo implements Parcelable {
     String gatewayIp;
     String dnsServer;
     String encryptionMode;
+    boolean headerEnc;
 
     public N2NSettingInfo(N2NSettingModel n2NSettingModel) {
         this.id = n2NSettingModel.getId();
@@ -66,6 +67,7 @@ public class N2NSettingInfo implements Parcelable {
         this.gatewayIp = n2NSettingModel.getGatewayIp();
         this.dnsServer = n2NSettingModel.getDnsServer();
         this.encryptionMode = n2NSettingModel.getEncryptionMode();
+        this.headerEnc = n2NSettingModel.getHeaderEnc();
     }
 
     protected N2NSettingInfo(Parcel in) {
@@ -94,6 +96,7 @@ public class N2NSettingInfo implements Parcelable {
         gatewayIp = in.readString();
         dnsServer = in.readString();
         encryptionMode = in.readString();
+        headerEnc = in.readByte() != 0;
     }
 
     public static final Creator<N2NSettingInfo> CREATOR = new Creator<N2NSettingInfo>() {
@@ -286,6 +289,14 @@ public class N2NSettingInfo implements Parcelable {
 
     public String getEncryptionMode() { return encryptionMode; }
 
+    public boolean isHeaderEnc() {
+        return headerEnc;
+    }
+
+    public void setHeaderEnc(boolean headerEnc) {
+        this.headerEnc = headerEnc;
+    }
+
     @Override
     public String toString() {
         return "N2NSettingInfo{" +
@@ -314,6 +325,7 @@ public class N2NSettingInfo implements Parcelable {
                 ", gatewayIp=" + gatewayIp +
                 ", dnsServer=" + dnsServer +
                 ", encryptionMode=" + encryptionMode +
+                ", headerEnc=" + headerEnc +
                 '}';
     }
 
@@ -353,5 +365,6 @@ public class N2NSettingInfo implements Parcelable {
         parcel.writeString(gatewayIp);
         parcel.writeString(dnsServer);
         parcel.writeString(encryptionMode);
+        parcel.writeByte((byte) (headerEnc ? 2 : 0));
     }
 }

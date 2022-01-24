@@ -43,6 +43,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
     String gatewayIp;
     String dnsServer;
     String encryptionMode;
+    boolean headerEnc;
 
 
     public String getSuperNode() {
@@ -235,11 +236,19 @@ public class N2NSettingModel /*implements Parcelable*/ {
 
     public void setEncryptionMode(String mode) { this.encryptionMode = mode; }
 
-    @Generated(hash = 611671959)
+    public boolean getHeaderEnc() {
+        return this.headerEnc;
+    }
+
+    public void setHeaderEnc(boolean headerEnc) {
+        this.headerEnc = headerEnc;
+    }
+
+    @Generated
     public N2NSettingModel(Long id, int version, String name, int ipMode, String ip, String netmask, String community, String password, String devDesc,
             String superNode, boolean moreSettings, String superNodeBackup, String macAddr, int mtu, String localIP, int holePunchInterval,
             boolean resoveSupernodeIP, int localPort, boolean allowRouting, boolean dropMuticast, boolean useHttpTunnel, int traceLevel,
-            boolean isSelcected, String gatewayIp, String dnsServer, String encryptionMode) {
+            boolean isSelcected, String gatewayIp, String dnsServer, String encryptionMode, boolean headerEnc) {
         this.id = id;
         this.version = version;
         this.name = name;
@@ -266,9 +275,10 @@ public class N2NSettingModel /*implements Parcelable*/ {
         this.gatewayIp = gatewayIp;
         this.dnsServer = dnsServer;
         this.encryptionMode = encryptionMode;
+        this.headerEnc = headerEnc;
     }
 
-    @Generated(hash = 998225630)
+    @Generated
     public N2NSettingModel() {
     }
 
@@ -309,6 +319,7 @@ public class N2NSettingModel /*implements Parcelable*/ {
                 ", gatewayIp=" + gatewayIp +
                 ", dnsServer=" + dnsServer +
                 ", encryptionMode =" + encryptionMode +
+                ", headerEnc =" + headerEnc +
                 '}';
     }
 

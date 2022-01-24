@@ -7,4 +7,5 @@
 	branch = 2.8-stable
 [submodule "n2n_ntop_v3"]
 	path = bundles/n2n_ntop_v3
-	url = https://github.com/switch-iot/n2n_ntop.git
+	url = https://github.com/ntop/n2n.git
+	branch = 3.0-stable
