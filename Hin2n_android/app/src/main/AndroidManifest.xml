@@ -40,8 +40,7 @@
         </receiver>
 
         <activity
-            android:name=".activity.MainActivity"
-            android:screenOrientation="portrait">
+            android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,15 +49,12 @@
         </activity>
 
         <activity
-            android:name=".activity.ListActivity"
-            android:screenOrientation="portrait" />
+            android:name=".activity.ListActivity"/>
 
         <activity
-            android:name=".activity.SettingDetailsActivity"
-            android:screenOrientation="portrait" />
+            android:name=".activity.SettingDetailsActivity"/>
         <activity
-            android:name=".activity.WebViewActivity"
-            android:screenOrientation="portrait" />
+            android:name=".activity.WebViewActivity"/>
 
         <service
             android:name=".service.N2NService"
