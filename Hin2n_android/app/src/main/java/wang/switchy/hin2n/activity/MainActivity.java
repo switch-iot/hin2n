@@ -1,18 +1,14 @@
 package wang.switchy.hin2n.activity;
 
-import android.Manifest;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.VpnService;
 import android.os.Build;
 import android.os.Bundle;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -22,9 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.orhanobut.logger.Logger;
 import com.tencent.bugly.beta.Beta;
@@ -34,9 +31,12 @@ import com.yanzhenjie.permission.runtime.Permission;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
 import java.util.List;
 import wang.switchy.hin2n.Hin2nApplication;
 import wang.switchy.hin2n.R;
+import wang.switchy.hin2n.adapter.TermAdapter;
 import wang.switchy.hin2n.event.ConnectingEvent;
 import wang.switchy.hin2n.event.ErrorEvent;
 import wang.switchy.hin2n.event.LogChangeEvent;
@@ -67,6 +67,9 @@ public class MainActivity extends BaseActivity {
     private LinearLayout mLeftMenu;
     private String logTxtPath;
     private CheckBox mStartAtBoot;
+    private RecyclerView mRecyclerView;
+    private TermAdapter mTermAdapter;
+    List<String> term = new ArrayList<>();
 
     private static final int REQUECT_CODE_SDCARD = 1;
     private static final int REQUECT_CODE_VPN = 2;
@@ -131,8 +134,9 @@ public class MainActivity extends BaseActivity {
         mLeftMenu = (LinearLayout) findViewById(R.id.ll_menu_left);
 
         mConnectBtn = (ImageView) findViewById(R.id.iv_connect_btn);
-        mLogAction = (TextView) findViewById(R.id.tv_log_action);
-        mScrollLogAction = (NestedScrollView) findViewById(R.id.scroll_log_action);
+//        mLogAction = (TextView) findViewById(R.id.tv_log_action);
+//        mScrollLogAction = (NestedScrollView) findViewById(R.id.scroll_log_action);
+        mRecyclerView = (RecyclerView) findViewById(R.id.scroll_log_action);
 
         if (N2NService.INSTANCE == null) {
             mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
@@ -204,7 +208,11 @@ public class MainActivity extends BaseActivity {
                 n2nSp.edit().putBoolean("start_at_boot", mStartAtBoot.isChecked()).apply();
             }
         });
-
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(mContext);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mTermAdapter = new TermAdapter(null);
+        mRecyclerView.setAdapter(mTermAdapter);
+        mTermAdapter.setNewInstance(term);
         initLeftMenu();
     }
 
@@ -285,6 +293,10 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected int getContentLayout() {
+        Configuration mConfiguration = getResources().getConfiguration();
+        if(mConfiguration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            return R.layout.activity_main_land;
+        }
         return R.layout.activity_main;
     }
 
@@ -319,7 +331,9 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         SharedPreferences n2nSp = getSharedPreferences("Hin2n", MODE_PRIVATE);
         logTxtPath = n2nSp.getString("current_log_path", "");
-        showLog();
+        mTermAdapter.getData().clear();
+        mTermAdapter.notifyDataSetChanged();
+        showLog(true);
 
         Long currentSettingId = n2nSp.getLong("current_setting_id", -1);
         if (currentSettingId != -1) {
@@ -363,6 +377,12 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        showLog(false);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (EventBus.getDefault().isRegistered(this)) {
@@ -373,18 +393,23 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStartEvent(StartEvent event) {
+        mTermAdapter.getData().clear();
+        mTermAdapter.notifyDataSetChanged();
+        showLog(true);
         mConnectBtn.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mConnectBtn.setImageResource(R.mipmap.ic_state_connect);
                 mConnectBtn.setClickable(true);
+
             }
-        }, 200);
+        }, 400);
 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStopEvent(StopEvent event) {
+        showLog(false);
         mConnectBtn.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -396,6 +421,7 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onErrorEvent(ErrorEvent event) {
+        showLog(false);
         mConnectBtn.setVisibility(View.VISIBLE);
         mConnectBtn.setImageResource(R.mipmap.ic_state_disconnect);
 
@@ -417,29 +443,16 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLogChangeEvent(final LogChangeEvent event) {
-//        Toast.makeText(this,"LogChageEvent",Toast.LENGTH_SHORT).show();
         logTxtPath = event.getTxtPath();
-        showLog();
+//        showLog(true);
     }
 
-    private void showLog() {
+    private void showLog(boolean showLog) {
         ThreadUtils.cachedThreadExecutor(new Runnable() {
             @Override
             public void run() {
                 if(!TextUtils.isEmpty(logTxtPath)){
-                    final String logText = IOUtils.readTxtLimit(logTxtPath,1024*2);
-                    ThreadUtils.mainThreadExecutor(new Runnable() {
-                        @Override
-                        public void run() {
-                            mLogAction.setText(logText);
-                            mLogAction.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mScrollLogAction.fullScroll(NestedScrollView.FOCUS_DOWN);
-                                }
-                            });
-                        }
-                    });
+                    IOUtils.readTxtLimits(showLog,logTxtPath,1024*5,mTermAdapter);
                 }
             }
         });

@@ -258,7 +258,7 @@ public class N2NService extends VpnService {
         }
 
         switch (status.runningStatus) {
-            case CONNECTING:
+//            case CONNECTING:
             case CONNECTED:
                 EventBus.getDefault().post(new StartEvent());
                 if (mLastStatus == SUPERNODE_DISCONNECT) {

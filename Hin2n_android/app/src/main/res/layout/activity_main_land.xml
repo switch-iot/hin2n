@@ -11,47 +11,40 @@
 <!--        android:fillViewport="true"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent">-->
-        <RelativeLayout
-            android:orientation="vertical"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <ImageView
-                android:id="@+id/iv_connect_btn"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:src="@mipmap/ic_state_connect"/>
-
-            <!--<com.wang.avi.AVLoadingIndicatorView-->
-            <!--android:id="@+id/loading_view"-->
-            <!--android:layout_marginTop="140dp"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:visibility="gone"-->
-            <!--app:indicatorColor="#23A5F0"-->
-            <!--app:indicatorName="BallPulseIndicator"/>-->
-
             <RelativeLayout
                 android:id="@+id/rl_current_setting"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:layout_marginBottom="20dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/iv_connect_btn"
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="30dp">
+                <ImageView
+                    android:id="@+id/iv_connect_btn"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:src="@mipmap/ic_state_connect"/>
 
                 <TextView
                     android:id="@+id/tv_current_setting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_connect_btn"
                     android:layout_marginTop="10dp"
                     android:text="Current Setting : "
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
 
                 <RelativeLayout
                     android:id="@+id/rl_current_setting_item"
+                    android:layout_below="@id/iv_connect_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/tv_current_setting">
@@ -65,7 +58,7 @@
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:text="--choose setting--"
-                        android:textSize="18sp" />
+                        android:textSize="15sp" />
 
                     <ImageView
                         android:layout_width="20dp"
@@ -87,9 +80,9 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/scroll_log_action"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="5"
                 android:layout_height="match_parent"
-                android:layout_below="@id/rl_current_setting"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
@@ -98,19 +91,8 @@
                 android:fillViewport="true"
                 android:focusable="true"
                 android:focusableInTouchMode="true">
-
-<!--                <TextView-->
-<!--                    android:id="@+id/tv_log_action"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_below="@id/rl_current_setting"-->
-<!--                    android:layout_margin="10dp"-->
-<!--                    android:text="/n2n"-->
-<!--                    android:textColor="@color/c_white"-->
-<!--                    android:textSize="11sp" />-->
             </androidx.recyclerview.widget.RecyclerView>
-        </RelativeLayout>
-<!--    </androidx.core.widget.NestedScrollView>-->
+        </LinearLayout>
 
     <LinearLayout
             android:id="@+id/ll_menu_left"
