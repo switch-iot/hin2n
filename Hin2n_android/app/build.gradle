@@ -19,7 +19,8 @@ def getVersionName = { ->
     try {
         def stdout = new ByteArrayOutputStream()
         exec {
-            commandLine 'git', 'describe', '--tags', '--always', '--dirty', '--match', 'hin2n_v*'
+//          commandLine 'git', 'describe', '--tags', '--always', '--dirty', '--match', 'hin2n_v*'
+            commandLine 'git', 'describe', '--tags', '--always', '--match', 'hin2n_v*'
             standardOutput = stdout
         }
         return stdout.toString().trim()
@@ -132,9 +133,9 @@ android {
 
     applicationVariants.all { variant ->
         getAllManifestValues(variant)
-        if (variant.buildType.name == 'debug') {
-            variant.mergedFlavor.manifestPlaceholders.UMENG_CHANNEL_VALUE = 'umtest'
-        }
+//        if (variant.buildType.name == 'debug') {
+//            variant.mergedFlavor.manifestPlaceholders.UMENG_CHANNEL_VALUE = 'umtest'
+//        }
 
         variant.outputs.all { output ->
             def outputFile = output.outputFile
@@ -142,7 +143,8 @@ android {
                 output.versionNameOverride = getVersionName()
                 def channel = variant.mergedFlavor.manifestPlaceholders.UMENG_CHANNEL_VALUE
                 def arch = variant.mergedFlavor.manifestPlaceholders.ARCH
-                def fileName = "${variant.mergedFlavor.versionName}_${channel}_${arch}_${variant.buildType.name}.apk"
+//              def fileName = "${variant.mergedFlavor.versionName}_${channel}_${arch}_${variant.buildType.name}.apk"
+                def fileName = "${variant.mergedFlavor.versionName}_${arch}_${channel}.apk"
                 outputFileName = fileName
             }
 
@@ -156,14 +158,14 @@ android {
             dimension "channel"
             manifestPlaceholders += [UMENG_CHANNEL_VALUE: "normal"]
         }
-        github {
-            dimension "channel"
-            manifestPlaceholders += [UMENG_CHANNEL_VALUE: "github"]
-        }
-        bugly {
-            dimension "channel"
-            manifestPlaceholders += [UMENG_CHANNEL_VALUE: "bugly"]
-        }
+//        github {
+//            dimension "channel"
+//            manifestPlaceholders += [UMENG_CHANNEL_VALUE: "github"]
+//        }
+//        bugly {
+//            dimension "channel"
+//            manifestPlaceholders += [UMENG_CHANNEL_VALUE: "bugly"]
+//        }
         arm {
             dimension "arch"
             ndk {
