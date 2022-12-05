@@ -216,7 +216,7 @@ public class EdgeCmd {
     }
 
     public static boolean checkCommunity(String community) {
-        if (community == null || community.isEmpty() || community.length() > 30) {
+        if (community == null || community.isEmpty() || community.length() > 20) {
             return false;
         }
 
