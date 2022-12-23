@@ -71,14 +71,14 @@ Hin2n是一个免费且开源的n2n项目，我们欢迎任何人为其开发和
 - 欢迎对说明文档做出改善，帮助更多的人使用`hin2n`，特别是英文文档
 - 如果您觉得hin2n对您有帮助，欢迎您关注该项目，并给项目点个`Star`
 
-### 贡献者
-- [`lucktu`](https://github.com/lucktu)是hin2n项目的发起人，并做了一些推广、测试的工作。
-- [`switch`](https://github.com/switch-iot)是项目的总指挥，项目架构由他独立完成。没有 switch，就没有 hin2n。
-- [`zhangbz`](https://github.com/zhangbz)主要负责Android层面的开发，在项目最困难的时候，给予了强有力的支持。
-- [`emanuele-f`](https://github.com/emanuele-f)提供了最新的 hin2n 源码，并对 ntop n2n 的发展也做出了巨大的贡献。 
+### 鸣谢
+- [`zhangbz`](https://github.com/zhangbz)
+- [`emanuele-f`](https://github.com/emanuele-f) 
+- [`ozyb`](https://github.com/ozyb)
+- [`lucktu`](https://github.com/lucktu)
 - 感谢他们的无私奉献，同时也感谢广大网友对 hin2n 项目的支持。
 
 ## 交流群
 - Hin2n交流群： 769731491(QQ群号)
-- N2N交流群： 5804301(QQ群号)
+- N2N交流群： 256572040(QQ群号)
 

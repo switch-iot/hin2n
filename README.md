@@ -74,14 +74,14 @@ Hin2n is a free and open source n2n project, and we welcome anyone to contribute
 - Sorry for my poor english and improvement for this document is welcome even some typo fix.
 - Welcome to pay attention to the project and give the project a `Star`
 
-### Contributors
-- [`lucktu`](https://github.com/lucktu) is the initiator of the hin2n project, and has done some promotion, test work.
-- [`switch`](https://github.com/switch-iot) was the project director, and he was the architect. without switch, there's no hin2n.
-- [`zhangbz`](https://github.com/zhangbz) is mainly responsible for the development of the Android level, and has given strong support in the most difficult time of the project.
-- [`emanuele-f`](https://github.com/emanuele-f) provides the latest hin2n source code, and has made a great contribution to the development of ntop's n2n.
+### Thanks
+- [`zhangbz`](https://github.com/zhangbz)
+- [`emanuele-f`](https://github.com/emanuele-f) 
+- [`ozyb`](https://github.com/ozyb)
+- [`lucktu`](https://github.com/lucktu)
 - Thanks to their selfless dedication, But also thanks all the friends for their support.
 
 ## QQ group
 - Hin2n QQ group： 769731491
-- N2N QQ group： 5804301
+- N2N QQ group： 256572040
 
