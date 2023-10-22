@@ -16,6 +16,7 @@ public class ShareUtils {
     /****************
      * 发起添加群流程。群号：手机版n2n(hin2n)交流群(769731491) 的 key 为： 5QSK63d7uDivxPW2oCpWHyi7FmE4sAzo
      * 调用 joinQQGroup(5QSK63d7uDivxPW2oCpWHyi7FmE4sAzo) 即可发起手Q客户端申请加群 手机版n2n(hin2n)交流群(769731491)
+     * 2023-10-22，已改为新群号：256572040（_pG_kr_Or-KpDVCYhG2JhrvyA9wAXRr-）
      *
      * @param key 由官网生成的key
      * @return 返回true表示呼起手Q成功，返回fals表示呼起失败
@@ -34,7 +35,7 @@ public class ShareUtils {
     }
 
     public static void joinQQGroup(Activity activity){
-        boolean b = joinQQGroup(activity,"5QSK63d7uDivxPW2oCpWHyi7FmE4sAzo");
+        boolean b = joinQQGroup(activity,"_pG_kr_Or-KpDVCYhG2JhrvyA9wAXRr-");
         if (!b) {
             Intent intent = new Intent(activity, WebViewActivity.class);
             intent.putExtra(WebViewActivity.WEB_VIEW_TYPE, WebViewActivity.TYPE_WEB_VIEW_CONTACT);
