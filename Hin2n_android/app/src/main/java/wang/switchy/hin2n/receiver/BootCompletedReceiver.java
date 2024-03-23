@@ -21,25 +21,24 @@ public class BootCompletedReceiver extends BroadcastReceiver {
             @Override
             public void run() {
                 SharedPreferences n2nSp = context.getSharedPreferences("Hin2n", Context.MODE_PRIVATE);
-                // 如果没有配置开机启动,就直接退出
+                // If boot is not configured, exit
                 if (!n2nSp.getBoolean("start_at_boot", false))
                     return;
 
-                // 获取当前设置,没有的话直接退出
+                // Get the current Settings, if not, exit
                 long currentSettingId = n2nSp.getLong("current_setting_id", -1);
                 if (currentSettingId < 0)
                     return;
 
                 Intent vpnPrepareIntent = VpnService.prepare(context);
                 if (vpnPrepareIntent != null)
-                    // 说明用户之前还没有同意过vpn服务,不适合开机运行,直接退出即可
                     return;
 
                 N2NSettingModel mCurrentSettingInfo = Hin2nApplication.getInstance().getDaoSession().getN2NSettingModelDao().load((long) currentSettingId);
                 if (mCurrentSettingInfo == null)
                     return;
 
-                // 启动服务
+                // Start N2N
                 Intent i = new Intent(context, N2NService.class);
                 Bundle bundle = new Bundle();
                 N2NSettingInfo n2NSettingInfo = new N2NSettingInfo(mCurrentSettingInfo);
