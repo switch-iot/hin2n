@@ -1,6 +1,5 @@
 package wang.switchy.hin2n.tool;
 
-
 import android.text.TextUtils;
 import android.util.Log;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -11,26 +10,15 @@ public class IOUtils {
     public static String readTxt(String txtPath) {
         File file = new File(txtPath);
         if (file.isFile() && file.exists()) {
-            FileInputStream fileInputStream = null;
-            InputStreamReader inputStreamReader = null;
-            BufferedReader bufferedReader = null;
-            try {
-                fileInputStream = new FileInputStream(file);
-                inputStreamReader = new InputStreamReader(fileInputStream);
-                bufferedReader = new BufferedReader(inputStreamReader);
+            try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
                 StringBuilder stringBuilder = new StringBuilder();
-                String text = null;
-                while ((text = bufferedReader.readLine()) != null) {
-                    stringBuilder.append(text);
-                    stringBuilder.append("\n");
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(line).append("\n");
                 }
                 return stringBuilder.toString();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                close(fileInputStream);
-                close(inputStreamReader);
-                close(bufferedReader);
             }
         }
         return "";
@@ -39,81 +27,56 @@ public class IOUtils {
     public static String readTxtLimit(String txtPath, int size) {
         File file = new File(txtPath);
         if (file.exists() && file.isFile()) {
-            RandomAccessFile randomAccessFile = null;
-            try {
-                randomAccessFile = new RandomAccessFile(file, "r");
+            try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
                 long length = randomAccessFile.length();
-                long start = 0;
-                if (length > size) {
-                    start = length - size;
-                }
+                long start = Math.max(0, length - size);
                 randomAccessFile.seek(start);
+
                 StringBuilder stringBuilder = new StringBuilder();
-                String text = null;
-                while ((text = randomAccessFile.readLine()) != null) {
-                    stringBuilder.append(text);
-                    stringBuilder.append("\n");
+                String line;
+                while ((line = randomAccessFile.readLine()) != null) {
+                    stringBuilder.append(line).append("\n");
                 }
                 return stringBuilder.toString();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                close(randomAccessFile);
             }
         }
         return "";
     }
 
-    private volatile static RandomAccessFile randomAccessFile = null;
-    private volatile static boolean isNeedShow = false;
-    //isNeedShow = true 当第一个线程在运行while时，之后的线程进来只会重置线程共享的RandomAccessFile状态;
-    //isNeedShow = false 第一个线程结束while,之后的线程不走while。关闭RandomAccessFile
+    private static RandomAccessFile randomAccessFile;
+    private static boolean isNeedShow;
+
     public static void readTxtLimits(boolean showLog, String txtPath, int size, BaseQuickAdapter mAdapter) {
-//        Log.d("readTxtLimits", Thread.currentThread() + "");
         isNeedShow = showLog;
         try {
             File file = new File(txtPath);
             if (file.exists() && file.isFile()) {
-                if (randomAccessFile == null) {
+                if (randomAccessFile == null || isNeedShow) {
                     randomAccessFile = new RandomAccessFile(file, "r");
                     long length = randomAccessFile.length();
-                    long start = 0;
-                    if (length > size) {
-                        start = length - size;
-                    }
+                    long start = Math.max(0, length - size);
                     randomAccessFile.seek(start);
-                    String text = null;
-                    while (isNeedShow) {
-//                        Log.d("readTxtLimits-1", Thread.currentThread() + "");
-                        text = randomAccessFile.readLine();
-                        if (!TextUtils.isEmpty(text)) {
-                            String finalText = text;
-                            ThreadUtils.mainThreadExecutor(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (mAdapter.getData().size() > 200) {
-                                        mAdapter.getData().remove(0);
-                                        mAdapter.notifyItemRemoved(0);
-                                    }
-                                    mAdapter.getData().add(finalText);
-                                    int last = mAdapter.getData().size() - 1;
-                                    mAdapter.notifyItemChanged(last);
-                                    mAdapter.getRecyclerView().scrollToPosition(last);
+
+                    String line;
+                    while (isNeedShow && (line = randomAccessFile.readLine()) != null) {
+                        if (!TextUtils.isEmpty(line)) {
+                            ThreadUtils.mainThreadExecutor(() -> {
+                                if (mAdapter.getData().size() > 200) {
+                                    mAdapter.getData().remove(0);
+                                    mAdapter.notifyItemRemoved(0);
                                 }
+                                mAdapter.getData().add(line);
+                                int last = mAdapter.getData().size() - 1;
+                                mAdapter.notifyItemChanged(last);
+                                mAdapter.getRecyclerView().scrollToPosition(last);
                             });
                         }
                     }
-                } else if (isNeedShow) {
-                    randomAccessFile = new RandomAccessFile(file, "r");
-                    long length = randomAccessFile.length();
-                    long start = 0;
-                    if (length > size) {
-                        start = length - size;
-                    }
-                    randomAccessFile.seek(start);
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             if (!isNeedShow) {
@@ -148,7 +111,7 @@ public class IOUtils {
 
     public static void close(Closeable closeable) {
         try {
-            if (null != closeable) {
+            if (closeable != null) {
                 closeable.close();
             }
         } catch (IOException e) {
